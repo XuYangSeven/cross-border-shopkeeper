@@ -1,0 +1,10 @@
+const assert = require('assert');
+const levels = require('../miniprogram/config/levels/index');
+const chapter8 = levels.chapters.find(chapter => chapter.id === 8);
+assert(chapter8);
+assert.deepStrictEqual(chapter8.levels.map(level => level.id), ['8-1', '8-2', '8-3', '8-4', '8-5', '8-6']);
+const types = ['cashFlowCalc', 'financeCalc', 'pricingChoice', 'purchaseChoice', 'riskChoice', 'financeBoss'];
+chapter8.levels.forEach((level, index) => assert.strictEqual(level.steps[0].type, types[index]));
+const text = JSON.stringify(chapter8);
+['Amazon', '亚马逊', '淘宝', 'eBay'].forEach(name => assert(!text.includes(name)));
+console.log('chapter8 config tests passed');

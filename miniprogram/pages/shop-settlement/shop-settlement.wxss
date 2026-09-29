@@ -1,0 +1,1 @@
+.title{font-weight:bold;display:block}.rating{display:block;text-align:center;font-size:42rpx;color:#D4A934;font-weight:bold;margin:24rpx}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16rpx}.grid text{border:2rpx solid #1A2B4A;padding:16rpx;background:#FFF}.sub{display:block;color:#777;margin:20rpx 0}button{margin-top:20rpx}

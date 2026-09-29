@@ -1,0 +1,1 @@
+.title{font-weight:bold;display:block}.sub,.review{display:block;color:#777;margin:16rpx 0;line-height:1.6}.health-row{display:flex;justify-content:space-between;border-bottom:2rpx solid #D8C7A3;padding:20rpx 0}.review{color:#A84A42}button{margin-top:20rpx}

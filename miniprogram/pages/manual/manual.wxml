@@ -1,0 +1,27 @@
+<view class="page">
+  <view class="panel">
+    <text class="title">技能手册</text>
+    <text class="sub">已收集 {{collected}} / {{total}} 张 · 卡片背面是面试考点</text>
+  </view>
+  <view class="panel" wx:for="{{groups}}" wx:key="chapter" wx:for-item="g" wx:for-index="gi">
+    <text class="group-title">{{g.name}}</text>
+    <view wx:for="{{g.cards}}" wx:key="id" wx:for-item="c" wx:for-index="ci"
+      class="card {{c.owned ? '' : 'locked'}}" data-ch="{{gi}}" data-idx="{{ci}}" bindtap="onFlip">
+      <block wx:if="{{!c.owned}}">
+        <text class="card-lock">🔒 通关收集</text>
+      </block>
+      <block wx:else>
+        <block wx:if="{{!c.flip}}">
+          <text class="card-id">{{c.id}}</text>
+          <text class="card-t">{{c.title}}</text>
+          <text class="card-x">{{c.text}}</text>
+        </block>
+        <block wx:else>
+          <text class="card-id">面试考点</text>
+          <text class="card-t">{{c.interview}}</text>
+          <text class="card-x">提示：对着卡片正面内容组织你的答案</text>
+        </block>
+      </block>
+    </view>
+  </view>
+</view>

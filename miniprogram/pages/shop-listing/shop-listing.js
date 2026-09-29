@@ -1,0 +1,2 @@
+const state = require('../../engine/state');
+Page({ data: { listing: {}, title: '' }, onShow() { const shop = state.getShopState(); this.setData({ listing: shop.listing, title: shop.product.name }); }, onInput(e) { this.setData({ title: e.detail.value }); }, onSave() { state.updateShopState({ product: { ...state.getShopState().product, name: this.data.title }, listing: { titleScore: 80, imageScore: 72, bulletScore: 75 } }, 'listing_optimize'); wx.showToast({ title: 'Listing方案已保存', icon: 'success' }); }, onBack() { wx.navigateBack(); } });

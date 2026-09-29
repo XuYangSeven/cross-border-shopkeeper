@@ -1,0 +1,13 @@
+<view class="page">
+  <view class="panel">
+    <text class="title">我的档案</text>
+    <view class="row"><text>职级</text><text class="text-gold">{{title}}</text></view>
+    <view class="row"><text>经验</text><text>{{exp}} EXP</text></view>
+    <view class="row"><text>累计星数</text><text class="stars">★ {{stars}}</text></view>
+    <view class="row"><text>金币</text><text>{{coins}}</text></view>
+    <view class="row"><text>下一职级</text><text>{{nextTitle}}</text></view>
+  </view>
+  <view class="panel">
+    <button class="btn-secondary" bindtap="onReset">重置存档</button>
+  </view>
+</view>

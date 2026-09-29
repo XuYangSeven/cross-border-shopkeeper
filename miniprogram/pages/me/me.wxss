@@ -1,0 +1,2 @@
+.title { font-weight: bold; font-size: 32rpx; display: block; margin-bottom: 16rpx; }
+.row { display: flex; justify-content: space-between; padding: 12rpx 0; border-bottom: 2rpx dashed #DDD; }

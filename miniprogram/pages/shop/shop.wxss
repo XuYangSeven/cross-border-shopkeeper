@@ -1,0 +1,22 @@
+.title { font-weight: bold; display: block; margin-bottom: 20rpx; }
+.lock-tip { color: #888; }
+.kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16rpx; }
+.kpi { background: #FFF; border: 3rpx solid #1A2B4A; border-radius: 8rpx; padding: 16rpx; display: flex; flex-direction: column; align-items: center; }
+.kpi-v { font-size: 34rpx; font-weight: bold; }
+.kpi-k { font-size: 22rpx; color: #888; margin-top: 6rpx; }
+.modules-row { display: flex; flex-wrap: wrap; gap: 12rpx; margin-top: 24rpx; }
+.module-chip { background: #2E4A7A; color: #F2E8D5; border-radius: 8rpx; padding: 8rpx 20rpx; font-size: 24rpx; }
+.module-locked { background: #7A7A7A; color: #EEEEEE; }
+.sub { display: block; color: #777; font-size: 24rpx; margin: 8rpx 0 18rpx; }
+.task-box { margin-top: 24rpx; padding: 18rpx; border: 3rpx solid #2E4A7A; background: #FFF; }
+.task-head { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 12rpx; }
+.task-row { display: flex; justify-content: space-between; gap: 12rpx; padding: 12rpx 0; border-top: 2rpx solid #E5E5E5; }
+.task-title, .task-desc { display: block; }
+.task-title { font-weight: bold; }
+.task-desc { color: #777; font-size: 22rpx; margin-top: 4rpx; }
+.task-status { color: #A87818; white-space: nowrap; }
+.task-done { color: #32944B; }
+.task-reward { display: block; margin-top: 12rpx; color: #A87818; font-weight: bold; }
+.mode-box { margin-top: 24rpx; padding: 18rpx; border: 3rpx solid #2E4A7A; background: #FFF9ED; }
+.mode-box radio-group { display: flex; gap: 24rpx; margin: 14rpx 0; }
+.reset-btn { margin-top: 12rpx; background: #A84A42; color: #FFF; font-size: 26rpx; }

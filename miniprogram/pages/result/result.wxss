@@ -1,0 +1,8 @@
+.result { display: flex; flex-direction: column; align-items: center; gap: 16rpx; margin-top: 15vh; }
+.r-title { font-size: 40rpx; font-weight: bold; }
+.big { font-size: 60rpx; }
+.r-score { color: #555; }
+.r-cards { display: flex; flex-direction: column; gap: 8rpx; width: 100%; margin-top: 20rpx; }
+.r-sub { font-size: 24rpx; color: #888; }
+.r-card { background: #FFF8E1; border: 3rpx solid #1A2B4A; border-radius: 8rpx; padding: 10rpx 16rpx; font-size: 26rpx; }
+.btns { display: flex; gap: 20rpx; margin-top: 24rpx; }

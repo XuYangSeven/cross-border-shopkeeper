@@ -1,0 +1,56 @@
+/* 全局样式：像素风基线（对应美术规范 1.1/1.2 节） */
+page {
+  background: #F2E8D5;
+  color: #1A2B4A;
+  font-size: 28rpx;
+  font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+}
+
+/* 像素面板容器 */
+.panel {
+  background: #FFFDF7;
+  border: 4rpx solid #1A2B4A;
+  border-radius: 8rpx;
+  box-shadow: 6rpx 6rpx 0 rgba(26, 43, 74, 0.25);
+  padding: 24rpx;
+  margin: 20rpx;
+}
+
+/* 主按钮 */
+.btn-primary {
+  background: #D4A934;
+  color: #1A2B4A;
+  border: 4rpx solid #1A2B4A;
+  border-radius: 8rpx;
+  font-weight: bold;
+  padding: 16rpx 32rpx;
+  box-shadow: 4rpx 4rpx 0 #1A2B4A;
+}
+.btn-primary:active {
+  transform: translate(2rpx, 2rpx);
+  box-shadow: 2rpx 2rpx 0 #1A2B4A;
+}
+
+.btn-secondary {
+  background: #2E4A7A;
+  color: #F2E8D5;
+  border: 4rpx solid #1A2B4A;
+  border-radius: 8rpx;
+  font-weight: bold;
+  padding: 16rpx 32rpx;
+}
+
+/* 数据色 */
+.text-up { color: #4CAF50; }
+.text-down { color: #E53935; }
+.text-warn { color: #FB8C00; }
+.text-gold { color: #D4A934; }
+
+/* 星级 */
+.stars { color: #D4A934; letter-spacing: 4rpx; }
+
+/* 锁定态 */
+.locked {
+  opacity: 0.45;
+  filter: grayscale(1);
+}

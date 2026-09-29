@@ -1,0 +1,41 @@
+<h2>店铺实操闭环</h2>
+<p class="subtitle">双模式：章节学习解锁能力，店铺页面执行模拟操作；数据默认保存，也支持重置本周经营。</p>
+
+<div class="section">
+  <h3>入口与经营状态</h3>
+  <div class="mockup">
+    <div class="mockup-header">PawPal · 店铺后台</div>
+    <div class="mockup-body">
+      <div class="mock-nav">数据看板　Listing　广告　库存　订单　绩效</div>
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+        <div class="placeholder" style="flex:1;min-width:130px;"><strong>当前模式</strong><br>实操经营</div>
+        <div class="placeholder" style="flex:1;min-width:130px;"><strong>本周状态</strong><br>已保存 12 次操作</div>
+        <div class="placeholder" style="flex:1;min-width:130px;"><strong>安全操作</strong><br>可重置本周</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>模块解锁与页面层级</h3>
+  <div class="split">
+    <div class="mockup"><div class="mockup-header">学习地图</div><div class="mockup-body"><div class="mock-sidebar">第3章通关<br>↓<br>Listing能力解锁<br>↓<br>进入Listing实操页</div></div></div>
+    <div class="mockup"><div class="mockup-header">独立实操页</div><div class="mockup-body"><div class="mock-content"><span class="label">LISTING</span><h3>优化 PawPal 宠物梳</h3><p>选择主图、标题和价格方案</p><button class="mock-button">保存本周方案</button></div></div></div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>双模式控制</h3>
+  <div class="options" data-multiselect>
+    <div class="option" data-choice="save" onclick="toggleSelect(this)"><div class="letter">A</div><div class="content"><h3>默认保存</h3><p>每次操作写入 shopState 和 actionLog，数据影响看板及后续复盘。</p></div></div>
+    <div class="option" data-choice="reset" onclick="toggleSelect(this)"><div class="letter">B</div><div class="content"><h3>本周重置</h3><p>只恢复本周店铺状态，不删除章节进度和成就。</p></div></div>
+    <div class="option" data-choice="confirm" onclick="toggleSelect(this)"><div class="letter">C</div><div class="content"><h3>关键操作确认</h3><p>补货、广告预算、定价等操作保存前展示影响预览和确认。</p></div></div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>推荐数据流</h3>
+  <div class="mockup"><div class="mockup-body"><div class="mock-nav">章节通关 → 模块解锁 → 实操提交 → 纯函数引擎 → shopState保存 → 看板/复盘</div></div></div>
+</div>
+
+<p class="subtitle">请点击你认可的交互原则；也可以直接回复希望调整的页面层级或双模式规则。</p>

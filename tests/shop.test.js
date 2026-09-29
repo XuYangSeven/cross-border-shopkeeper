@@ -1,0 +1,15 @@
+const assert = require('assert');
+const shop = require('../miniprogram/engine/shop');
+const source = { ads: { dailyBudget: 10, bid: 0.65 }, inventory: { available: 100, inTransit: 0 }, finance: { cash: 20000 }, product: { price: 16.99 } };
+const config = { days: 7, ctr: 0.03, cvr: 0.05, quality: 1 };
+const result = shop.simulateWeek(source, config);
+assert.strictEqual(result.simulation.day, 7);
+assert.strictEqual(result.settlement.days, 7);
+assert(result.settlement.impressions >= 0);
+assert(result.settlement.orders >= 0);
+assert(result.settlement.acos >= 0);
+assert(result.settlement.endingInventory <= 100);
+const one = shop.simulateDay(shop.createSimulationState(source, config));
+assert.strictEqual(one.simulation.day, 1);
+assert.strictEqual(one.snapshot.day, 1);
+console.log('shop simulation tests passed');
