@@ -4,6 +4,7 @@ const state = require('../../engine/state');
 const levels = require('../../config/levels/index');
 const cards = require('../../config/cards');
 const learning = require('../../engine/learning');
+const { definePage } = require('../../utils/pageGuard');
 
 const LEVEL_TOTAL = levels.chapters.reduce((sum, ch) => sum + (ch.levels || []).length, 0);
 const CARD_TOTAL = Object.keys(cards || {}).length;
@@ -38,7 +39,7 @@ const FEATURES = [
 
 const FLOW = ['知道概念', '动手决策', '即时反馈', '复盘表达', '能力评估'];
 
-Page({
+definePage('intro', {
   data: {
     features: FEATURES,
     flow: FLOW,

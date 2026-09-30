@@ -3,8 +3,9 @@
 const state = require('../../engine/state');
 const shopEngine = require('../../engine/shop');
 const view = require('../../engine/shop-view');
+const { definePage } = require('../../utils/pageGuard');
 
-Page({
+definePage('shop-simulation', {
   data: {
     day: 0, totalDays: 7, done: false, simulation: null,
     snapshot: null, timeline: [], events: [], kpiTiles: [], running: false,

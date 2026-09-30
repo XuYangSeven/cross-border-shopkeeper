@@ -1,6 +1,7 @@
 // 错题与复盘页：按关卡 / 题型查看错题，关联知识卡，可再练一次
 const state = require('../../engine/state');
 const levels = require('../../config/levels/index');
+const { definePage } = require('../../utils/pageGuard');
 
 const TYPE_LABEL = {
   quiz: '选择题',
@@ -57,7 +58,7 @@ function findLevel(id) {
   return null;
 }
 
-Page({
+definePage('review', {
   data: {
     groups: [],
     total: 0,

@@ -6,6 +6,7 @@ const levels = require('../../config/levels/index');
 const state = require('../../engine/state');
 const tasksEngine = require('../../engine/tasks');
 const shopEngine = require('../../engine/shop');
+const { definePage } = require('../../utils/pageGuard');
 
 // 指标定义：better 说明「变大」是好事还是坏事，用于着色
 const KPI_DEFS = [
@@ -60,7 +61,7 @@ function moduleSummary(key, shop, kpis) {
   return `综合决策分 ${kpis.quality ? Math.round(kpis.quality * 100) : 0} 商品力 · 毛利率 ${kpis.margin}%`;
 }
 
-Page({
+definePage('shop', {
   data: {
     loaded: false,
     mode: 'save',

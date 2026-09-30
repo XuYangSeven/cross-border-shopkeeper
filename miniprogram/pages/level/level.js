@@ -14,6 +14,7 @@ const financeEngine = require('../../engine/finance');
 const learningEngine = require('../../engine/learning');
 const hintsEngine = require('../../engine/hints');
 const FBA_TIERS = require('../../config/fbaTiers');
+const { definePage } = require('../../utils/pageGuard');
 
 function findLevel(id) {
   for (const ch of levels.chapters) {
@@ -23,7 +24,7 @@ function findLevel(id) {
   return null;
 }
 
-Page({
+definePage('level', {
   data: {
     level: null,
     stepIndex: 0,

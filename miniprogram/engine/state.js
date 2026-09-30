@@ -309,12 +309,28 @@ function setShopMode(mode) {
   return true;
 }
 
+// 操作日志上限：所有写入路径都必须走这里。
+// 缺陷背景：此前只有 applyShopAction 做了 200 条截断，而 updateShopState /
+// startShopWeek / saveShopSettlement 是直接 push 的——重度玩家跑多轮经营
+// （每天一次 simulate_day）时会突破 200 条、无界增长。设计规格
+// （docs/店铺模块_设计规格与实现说明.md）明确写的是「shopActionLog 上限 200 条」，
+// 这里把截断收敛到一处，让代码与已声明的不变量一致。
+// 注意：这不是游戏数值，是把「日志最多留多少条」的实现口径对齐到既有文档。
+const SHOP_ACTION_LOG_LIMIT = 200;
+function logShopAction(entry) {
+  if (!Array.isArray(cache.shopActionLog)) cache.shopActionLog = [];
+  cache.shopActionLog.push(entry);
+  if (cache.shopActionLog.length > SHOP_ACTION_LOG_LIMIT) {
+    cache.shopActionLog = cache.shopActionLog.slice(-SHOP_ACTION_LOG_LIMIT);
+  }
+}
+
 function updateShopState(patch, action) {
   const current = activeShopState();
   const updated = Object.assign({}, current, patch);
   if (cache.shopState.mode === 'practice') cache.shopState.practiceState = updated;
   else cache.shopState = updated;
-  cache.shopActionLog.push({ type: action || 'shop_action', at: Date.now(), patch, mode: cache.shopState.mode });
+  logShopAction({ type: action || 'shop_action', at: Date.now(), patch, mode: cache.shopState.mode });
   if (cache.shopState.mode === 'save') save();
   return updated;
 }
@@ -337,14 +353,13 @@ function applyShopAction(actionId) {
   if (cache.shopState.mode === 'practice') cache.shopState.practiceState = result.next;
   else cache.shopState = result.next;
 
-  cache.shopActionLog.push({
+  logShopAction({
     type: result.action.id,
     at: Date.now(),
     mode: cache.shopState.mode,
     costCNY: result.costCNY || 0,
     points: result.action.points,
   });
-  if (cache.shopActionLog.length > 200) cache.shopActionLog = cache.shopActionLog.slice(-200);
   if (cache.shopState.mode === 'save') save();
   return {
     ok: true,
@@ -380,7 +395,7 @@ function startShopWeek(patch) {
   const updated = Object.assign({}, current, patch, { week: { day: 0, active: true }, snapshots: [], lastSettlement: null, weekSimulation: null });
   if (cache.shopState.mode === 'practice') cache.shopState.practiceState = updated;
   else cache.shopState = updated;
-  cache.shopActionLog.push({ type: 'start_simulation', at: Date.now(), mode: cache.shopState.mode });
+  logShopAction({ type: 'start_simulation', at: Date.now(), mode: cache.shopState.mode });
   if (cache.shopState.mode === 'save') save();
   return updated;
 }
@@ -448,7 +463,7 @@ function saveShopSettlement(settlement) {
     }
     cache.shopState.settlementHistory = (cache.shopState.settlementHistory || []).concat([historyRow]).slice(-12);
   }
-  cache.shopActionLog.push({ type: 'settle_week', at: Date.now(), patch: { orders: settlement.orders, sales: settlement.sales }, mode: cache.shopState.mode });
+  logShopAction({ type: 'settle_week', at: Date.now(), patch: { orders: settlement.orders, sales: settlement.sales }, mode: cache.shopState.mode });
   if (cache.shopState.mode === 'save') save();
 
   // 结算 → 能力证据 + 学习事件（只在正式存档写入，练习模式只给预览）

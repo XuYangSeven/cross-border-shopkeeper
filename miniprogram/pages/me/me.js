@@ -2,6 +2,7 @@
 const state = require('../../engine/state');
 const CONSTANTS = require('../../config/constants');
 const learning = require('../../engine/learning');
+const { definePage } = require('../../utils/pageGuard');
 
 // 金币流水的时间只到分钟——精确到秒对账本没有意义，还会把行撑长
 function shortTime(ts) {
@@ -10,7 +11,7 @@ function shortTime(ts) {
   return `${d.getMonth() + 1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-Page({
+definePage('me', {
   data: {
     coins: 0, exp: 0, stars: 0, title: '', nextTitle: '',
     abilityOverall: 0,

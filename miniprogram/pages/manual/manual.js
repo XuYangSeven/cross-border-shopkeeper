@@ -2,6 +2,7 @@
 const cards = require('../../config/cards');
 const state = require('../../engine/state');
 const levels = require('../../config/levels/index');
+const { definePage } = require('../../utils/pageGuard');
 
 // 章节名以关卡注册表为单一来源：以前这里硬编码一份副本，
 // 新增章节时手册页会显示成「第 N 章」而地图页显示真名，两边对不上。
@@ -10,7 +11,7 @@ const CHAPTER_NAME = levels.chapters.reduce((acc, ch) => {
   return acc;
 }, {});
 
-Page({
+definePage('manual', {
   data: { groups: [], total: 0, collected: 0 },
   onShow() {
     const s = state.get();

@@ -2,6 +2,7 @@
 const state = require('../../engine/state');
 const shopEngine = require('../../engine/shop');
 const view = require('../../engine/shop-view');
+const { definePage } = require('../../utils/pageGuard');
 
 // 每个决策维度对应哪个模块能改它
 const DIM_MODULE = {
@@ -12,7 +13,7 @@ const DIM_MODULE = {
   cash: { key: 'dashboard', name: '数据看板' },
 };
 
-Page({
+definePage('shop-health', {
   data: {
     shop: {}, kpis: {}, kpiTiles: [],
     decision: null, rows: [], redlines: [], hasRedline: false,

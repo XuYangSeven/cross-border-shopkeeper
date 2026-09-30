@@ -1,5 +1,6 @@
 const levels = require('../../config/levels/index');
 const state = require('../../engine/state');
+const { definePage } = require('../../utils/pageGuard');
 
 // data-* 属性在部分场景会以字符串回传，'false' 是真值，必须显式判定
 function toBool(value) {
@@ -19,7 +20,7 @@ function unlockHint(levelId) {
   return prevChapter ? `通关第 ${prevChapter.id} 章「${prevChapter.name}」全部关卡后解锁` : '完成前置关卡后解锁';
 }
 
-Page({
+definePage('map', {
   data: {
     chapters: [],
     totalStars: 0,

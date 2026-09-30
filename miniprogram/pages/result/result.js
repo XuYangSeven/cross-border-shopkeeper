@@ -2,6 +2,7 @@
 const cards = require('../../config/cards');
 const levels = require('../../config/levels/index');
 const state = require('../../engine/state');
+const { definePage } = require('../../utils/pageGuard');
 
 // 结算明细通过临时存档传递，避免长 JSON 挤在 URL 里被截断
 const PAYLOAD_KEY = 'kuajing_result_payload';
@@ -40,7 +41,7 @@ function levelExists(id) {
   return false;
 }
 
-Page({
+definePage('result', {
   data: {
     level: '',
     levelValid: false,

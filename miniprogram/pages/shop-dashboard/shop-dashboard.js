@@ -2,8 +2,9 @@
 const state = require('../../engine/state');
 const shopEngine = require('../../engine/shop');
 const view = require('../../engine/shop-view');
+const { definePage } = require('../../utils/pageGuard');
 
-Page({
+definePage('shop-dashboard', {
   data: {
     shop: {}, kpis: {}, kpiTiles: [], actions: [],
     points: { total: 12, used: 0, remaining: 12 }, pointPercent: 0,

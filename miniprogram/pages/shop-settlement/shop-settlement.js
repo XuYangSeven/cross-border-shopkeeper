@@ -3,8 +3,9 @@ const state = require('../../engine/state');
 const shopEngine = require('../../engine/shop');
 const tasksEngine = require('../../engine/tasks');
 const view = require('../../engine/shop-view');
+const { definePage } = require('../../utils/pageGuard');
 
-Page({
+definePage('shop-settlement', {
   data: {
     settlement: null, tasks: [], taskSummary: {},
     mode: 'save', practiceOnly: false, saved: false,

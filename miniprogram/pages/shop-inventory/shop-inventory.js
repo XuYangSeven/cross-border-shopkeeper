@@ -2,6 +2,7 @@
 const state = require('../../engine/state');
 const shopEngine = require('../../engine/shop');
 const view = require('../../engine/shop-view');
+const { definePage } = require('../../utils/pageGuard');
 
 function shipmentRows(shipments) {
   return (shipments || []).map(item => ({
@@ -11,7 +12,7 @@ function shipmentRows(shipments) {
   }));
 }
 
-Page({
+definePage('shop-inventory', {
   data: {
     shop: {}, kpis: {}, kpiTiles: [], actions: [],
     points: { total: 12, used: 0, remaining: 12 }, pointPercent: 0,
