@@ -103,15 +103,16 @@
   transform-origin: left center;
 }
 
-/* 逐行出现：最多处理 6 行，步进 40ms，单行 180ms → 第 6 行 200+180 = 380ms ≤400ms。 */
-.mj-stagger > * { animation: mj-line 180ms ease-out both; }
-.mj-stagger > *:nth-child(1) { animation-delay: 0ms; }
-.mj-stagger > *:nth-child(2) { animation-delay: 40ms; }
-.mj-stagger > *:nth-child(3) { animation-delay: 80ms; }
-.mj-stagger > *:nth-child(4) { animation-delay: 120ms; }
-.mj-stagger > *:nth-child(5) { animation-delay: 160ms; }
-.mj-stagger > *:nth-child(6) { animation-delay: 200ms; }
-.mj-stagger > *:nth-child(n+7) { animation-delay: 200ms; }
+/* 逐行出现：最多处理 6 行，步进 40ms，单行 180ms → 第 6 行 200+180 = 380ms ≤400ms。
+   子元素必须显式带 .mj-stagger-item 类；微信小程序 WXSS 不支持 .mj-stagger > *。 */
+.mj-stagger .mj-stagger-item { animation: mj-line 180ms ease-out both; }
+.mj-stagger .mj-stagger-item:nth-child(1) { animation-delay: 0ms; }
+.mj-stagger .mj-stagger-item:nth-child(2) { animation-delay: 40ms; }
+.mj-stagger .mj-stagger-item:nth-child(3) { animation-delay: 80ms; }
+.mj-stagger .mj-stagger-item:nth-child(4) { animation-delay: 120ms; }
+.mj-stagger .mj-stagger-item:nth-child(5) { animation-delay: 160ms; }
+.mj-stagger .mj-stagger-item:nth-child(6) { animation-delay: 200ms; }
+.mj-stagger .mj-stagger-item:nth-child(n+7) { animation-delay: 200ms; }
 
 /* 星级逐个弹出：3 星顺序 0 / 80 / 160ms。 */
 .mj-stars .mj-star { animation: mj-star-pop 220ms cubic-bezier(.3, .7, .4, 1.2) both; }
@@ -160,7 +161,7 @@
  * 只保留静态的颜色/形状冗余（信息不因关闭动画而丢失）。 */
 @media (prefers-reduced-motion: reduce) {
   .mj-pop, .mj-shake, .mj-reveal, .mj-dock, .mj-fade-up,
-  .mj-star-pop, .mj-bar-grow, .mj-stagger > *, .option.right, .option.wrong,
+  .mj-star-pop, .mj-bar-grow, .mj-stagger .mj-stagger-item, .option.right, .option.wrong,
   .progress-fill, .l-fill, .points-fill, .decision-fill, .rating,
   .mj-stars .mj-star {
     animation: none !important;

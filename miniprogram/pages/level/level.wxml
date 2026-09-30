@@ -45,8 +45,8 @@
         <text>{{opt.key}}. {{opt.text}}</text>
       </view>
       <view wx:if="{{view.picked !== null && view.picked !== undefined}}" class="feedback-box mj-reveal mj-stagger">
-        <text class="fb-line">你的选择：{{view.options[view.picked].key}}. {{view.options[view.picked].text}}</text>
-        <text class="fb-line fb-right">正确答案：{{view.correctKey}}｜{{view.explain}}</text>
+        <text class="fb-line mj-stagger-item">你的选择：{{view.options[view.picked].key}}. {{view.options[view.picked].text}}</text>
+        <text class="fb-line fb-right mj-stagger-item">正确答案：{{view.correctKey}}｜{{view.explain}}</text>
       </view>
       <button wx:if="{{quizContinue}}" class="btn-primary" bindtap="onQuizContinue">继续 ▶</button>
     </view>
@@ -145,8 +145,8 @@
           </view>
           <text wx:if="{{it.verdict === 'out' && it.reason}}" class="text-down">理由：{{it.reasonText}}</text>
           <view wx:if="{{it.correct === false}}" class="fb-box fb-bad mj-reveal mj-stagger">
-            <text>判定有误：正确应选「{{it.correctVerdictText}}」</text>
-            <text wx:if="{{it.correctReasonText}}">理由：{{it.correctReasonText}}</text>
+            <text class="mj-stagger-item">判定有误：正确应选「{{it.correctVerdictText}}」</text>
+            <text wx:if="{{it.correctReasonText}}" class="mj-stagger-item">理由：{{it.correctReasonText}}</text>
           </view>
           <text wx:if="{{it.correct === true}}" class="fb-ok mj-reveal">判定正确 ✓</text>
         </view>
@@ -440,10 +440,10 @@
           </view>
         </block>
         <view wx:if="{{q.result}}" class="feedback-box mj-reveal mj-stagger">
-          <text class="fb-line {{q.result.correct ? 'fb-right' : 'fb-wrong'}}">{{q.result.correct ? '✅ 正确' : '❌ 错误'}}</text>
-          <text wx:if="{{!q.result.correct}}" class="fb-line">你的答案：{{q.result.userAnswer}}</text>
-          <text class="fb-line">正确答案：{{q.result.correctAnswer}}</text>
-          <text class="fb-line fb-explain">{{q.result.explain}}</text>
+          <text class="fb-line {{q.result.correct ? 'fb-right' : 'fb-wrong'}} mj-stagger-item">{{q.result.correct ? '✅ 正确' : '❌ 错误'}}</text>
+          <text wx:if="{{!q.result.correct}}" class="fb-line mj-stagger-item">你的答案：{{q.result.userAnswer}}</text>
+          <text class="fb-line mj-stagger-item">正确答案：{{q.result.correctAnswer}}</text>
+          <text class="fb-line fb-explain mj-stagger-item">{{q.result.explain}}</text>
         </view>
       </view>
       <text wx:if="{{view.result}}" class="score-line">{{view.result.passText}}｜通过线 {{view.passRatio}}</text>

@@ -8,12 +8,12 @@
 
     <!-- 金币明细：把「省着用提示」的回报说清楚，否则学生只看得到总数，感受不到取舍 -->
     <view class="r-coin mj-stagger" wx:if="{{passed && reward}}">
-      <view class="rc-row"><text>通关奖励</text><text>+{{reward.base}}</text></view>
-      <view class="rc-row rc-bonus" wx:if="{{reward.noHintBonus}}"><text>零提示加成</text><text>+{{reward.noHintBonus}}</text></view>
-      <view class="rc-row rc-bonus" wx:if="{{reward.streakBonus}}"><text>连胜奖励（连续第 {{reward.streak}} 关）</text><text>+{{reward.streakBonus}}</text></view>
-      <view class="rc-row rc-total"><text>合计</text><text class="text-gold">+{{coin}}</text></view>
-      <text wx:if="{{reward.usedHint}}" class="rc-note">本关用了 {{hintsUsed}} 次提示（花掉 {{hintsSpent}} 金币），所以不获得零提示加成{{reward.brokeStreak ? '，之前的连胜也中断了' : ''}}。</text>
-      <text wx:else class="rc-note">全程没用提示，连胜已累计到 {{reward.streak}} 关。保持住。</text>
+      <view class="rc-row mj-stagger-item"><text>通关奖励</text><text>+{{reward.base}}</text></view>
+      <view class="rc-row rc-bonus mj-stagger-item" wx:if="{{reward.noHintBonus}}"><text>零提示加成</text><text>+{{reward.noHintBonus}}</text></view>
+      <view class="rc-row rc-bonus mj-stagger-item" wx:if="{{reward.streakBonus}}"><text>连胜奖励（连续第 {{reward.streak}} 关）</text><text>+{{reward.streakBonus}}</text></view>
+      <view class="rc-row rc-total mj-stagger-item"><text>合计</text><text class="text-gold">+{{coin}}</text></view>
+      <text wx:if="{{reward.usedHint}}" class="rc-note mj-stagger-item">本关用了 {{hintsUsed}} 次提示（花掉 {{hintsSpent}} 金币），所以不获得零提示加成{{reward.brokeStreak ? '，之前的连胜也中断了' : ''}}。</text>
+      <text wx:else class="rc-note mj-stagger-item">全程没用提示，连胜已累计到 {{reward.streak}} 关。保持住。</text>
     </view>
 
     <!-- 学习结果：能力反馈 -->
