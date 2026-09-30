@@ -1,7 +1,7 @@
 @import "../../styles/shop-page.wxss";
 
 .rating { display: block; margin: 20rpx 0 6rpx; text-align: center; font-size: 48rpx; font-weight: bold; color: #D4A934; }
-.preview { display: block; margin-top: 14rpx; padding: 12rpx; background: #FFF9ED; color: #A87818; font-size: 24rpx; line-height: 1.6; }
+.preview { display: block; margin-top: 14rpx; padding: 12rpx; background: #FFF9ED; color: #7A5D0F; font-size: 24rpx; line-height: 1.6; }
 .redline-panel { border-color: #A84A42; background: #FFF6F5; }
 .note-line.redline { color: #A84A42; font-weight: bold; }
 .warn-text { color: #A84A42; }

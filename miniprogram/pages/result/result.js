@@ -2,6 +2,7 @@
 const cards = require('../../config/cards');
 const levels = require('../../config/levels/index');
 const state = require('../../engine/state');
+const audio = require('../../engine/audio');
 const { definePage } = require('../../utils/pageGuard');
 
 // 结算明细通过临时存档传递，避免长 JSON 挤在 URL 里被截断
@@ -50,6 +51,9 @@ definePage('result', {
     coin: 0,
     passed: false,
     starsText: '☆☆☆',
+    // 三颗星拆成独立节点，才能做「逐个弹出」（见 styles/motion.wxss 的 .mj-stars）。
+    // starsText 保留：它仍是星级文案的单一来源，供测试与降级使用。
+    starSlots: [0, 1, 2],
     title: '',
     cards: [],
     rows: [],
@@ -98,6 +102,9 @@ definePage('result', {
       hintsUsed: payload ? Number(payload.hintsUsed) || 0 : 0,
       hintsSpent: payload ? Number(payload.hintsSpent) || 0 : 0,
     });
+    // 结算音：有金币入账给「金币」音；否则通过给结算音、未通过给错误音。
+    // 单节点只发一声，避免多音叠加；音频失败不得影响结算展示。
+    try { audio.sfx(this.data.coin > 0 ? 'coin' : (this.data.passed ? 'settle' : 'wrong')); } catch (e) { /* 静默 */ }
   },
   // payload 可能因 TTL 失效或读到旧结构，逐字段兜底而不是直接信任
   readReward(payload) {

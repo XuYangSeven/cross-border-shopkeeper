@@ -4,6 +4,7 @@ const state = require('../../engine/state');
 const levels = require('../../config/levels/index');
 const cards = require('../../config/cards');
 const learning = require('../../engine/learning');
+const audio = require('../../engine/audio');
 const { definePage } = require('../../utils/pageGuard');
 
 const LEVEL_TOTAL = levels.chapters.reduce((sum, ch) => sum + (ch.levels || []).length, 0);
@@ -81,6 +82,11 @@ definePage('intro', {
     });
   },
   onStart() {
+    // 首次交互的点击反馈：这是用户在本 App 里的第一次「确认」动作。
+    try {
+      if (typeof wx.vibrateShort === 'function') wx.vibrateShort({ type: 'light' });
+    } catch (e) { /* 开发者工具无触觉时静默 */ }
+    audio.sfx('tap');
     wx.switchTab({ url: '/pages/map/map' });
   },
 });

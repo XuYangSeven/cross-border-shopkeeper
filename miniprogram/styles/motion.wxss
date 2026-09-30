@@ -1,0 +1,168 @@
+/* ============================================================
+ * motion.wxss —— 全站动效库（@keyframes + 触发用工具类）
+ * ------------------------------------------------------------
+ * 由 app.wxss 顶部 @import 引入，作用域为全站。
+ *
+ * 【为什么要有这一层】本项目是「边玩边学」的学习工具，动效的第一职责是
+ * 「让状态变化被看见」，而不是装饰：
+ *   1) 答对/答错若只是静态色块，学生（尤其色弱学生）要靠回读文字才能确认结果；
+ *   2) 反馈框若静态出现，会把下方内容一次性顶下去，学习时最该看清的错因
+ *      反而出现在一次视觉跳变里；
+ *   3) 进度、星级、提示解锁若无推进感，学生感受不到「我在往前走」。
+ *
+ * 【工程约束（与 level.js 的 164 次 setData 直接相关）】
+ *   - 全部动效由 CSS class 切换驱动，**不使用 setTimeout + setData 序列**。
+ *     用 JS 驱动动画会把 level.js 的渲染负担继续推高，并引入时序不确定性。
+ *   - 单段动画（含 stagger 展开）总时长 ≤400ms，且动画期间不阻塞任何下一步交互。
+ *   - 不使用全屏遮罩式庆祝；不使用会造成元素位移导致误点的幅度（抖动 ≤8rpx）。
+ *
+ * 【命名】.mj-* = motion。仅新增前缀类，不改动页面既有语义类名。
+ * ============================================================ */
+
+/* ============================================================
+ * 1. keyframes
+ * ============================================================ */
+
+/* 答对：轻微上弹 + 放大（≤260ms）。幅度很小，只为「确认感」，不夺目。 */
+@keyframes mj-pop {
+  0%   { transform: scale(1) translateY(0); }
+  45%  { transform: scale(1.05) translateY(-4rpx); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+/* 答错：横向抖动（≤8rpx，320ms）。幅度刻意压到 8rpx 以内，避免误触旁边的选项。 */
+@keyframes mj-shake {
+  0%, 100% { transform: translateX(0); }
+  15%      { transform: translateX(-8rpx); }
+  35%      { transform: translateX(8rpx); }
+  55%      { transform: translateX(-6rpx); }
+  75%      { transform: translateX(6rpx); }
+  90%      { transform: translateX(-2rpx); }
+}
+
+/* 反馈框入场：淡入 + 上滑 + 高度「展开」。
+ * 关键：同时动画 max-height（0 → 800rpx），让新增内容把下方内容「推开」
+ * 而不是「瞬移」——这才是解决「内容突然下推」跳变的核心，不是好看。 */
+@keyframes mj-reveal {
+  0%   { opacity: 0; max-height: 0; transform: translateY(-6rpx); }
+  100% { opacity: 1; max-height: 800rpx; transform: translateY(0); }
+}
+
+/* 逐行出现（配合 .mj-stagger，单行 ≤180ms，6 行总时长 ≤380ms）。 */
+@keyframes mj-line {
+  from { opacity: 0; transform: translateY(6rpx); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 星级弹出：逐个放大落位（≤220ms，配 80ms 顺序 delay，3 星总 ≤380ms）。 */
+@keyframes mj-star-pop {
+  0%   { opacity: 0; transform: scale(0.2); }
+  60%  { opacity: 1; transform: scale(1.18); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* 进度条 / 能力条 / 决策条：从左向右生长（用 scaleX，无需 JS 知道目标宽度）。 */
+@keyframes mj-bar-grow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* 提示弹层展开：淡入 + 上滑（≤220ms）。 */
+@keyframes mj-dock {
+  from { opacity: 0; transform: translateY(-8rpx); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 通用入场：淡入 + 上滑（用于引导页、结算页等整块内容）。 */
+@keyframes mj-fade-up {
+  from { opacity: 0; transform: translateY(12rpx); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+ * 2. 通用工具类（在 WXML 上挂 class 即生效）
+ * ============================================================ */
+
+.mj-pop     { animation: mj-pop     260ms cubic-bezier(.3, .7, .4, 1.15); }
+.mj-shake   { animation: mj-shake   320ms cubic-bezier(.36, .07, .19, .97); }
+.mj-dock    { animation: mj-dock    220ms cubic-bezier(.22, .61, .36, 1) both; }
+.mj-fade-up { animation: mj-fade-up 260ms cubic-bezier(.22, .61, .36, 1) both; }
+.mj-star-pop{ animation: mj-star-pop 220ms cubic-bezier(.3, .7, .4, 1.2) both; }
+
+/* 反馈框展开。overflow: hidden 让 max-height 动画能「裁剪出」渐进出现的效果；
+ * 动画结束后 max-height 回到 auto，内容再多也不会被裁掉。 */
+.mj-reveal {
+  animation: mj-reveal 200ms cubic-bezier(.22, .61, .36, 1);
+  overflow: hidden;
+}
+
+/* 进度类条形物：从左向右生长。transform-origin 必须在左侧，
+ * 否则 scaleX 会从中心向两边扩，看起来像「先短后长」的抖动。 */
+.mj-bar-grow {
+  animation: mj-bar-grow 360ms cubic-bezier(.2, .7, .3, 1);
+  transform-origin: left center;
+}
+
+/* 逐行出现：最多处理 6 行，步进 40ms，单行 180ms → 第 6 行 200+180 = 380ms ≤400ms。 */
+.mj-stagger > * { animation: mj-line 180ms ease-out both; }
+.mj-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.mj-stagger > *:nth-child(2) { animation-delay: 40ms; }
+.mj-stagger > *:nth-child(3) { animation-delay: 80ms; }
+.mj-stagger > *:nth-child(4) { animation-delay: 120ms; }
+.mj-stagger > *:nth-child(5) { animation-delay: 160ms; }
+.mj-stagger > *:nth-child(6) { animation-delay: 200ms; }
+.mj-stagger > *:nth-child(n+7) { animation-delay: 200ms; }
+
+/* 星级逐个弹出：3 星顺序 0 / 80 / 160ms。 */
+.mj-stars .mj-star { animation: mj-star-pop 220ms cubic-bezier(.3, .7, .4, 1.2) both; }
+.mj-stars .mj-star:nth-child(2) { animation-delay: 80ms; }
+.mj-stars .mj-star:nth-child(3) { animation-delay: 160ms; }
+
+/* ============================================================
+ * 3. 挂到页面既有类（为避免大范围改 WXML，动效直接挂既有类名）
+ * ============================================================ */
+
+/* 答题判定：.option.right / .wrong 是既有类（level.wxss），
+ * 判定结果一落到这个类上就触发动画，一次交互只写一次 setData，不额外驱动。 */
+.option.right { animation: mj-pop   260ms cubic-bezier(.3, .7, .4, 1.15); }
+.option.wrong { animation: mj-shake 320ms cubic-bezier(.36, .07, .19, .97); }
+
+/* 进度条 / 条目（level / result / 店铺沙盘）。
+ * 这些类在各自页面 wxss 里都没有声明 animation，故此处全局挂载不会冲突；
+ * 页面 wxss 里的宽度 transition 仍负责「步进式」增长，两者互补。 */
+.progress-fill { animation: mj-bar-grow 360ms cubic-bezier(.2, .7, .3, 1); transform-origin: left center; }
+.l-fill        { animation: mj-bar-grow 380ms cubic-bezier(.2, .7, .3, 1); transform-origin: left center; }
+.points-fill   { animation: mj-bar-grow 360ms cubic-bezier(.2, .7, .3, 1); transform-origin: left center; }
+.decision-fill { animation: mj-bar-grow 360ms cubic-bezier(.2, .7, .3, 1); transform-origin: left center; }
+
+/* 店铺结算评级：大字号评级文字弹入。 */
+.rating { animation: mj-pop 300ms cubic-bezier(.3, .7, .4, 1.15); }
+
+/* ============================================================
+ * 4. 可访问性
+ * ============================================================ */
+
+/* 形状冗余（色盲）：唯一来源是 app.wxss 的 .mark-ok / .mark-bad / .mark-warn。
+ * 本文件曾另立一套 .flag-right / .flag-wrong，与基线职责重复 —— 已删除，
+ * 调用点（pages/level/level.wxml 的两处 .option）统一改指 .mark-*。
+ * 理由：形状冗余是静态可访问性属性，不属动效层；放基线才能在动效库被重构时依然存在。 */
+
+/* 按钮按下态：唯一来源是 app.wxss 的 .btn-primary/.btn-secondary/.btn-danger:active。
+ * 本文件曾重复声明一份并叠加 opacity: 0.9 —— 已删除，半透明与像素风的实色硬阴影
+ * 语汇冲突，且两份定义会互相覆盖。 */
+
+/* 填空/复述输入框：用边框「线型」做非颜色冗余（双线=正确，虚线=错误）。
+ * 输入框是替换元素，无法用伪元素加字符，故改走线型通道。 */
+.blank.ok, .rf-input.ok { border-style: double; border-width: 6rpx; }
+.blank.bad, .rf-input.bad { border-style: dashed; }
+
+/* 尊重系统「减弱动态效果」偏好：一并关闭运动类动画，
+ * 只保留静态的颜色/形状冗余（信息不因关闭动画而丢失）。 */
+@media (prefers-reduced-motion: reduce) {
+  .mj-pop, .mj-shake, .mj-reveal, .mj-dock, .mj-fade-up,
+  .mj-star-pop, .mj-bar-grow, .mj-stagger > *, .option.right, .option.wrong,
+  .progress-fill, .l-fill, .points-fill, .decision-fill, .rating,
+  .mj-stars .mj-star {
+    animation: none !important;
+  }
+}

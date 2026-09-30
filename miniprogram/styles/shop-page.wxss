@@ -1,48 +1,55 @@
-/* 店铺子页面共享样式（像素风基线；各页 wxss 用 @import 引入后只写差异） */
+/* 店铺子页面共享样式（像素风基线；各页 wxss 用 @import 引入后只写差异）
+   语汇与 app.wxss 完全同源：直角硬边 / 双层不透明硬阴影 / 平面填色。
+   改前→改后→理由逐项见 docs/phase6/美工优化_规格与实现.md。 */
 
 .page { padding-bottom: 40rpx; }
 .title { display: block; font-weight: bold; font-size: 30rpx; }
-.sub { display: block; margin: 8rpx 0 18rpx; color: #777; font-size: 24rpx; line-height: 1.6; overflow-wrap: anywhere; word-break: break-word; }
+/* .sub 是页面说明句（阅读型文本），按字号口径给到 26rpx，不做小字处理 */
+.sub { display: block; margin: 8rpx 0 18rpx; color: #6E6E6E; font-size: 26rpx; line-height: 1.6; overflow-wrap: anywhere; word-break: break-word; }
 
 /* 顶部指标条 */
 .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14rpx; }
-.kpi { display: flex; flex-direction: column; align-items: center; padding: 16rpx 8rpx; background: #FFF; border: 3rpx solid #1A2B4A; border-radius: 8rpx; min-width: 0; }
+.kpi { display: flex; flex-direction: column; align-items: center; padding: 16rpx 8rpx; background: #FFFDF7; border: 3rpx solid #1A2B4A; border-radius: 0; box-shadow: 3rpx 3rpx 0 #0E1830; min-width: 0; }
 .kpi-v { font-size: 32rpx; font-weight: bold; text-align: center; overflow-wrap: anywhere; word-break: break-word; }
-.kpi-k { margin-top: 6rpx; font-size: 22rpx; color: #888; }
+.kpi-k { margin-top: 6rpx; font-size: 22rpx; color: #78735F; }
 .kpi-d { margin-top: 4rpx; font-size: 22rpx; }
+/* 涨跌轴（红=升 / 绿=降，中国市场惯例）—— 与 app.wxss 的对错轴、me.wxss 的收支轴互不通用 */
 .kpi-d.up { color: #C62828; }
 .kpi-d.down { color: #2E7D32; }
 .kpi-d.flat { color: #9E9E9E; }
 
 /* 行动点 */
-.points { margin: 4rpx 0 20rpx; padding: 16rpx; background: #FFF9ED; border: 3rpx solid #2E4A7A; border-radius: 8rpx; }
+.points { margin: 4rpx 0 20rpx; padding: 16rpx; background: #FFF9ED; border: 3rpx solid #2E4A7A; border-radius: 0; box-shadow: 3rpx 3rpx 0 #0E1830; }
 .points-head { display: flex; align-items: baseline; justify-content: space-between; }
 .points-label { font-size: 24rpx; color: #444; }
 .points-value { font-size: 30rpx; font-weight: bold; color: #2E4A7A; }
-.points-bar { margin: 12rpx 0 8rpx; height: 18rpx; border-radius: 999rpx; background: #E8DFC8; overflow: hidden; }
-.points-fill { height: 100%; background: #D4A934; }
+.points-bar { margin: 12rpx 0 8rpx; height: 20rpx; border: 3rpx solid #1A2B4A; border-radius: 0; background: #E8DFC8; overflow: hidden; }
+/* 硬停靠渐变切等宽色块：不引入位图即可读出「一格一格」 */
+.points-fill { height: 100%; background-color: #D4A934; background-image: repeating-linear-gradient(90deg, #D4A934 0 14rpx, #B98A1E 14rpx 16rpx); }
 
 /* 操作卡 */
 .action-list { display: flex; flex-direction: column; gap: 16rpx; }
-.action { padding: 18rpx; background: #FFF; border: 3rpx solid #1A2B4A; border-radius: 8rpx; }
-.action-disabled { background: #F3EFE7; border-color: #9E9E9E; }
+.action { padding: 18rpx; background: #FFFDF7; border: 3rpx solid #1A2B4A; border-radius: 0; box-shadow: 4rpx 4rpx 0 #0E1830; }
+.action-disabled { background: #F3EFE7; border-color: #9E9E9E; box-shadow: none; }
 .action-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12rpx; }
 .action-label { flex: 1; min-width: 0; font-weight: bold; font-size: 28rpx; line-height: 1.5; overflow-wrap: anywhere; word-break: break-word; }
 .action-meta { flex-shrink: 0; font-size: 22rpx; color: #2E4A7A; white-space: nowrap; }
 .action-desc { display: block; margin: 8rpx 0; font-size: 26rpx; color: #555; line-height: 1.65; overflow-wrap: anywhere; word-break: break-word; }
 .action-tags { display: flex; flex-wrap: wrap; gap: 10rpx; margin-bottom: 10rpx; }
-.tag { padding: 3rpx 14rpx; border-radius: 999rpx; font-size: 20rpx; background: #F0EAE0; color: #7a5a2b; }
-.tag-cost { background: #FFF0E0; color: #A85A18; }
-.tag-limit { background: #E8EEF7; color: #2E4A7A; }
-.tag-block { background: #FBE9E7; color: #A84A42; }
+/* 标签从胶囊改为直角块：像素风的标签是「小方块」，不是药丸 */
+.tag { padding: 3rpx 12rpx; border: 2rpx solid #C6B486; border-radius: 0; font-size: 20rpx; background: #F0EAE0; color: #7a5a2b; }
+.tag-cost { background: #FFF0E0; color: #A85A18; border-color: #D9AE7A; }
+.tag-limit { background: #E8EEF7; color: #2E4A7A; border-color: #96AECF; }
+.tag-block { background: #FBE9E7; color: #A84A42; border-color: #D8A49E; }
 /* 效果预估是决策卡里最该被读的一行，不能按注释尺寸给 */
-.action-preview { display: block; margin-top: 10rpx; padding: 12rpx; background: #FFF9ED; border-radius: 8rpx; font-size: 26rpx; color: #5c4d2c; line-height: 1.65; overflow-wrap: anywhere; word-break: break-word; }
+.action-preview { display: block; margin-top: 10rpx; padding: 12rpx; background: #FFF9ED; border-left: 6rpx solid #D4A934; border-radius: 0; font-size: 26rpx; color: #5c4d2c; line-height: 1.65; overflow-wrap: anywhere; word-break: break-word; }
 .action-btn { width: 100%; margin: 14rpx 0 0; }
 
 /* 状态行 */
 .stat-list { display: flex; flex-direction: column; }
-.stat-row { display: flex; align-items: center; justify-content: space-between; gap: 12rpx; min-height: 76rpx; padding: 12rpx 0; border-top: 2rpx solid #E5E5E5; }
-.stat-k { flex: 1; min-width: 0; font-size: 25rpx; color: #444; overflow-wrap: anywhere; word-break: break-word; }
+.stat-row { display: flex; align-items: center; justify-content: space-between; gap: 12rpx; min-height: 76rpx; padding: 12rpx 0; border-top: 3rpx solid #D8C7A3; }
+.stat-row:first-child { border-top: none; }
+.stat-k { flex: 1; min-width: 0; font-size: 26rpx; color: #444; overflow-wrap: anywhere; word-break: break-word; }
 .stat-v { flex-shrink: 0; font-weight: bold; color: #2E4A7A; }
 .stat-v.warn { color: #C62828; }
 .stat-v.ok { color: #2E7D32; }
@@ -50,14 +57,15 @@
 /* 决策评分 */
 .decision-row { display: flex; align-items: center; gap: 12rpx; padding: 10rpx 0; }
 .decision-label { width: 130rpx; flex-shrink: 0; font-size: 24rpx; color: #444; }
-.decision-bar { flex: 1; min-width: 0; height: 18rpx; border-radius: 999rpx; background: #E8DFC8; overflow: hidden; }
+.decision-bar { flex: 1; min-width: 0; height: 20rpx; border: 2rpx solid #1A2B4A; border-radius: 0; background: #E8DFC8; overflow: hidden; }
 .decision-fill { height: 100%; }
-.decision-fill.good { background: #2E7D32; }
-.decision-fill.mid { background: #D4A934; }
-.decision-fill.low { background: #C62828; }
+.decision-fill.good { background-color: #2E7D32; background-image: repeating-linear-gradient(90deg, #2E7D32 0 12rpx, #256428 12rpx 14rpx); }
+.decision-fill.mid { background-color: #D4A934; background-image: repeating-linear-gradient(90deg, #D4A934 0 12rpx, #B98A1E 12rpx 14rpx); }
+.decision-fill.low { background-color: #C62828; background-image: repeating-linear-gradient(90deg, #C62828 0 12rpx, #A61F1F 12rpx 14rpx); }
 .decision-score { width: 70rpx; flex-shrink: 0; text-align: right; font-size: 24rpx; color: #2E4A7A; }
 .decision-weight { width: 70rpx; flex-shrink: 0; font-size: 20rpx; color: #999; text-align: right; }
-.decision-advice { display: block; padding: 4rpx 0 12rpx 142rpx; font-size: 24rpx; color: #666; line-height: 1.6; overflow-wrap: anywhere; word-break: break-word; }
+/* 建议语是阅读型文本，给到 26rpx */
+.decision-advice { display: block; padding: 4rpx 0 12rpx 142rpx; font-size: 26rpx; color: #6E6E6E; line-height: 1.6; overflow-wrap: anywhere; word-break: break-word; }
 
 /* 底部按钮 */
 .bottom-btns { display: flex; flex-direction: column; gap: 16rpx; margin-top: 8rpx; }

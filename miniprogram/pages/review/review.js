@@ -1,6 +1,7 @@
 // 错题与复盘页：按关卡 / 题型查看错题，关联知识卡，可再练一次
 const state = require('../../engine/state');
 const levels = require('../../config/levels/index');
+const audio = require('../../engine/audio');
 const { definePage } = require('../../utils/pageGuard');
 
 const TYPE_LABEL = {
@@ -118,6 +119,7 @@ definePage('review', {
       items: g.items.map(item => item.key === key ? { ...item, expanded: !item.expanded } : item),
     }));
     this.setData({ groups });
+    try { audio.sfx('tap'); } catch (e) { /* 静默 */ }
   },
   onShowAll() {
     this.setData({ filterLevel: '' }, () => this.refresh());
@@ -125,6 +127,7 @@ definePage('review', {
   onPractice(e) {
     const levelId = e.currentTarget.dataset.level;
     if (!levelId || !findLevel(levelId)) return;
+    try { audio.sfx('tap'); } catch (e) { /* 静默 */ }
     wx.navigateTo({ url: `/pages/level/level?id=${levelId}` });
   },
   onClear() {

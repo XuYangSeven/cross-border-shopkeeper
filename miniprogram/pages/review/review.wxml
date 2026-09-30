@@ -24,9 +24,11 @@
         </view>
         <text class="rv-q">{{m.question}}</text>
         <block wx:if="{{m.expanded}}">
-          <text class="rv-wrong">你的答案：{{m.userAnswer}}</text>
-          <text class="rv-right">正确答案：{{m.correctAnswer}}</text>
-          <text wx:if="{{m.explain}}" class="rv-explain">错因：{{m.explain}}</text>
+          <view class="rv-detail mj-reveal mj-stagger">
+            <text class="rv-wrong">你的答案：{{m.userAnswer}}</text>
+            <text class="rv-right">正确答案：{{m.correctAnswer}}</text>
+            <text wx:if="{{m.explain}}" class="rv-explain">错因：{{m.explain}}</text>
+          </view>
         </block>
         <text wx:else class="rv-hint">点击展开你的答案、正确答案与错因</text>
       </view>

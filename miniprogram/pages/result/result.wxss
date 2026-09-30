@@ -1,13 +1,17 @@
 .result { display: flex; flex-direction: column; align-items: center; gap: 16rpx; margin: 24rpx 0 40rpx; }
 .r-title { font-size: 40rpx; font-weight: bold; }
 .big { font-size: 60rpx; }
+/* 星级：三颗星拆成独立节点逐个弹出；未点亮星用低对比灰金，与点亮星拉开差距。
+   动效本体（@keyframes mj-star-pop + 顺序 delay）在 styles/motion.wxss。 */
+.mj-stars .mj-star { display: inline-block; }
+.mj-stars .mj-star.off { color: #C9BE9E; }
 .r-score { color: #555; }
 
 /* 学习结果：能力反馈 */
-.r-learning { display: flex; flex-direction: column; gap: 12rpx; width: 100%; margin-top: 24rpx; padding: 20rpx; border: 3rpx solid #1A2B4A; border-radius: 8rpx; background: #FFFDF7; box-sizing: border-box; }
+.r-learning { display: flex; flex-direction: column; gap: 12rpx; width: 100%; margin-top: 24rpx; padding: 20rpx; border: 3rpx solid #1A2B4A; border-radius: 0; background: #FFFDF7; box-sizing: border-box; }
 .l-row { display: flex; align-items: center; gap: 14rpx; }
 .l-label { width: 140rpx; flex-shrink: 0; font-size: 24rpx; color: #444; }
-.l-bar { flex: 1; min-width: 0; height: 16rpx; border-radius: 999rpx; background: #E8DFC8; overflow: hidden; }
+.l-bar { flex: 1; min-width: 0; height: 16rpx; border-radius: 0; background: #E8DFC8; overflow: hidden; }
 .l-fill { height: 100%; }
 .l-fill.good { background: #4CAF50; }
 .l-fill.low { background: #E53935; }
@@ -15,14 +19,14 @@
 .l-ability { display: flex; flex-direction: column; gap: 6rpx; margin-top: 8rpx; font-size: 26rpx; font-weight: bold; color: #2E4A7A; }
 .l-overall { font-size: 24rpx; font-weight: normal; color: #55627a; }
 .l-weak { display: block; font-size: 26rpx; color: #C62828; line-height: 1.65; overflow-wrap: anywhere; word-break: break-word; }
-.l-next { display: block; font-size: 26rpx; color: #6b5b35; background: #FFF7D6; padding: 14rpx; border-radius: 8rpx; line-height: 1.65; overflow-wrap: anywhere; word-break: break-word; }
+.l-next { display: block; font-size: 26rpx; color: #6b5b35; background: #FFF7D6; padding: 14rpx; border-radius: 0; line-height: 1.65; overflow-wrap: anywhere; word-break: break-word; }
 
 .r-cards { display: flex; flex-direction: column; gap: 8rpx; width: 100%; margin-top: 20rpx; }
 .r-sub { font-size: 24rpx; color: #888; }
-.r-card { background: #FFF8E1; border: 3rpx solid #1A2B4A; border-radius: 8rpx; padding: 10rpx 16rpx; font-size: 26rpx; line-height: 1.6; overflow-wrap: anywhere; word-break: break-word; }
+.r-card { background: #FFF8E1; border: 3rpx solid #1A2B4A; border-radius: 0; padding: 10rpx 16rpx; font-size: 26rpx; line-height: 1.6; overflow-wrap: anywhere; word-break: break-word; }
 
 /* ===== 金币结算明细 ===== */
-.r-coin { display: flex; flex-direction: column; gap: 10rpx; width: 100%; margin-top: 20rpx; padding: 20rpx; border: 3rpx solid #E6DCC2; border-radius: 8rpx; background: #FFFDF6; box-sizing: border-box; }
+.r-coin { display: flex; flex-direction: column; gap: 10rpx; width: 100%; margin-top: 20rpx; padding: 20rpx; border: 3rpx solid #E6DCC2; border-radius: 0; background: #FFFDF6; box-sizing: border-box; }
 .rc-row { display: flex; align-items: center; justify-content: space-between; font-size: 26rpx; color: #4a4230; }
 .rc-bonus { color: #B8860B; }
 .rc-total { padding-top: 10rpx; border-top: 2rpx solid #F0E9D8; font-weight: bold; }

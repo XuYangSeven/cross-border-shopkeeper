@@ -9,7 +9,7 @@
     <view class="panel">
       <text class="title">7 日经营结算</text>
       <text wx:if="{{practiceOnly}}" class="preview">练习模式：以下奖励仅为预览，不写入正式存档，也不计入能力证据。</text>
-      <view class="rating">{{settlement.rating}}</view>
+      <view class="rating mj-pop">{{settlement.rating}}</view>
       <text class="sub">经营评级看三件事：有没有断货、ACOS 是否失控、现金和利润是否为正。</text>
     </view>
 

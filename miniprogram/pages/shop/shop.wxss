@@ -9,23 +9,23 @@
 .hero-head { display: flex; align-items: flex-start; gap: 16rpx; }
 .hero-title { flex: 1; min-width: 0; }
 .mode-tag {
-  flex-shrink: 0; padding: 6rpx 18rpx; border: 3rpx solid #1A2B4A; border-radius: 999rpx;
+  flex-shrink: 0; padding: 6rpx 18rpx; border: 3rpx solid #1A2B4A; border-radius: 0;
   background: #D4A934; color: #1A2B4A; font-size: 22rpx; font-weight: bold;
 }
 .mode-practice { background: #2E4A7A; color: #F2E8D5; }
 
-.points { margin: 20rpx 0 22rpx; padding: 16rpx; background: #FFF9ED; border: 3rpx solid #2E4A7A; border-radius: 8rpx; }
+.points { margin: 20rpx 0 22rpx; padding: 16rpx; background: #FFF9ED; border: 3rpx solid #2E4A7A; border-radius: 0; }
 .points-head { display: flex; align-items: baseline; justify-content: space-between; }
 .points-label { font-size: 24rpx; color: #444; }
 .points-value { font-size: 30rpx; font-weight: bold; color: #2E4A7A; }
-.points-bar { margin: 12rpx 0 10rpx; height: 18rpx; border-radius: 999rpx; background: #E8DFC8; overflow: hidden; }
+.points-bar { margin: 12rpx 0 10rpx; height: 18rpx; border-radius: 0; background: #E8DFC8; overflow: hidden; }
 .points-fill { height: 100%; background: #D4A934; }
 .points-hint { display: block; font-size: 22rpx; color: #8a8577; line-height: 1.6; }
 
 .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14rpx; }
 .kpi {
   display: flex; flex-direction: column; align-items: center; padding: 16rpx 8rpx;
-  background: #FFF; border: 3rpx solid #1A2B4A; border-radius: 8rpx; min-width: 0;
+  background: #FFF; border: 3rpx solid #1A2B4A; border-radius: 0; min-width: 0;
 }
 .kpi-v { font-size: 32rpx; font-weight: bold; overflow-wrap: anywhere; word-break: break-word; text-align: center; }
 .kpi-k { margin-top: 6rpx; font-size: 22rpx; color: #888; }
@@ -49,22 +49,22 @@
 .task-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6rpx; }
 .task-line { display: flex; align-items: center; gap: 10rpx; }
 .task-flag {
-  flex-shrink: 0; padding: 2rpx 12rpx; border-radius: 999rpx; font-size: 20rpx;
+  flex-shrink: 0; padding: 2rpx 12rpx; border-radius: 0; font-size: 20rpx;
   background: #F0EAE0; color: #8a5a2b;
 }
-.task-flag.ok { background: #E3F2E4; color: #2E7D32; }
+.task-flag.ok { background: #E3F2E4; color: #1B6B2C; }
 .task-title { font-weight: bold; }
 .task-desc { font-size: 26rpx; color: #555; line-height: 1.65; overflow-wrap: anywhere; }
 .task-current { font-size: 26rpx; color: #2E4A7A; overflow-wrap: anywhere; }
 .task-arrow { flex-shrink: 0; color: #9E9E9E; font-size: 26rpx; padding: 0 6rpx; }
 .task-detail {
-  flex-basis: 100%; padding: 14rpx; background: #FFF9ED; border-radius: 8rpx;
+  flex-basis: 100%; padding: 14rpx; background: #FFF9ED; border-radius: 0;
   display: flex; flex-direction: column; gap: 8rpx;
 }
 .task-detail text { font-size: 26rpx; line-height: 1.65; color: #4a4a4a; overflow-wrap: anywhere; word-break: break-word; }
 .mini-btn {
   margin: 6rpx 0 0; min-height: 72rpx; line-height: 1.4; background: #D4A934; color: #1A2B4A;
-  border: 3rpx solid #1A2B4A; border-radius: 8rpx; font-weight: bold;
+  border: 3rpx solid #1A2B4A; border-radius: 0; font-weight: bold;
 }
 .task-reward { display: block; margin-top: 14rpx; font-weight: bold; color: #A87818; line-height: 1.6; }
 
@@ -72,7 +72,7 @@
 .module-list { display: flex; flex-direction: column; gap: 14rpx; }
 .module-row {
   display: flex; align-items: center; gap: 12rpx; min-height: 96rpx; padding: 18rpx;
-  background: #FFF; border: 3rpx solid #1A2B4A; border-radius: 8rpx;
+  background: #FFF; border: 3rpx solid #1A2B4A; border-radius: 0;
 }
 .module-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6rpx; }
 .module-name { font-weight: bold; font-size: 28rpx; }
@@ -87,7 +87,7 @@
 .history-title { display: block; margin: 24rpx 0 12rpx; font-weight: bold; font-size: 26rpx; }
 .history-row { display: flex; align-items: center; gap: 12rpx; padding: 8rpx 0; }
 .history-week { width: 110rpx; flex-shrink: 0; font-size: 22rpx; color: #666; }
-.history-bar { flex: 1; min-width: 0; height: 20rpx; border-radius: 999rpx; background: #E8DFC8; overflow: hidden; }
+.history-bar { flex: 1; min-width: 0; height: 20rpx; border-radius: 0; background: #E8DFC8; overflow: hidden; }
 .history-fill { height: 100%; background: #2E4A7A; }
 .history-score { width: 190rpx; flex-shrink: 0; text-align: right; font-size: 22rpx; color: #2E4A7A; }
 .history-note { display: block; margin-top: 12rpx; font-size: 22rpx; color: #8a8577; line-height: 1.6; }

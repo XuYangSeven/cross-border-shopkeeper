@@ -1,6 +1,6 @@
 @import "../../styles/shop-page.wxss";
 
-.progress { margin-top: 12rpx; height: 18rpx; border-radius: 999rpx; background: #E8DFC8; overflow: hidden; }
+.progress { margin-top: 12rpx; height: 18rpx; border-radius: 0; background: #E8DFC8; overflow: hidden; }
 .progress-fill { height: 100%; background: #D4A934; }
 .warn-text { color: #A84A42; }
 
@@ -12,4 +12,4 @@
 .day-label { width: 100rpx; flex-shrink: 0; font-size: 22rpx; color: #666; }
 .day-main { flex: 1; min-width: 0; font-size: 24rpx; overflow-wrap: anywhere; }
 .day-side { font-size: 22rpx; color: #777; overflow-wrap: anywhere; }
-.day-flag { padding: 2rpx 12rpx; border-radius: 999rpx; font-size: 20rpx; background: #FBE9E7; color: #A84A42; }
+.day-flag { padding: 2rpx 12rpx; border-radius: 0; font-size: 20rpx; background: #FBE9E7; color: #A84A42; }

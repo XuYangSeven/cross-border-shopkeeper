@@ -7,10 +7,10 @@
 .card-title { font-size: 36rpx; font-weight: bold; color: #1A2B4A; }
 .card-text { line-height: 1.7; }
 /* 面试问法是学生要照着练的口径，按可精读的正文尺寸给（28rpx≈14px） */
-.card-interview { font-size: 28rpx; color: #2E4A7A; background: #EDE7F6; padding: 12rpx; border-radius: 8rpx; line-height: 1.6; }
+.card-interview { font-size: 28rpx; color: #2E4A7A; background: #EDE7F6; padding: 12rpx; border-radius: 0; line-height: 1.6; }
 
 .quiz .q { font-weight: bold; margin-bottom: 20rpx; line-height: 1.6; }
-.option { min-height: 88rpx; box-sizing: border-box; display: flex; align-items: center; border: 3rpx solid #1A2B4A; border-radius: 8rpx; padding: 18rpx 22rpx; margin: 14rpx 0; background: #FFF; line-height: 1.5; word-break: break-word; }
+.option { min-height: 88rpx; box-sizing: border-box; display: flex; align-items: center; border: 3rpx solid #1A2B4A; border-radius: 0; padding: 18rpx 22rpx; margin: 14rpx 0; background: #FFF; line-height: 1.5; word-break: break-word; }
 .option.picked { background: #E3F2FD; }
 .option.right { background: #E8F5E9; border-color: #4CAF50; }
 .option.wrong { background: #FFEBEE; border-color: #E53935; }
@@ -18,32 +18,32 @@
 .explain { font-size: 28rpx; color: #4a4a4a; margin-top: 10rpx; line-height: 1.65; }
 
 .modules { display: flex; flex-wrap: wrap; gap: 16rpx; }
-.module { width: 200rpx; text-align: center; padding: 24rpx 0; border: 4rpx solid #1A2B4A; border-radius: 8rpx; background: #ECEFF1; }
+.module { width: 200rpx; text-align: center; padding: 24rpx 0; border: 4rpx solid #1A2B4A; border-radius: 0; background: #ECEFF1; }
 .module.lit { background: #D4A934; font-weight: bold; }
 
 .formula { font-size: 32rpx; font-weight: bold; text-align: center; margin: 30rpx 0; }
 .slots-pool, .chips { display: flex; gap: 16rpx; flex-wrap: wrap; margin-top: 20rpx; }
-.slot-chip { min-height: 88rpx; box-sizing: border-box; display: inline-flex; align-items: center; border: 3rpx solid #1A2B4A; border-radius: 999rpx; padding: 10rpx 28rpx; background: #FFF; line-height: 1.4; word-break: break-word; }
+.slot-chip { min-height: 88rpx; box-sizing: border-box; display: inline-flex; align-items: center; border: 3rpx solid #1A2B4A; border-radius: 0; padding: 10rpx 28rpx; background: #FFF; line-height: 1.4; word-break: break-word; }
 .slot-chip.used { opacity: 0.3; }
 .slot-chip.selected { border-color: #D4A934; background: #FFF8E1; box-shadow: 0 0 0 4rpx rgba(212, 169, 52, 0.25); }
 
 .blank-row { display: flex; align-items: center; gap: 16rpx; margin: 12rpx 0; }
-.blank { border: 3rpx solid #1A2B4A; border-radius: 8rpx; padding: 12rpx; flex: 1; background: #FFF; }
+.blank { border: 3rpx solid #1A2B4A; border-radius: 0; padding: 12rpx; flex: 1; background: #FFF; }
 .blank.ok { border-color: #4CAF50; background: #E8F5E9; }
 .blank.bad { border-color: #E53935; background: #FFEBEE; }
 .unit, .b-label { flex: 1; min-width: 0; color: #444; font-size: 26rpx; line-height: 1.45; word-break: break-word; }
 .hint { font-size: 26rpx; color: #6f6f6f; margin: 10rpx 0; line-height: 1.65; overflow-wrap: anywhere; word-break: break-word; }
 
-.sku-card { border: 3rpx solid #1A2B4A; border-radius: 8rpx; padding: 16rpx; margin: 16rpx 0; background: #FFF; }
+.sku-card { border: 3rpx solid #1A2B4A; border-radius: 0; padding: 16rpx; margin: 16rpx 0; background: #FFF; }
 .sku-head { display: flex; align-items: flex-start; gap: 12rpx; justify-content: space-between; }
 .sku-name { flex: 1; min-width: 0; font-weight: bold; line-height: 1.45; word-break: break-word; }
 .sku-price { flex-shrink: 0; white-space: nowrap; }
 .sku-data { display: flex; flex-wrap: wrap; gap: 14rpx; font-size: 26rpx; color: #4a4a4a; margin: 10rpx 0; }
 .verdict-btns { display: flex; gap: 16rpx; margin-top: 8rpx; }
-.v-btn { min-height: 88rpx; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; border: 3rpx solid #1A2B4A; border-radius: 8rpx; padding: 8rpx 24rpx; background: #FFF; font-size: 26rpx; line-height: 1.4; word-break: break-word; }
-.v-btn.in.on { background: #4CAF50; color: #FFF; }
-.v-btn.out.on { background: #E53935; color: #FFF; }
-.v-btn.on { font-weight: bold; background: #E3F2FD; border-color: #2E4A7A; box-shadow: 0 0 0 3rpx rgba(46, 74, 122, 0.18); }
+.v-btn { min-height: 88rpx; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; border: 3rpx solid #1A2B4A; border-radius: 0; padding: 8rpx 24rpx; background: #FFF; font-size: 26rpx; line-height: 1.4; word-break: break-word; }
+.v-btn.in.on { background: #1B6B2C; color: #FFF; }
+.v-btn.out.on { background: #B71C1C; color: #FFF; }
+.v-btn.on { font-weight: bold; background: #E3F2FD; border-color: #2E4A7A; box-shadow: 0 0 0 3rpx #DCE4F0; }
 
 .profit-result { display: flex; flex-direction: column; gap: 12rpx; }
 .cost-guide { display: flex; flex-direction: column; gap: 8rpx; margin: 18rpx 0; padding: 16rpx; border: 2rpx solid #24395f; background: #fffdf4; line-height: 1.6; }
@@ -52,7 +52,7 @@
 .trap { font-size: 26rpx; line-height: 1.55; }
 
 .radar-tabs { display: flex; gap: 12rpx; flex-wrap: wrap; margin: 16rpx 0; }
-.tab { min-height: 88rpx; box-sizing: border-box; display: inline-flex; align-items: center; padding: 8rpx 24rpx; border: 3rpx solid #1A2B4A; border-radius: 8rpx; background: #FFF; line-height: 1.4; word-break: break-word; }
+.tab { min-height: 88rpx; box-sizing: border-box; display: inline-flex; align-items: center; padding: 8rpx 24rpx; border: 3rpx solid #1A2B4A; border-radius: 0; background: #FFF; line-height: 1.4; word-break: break-word; }
 .tab.on { background: #2E4A7A; color: #FFF; }
 .dim-row { display: flex; align-items: center; margin: 10rpx 0; gap: 12rpx; }
 .dim-label { flex: 1; min-width: 0; line-height: 1.4; word-break: break-word; }
@@ -77,10 +77,10 @@
 .neg-q { width: 100%; font-weight: bold; margin-top: 8rpx; }
 .listing-preview { display: block; min-height: 72rpx; padding: 18rpx; margin: 18rpx 0; border: 3rpx dashed #D4A934; background: #FFF8E1; line-height: 1.5; }
 .keyword-pool { display: flex; flex-wrap: wrap; gap: 12rpx; margin: 16rpx 0 24rpx; }
-.keyword-slot { min-height: 72rpx; padding: 14rpx; margin: 14rpx 0; border: 3rpx solid #1A2B4A; border-radius: 8rpx; background: #F8F9FA; }
-.placed-keyword { display: inline-block; margin: 6rpx 8rpx 0 0; padding: 6rpx 10rpx; border: 2rpx solid #2E4A7A; border-radius: 6rpx; color: #2E4A7A; }
+.keyword-slot { min-height: 72rpx; padding: 14rpx; margin: 14rpx 0; border: 3rpx solid #1A2B4A; border-radius: 0; background: #F8F9FA; }
+.placed-keyword { display: inline-block; margin: 6rpx 8rpx 0 0; padding: 6rpx 10rpx; border: 2rpx solid #2E4A7A; border-radius: 0; color: #2E4A7A; }
 .slot-title, .boss-label { display: block; font-weight: bold; margin-bottom: 8rpx; }
-.ab-card { display: flex; flex-direction: column; gap: 8rpx; padding: 18rpx; margin: 14rpx 0; border: 3rpx solid #1A2B4A; border-radius: 8rpx; background: #FFF; }
+.ab-card { display: flex; flex-direction: column; gap: 8rpx; padding: 18rpx; margin: 14rpx 0; border: 3rpx solid #1A2B4A; border-radius: 0; background: #FFF; }
 .ab-card.picked { border-color: #D4A934; background: #FFF8E1; }
 .ab-title { font-weight: bold; color: #2E4A7A; }
 .boss-score { display: block; color: #D4A934; font-size: 34rpx; font-weight: bold; margin: 12rpx 0; }
@@ -94,19 +94,19 @@
 .learn-header { padding: 16rpx 0 20rpx; margin-bottom: 6rpx; border-bottom: 2rpx solid #E3D6B8; }
 .learn-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16rpx; }
 .learn-goal { flex: 1; font-size: 26rpx; color: #55627a; line-height: 1.55; }
-.learn-stage { flex-shrink: 0; font-size: 22rpx; padding: 4rpx 16rpx; border-radius: 999rpx; background: #EDE7F6; color: #2E4A7A; }
+.learn-stage { flex-shrink: 0; font-size: 22rpx; padding: 4rpx 16rpx; border-radius: 0; background: #EDE7F6; color: #2E4A7A; }
 .stage-boss { background: #FFEBEE; color: #C62828; }
-.stage-transfer { background: #FFF3E0; color: #B26A00; }
+.stage-transfer { background: #FFF3E0; color: #9C4A00; }
 .stage-reflection { background: #E8F5E9; color: #2E7D32; }
-.progress-bar { height: 10rpx; margin: 14rpx 0 10rpx; border-radius: 999rpx; background: #E8DFC8; overflow: hidden; }
-.progress-fill { height: 100%; background: #D4A934; transition: width 0.25s; }
+.progress-bar { height: 10rpx; margin: 14rpx 0 10rpx; border-radius: 0; background: #E8DFC8; overflow: hidden; }
+.progress-fill { height: 100%; background: #D4A934; transition: width 0.28s cubic-bezier(0.2, 0.7, 0.3, 1); }
 .learn-sub { display: flex; align-items: center; gap: 18rpx; font-size: 22rpx; color: #8a8577; }
 .resume-tip { color: #2E7D32; }
 .mistake-tip { color: #C62828; }
 
 /* ===== 统一反馈块 ===== */
 .feedback-box { display: flex; flex-direction: column; gap: 8rpx; margin-top: 16rpx; padding: 16rpx; background: #F7F5EE; border-left: 6rpx solid #D4A934; }
-.fb-box { display: flex; flex-direction: column; gap: 8rpx; margin-top: 14rpx; padding: 16rpx; border-radius: 8rpx; background: #F7F5EE; border-left: 6rpx solid #D4A934; line-height: 1.6; }
+.fb-box { display: flex; flex-direction: column; gap: 8rpx; margin-top: 14rpx; padding: 16rpx; border-radius: 0; background: #F7F5EE; border-left: 6rpx solid #D4A934; line-height: 1.6; }
 .fb-box.fb-bad { background: #FFF1F0; border-left-color: #E53935; color: #B3261E; }
 .fb-ok { display: block; margin-top: 10rpx; font-size: 26rpx; color: #2E7D32; }
 .fb-line { font-size: 26rpx; line-height: 1.65; color: #3a3a3a; }
@@ -116,8 +116,8 @@
 .score-line { display: block; margin-top: 16rpx; font-size: 26rpx; font-weight: bold; color: #2E4A7A; }
 
 /* ===== 迁移题 ===== */
-.stage-tag { display: inline-block; font-size: 22rpx; padding: 4rpx 16rpx; border-radius: 999rpx; margin-bottom: 12rpx; }
-.transfer-panel .stage-tag { background: #FFF3E0; color: #B26A00; }
+.stage-tag { display: inline-block; font-size: 22rpx; padding: 4rpx 16rpx; border-radius: 0; margin-bottom: 12rpx; }
+.transfer-panel .stage-tag { background: #FFF3E0; color: #9C4A00; }
 .transfer-q { margin: 24rpx 0; padding-top: 16rpx; border-top: 2rpx dashed #D8C7A3; }
 .tq-title { display: block; font-weight: bold; line-height: 1.6; margin-bottom: 10rpx; }
 
@@ -125,30 +125,39 @@
 .reflection-panel .stage-tag { background: #E8F5E9; color: #2E7D32; }
 .reflect-field { margin: 24rpx 0; }
 .rf-label { display: block; font-weight: bold; margin-bottom: 10rpx; color: #2E4A7A; }
-.rf-input { width: 100%; box-sizing: border-box; min-height: 140rpx; padding: 16rpx; border: 3rpx solid #1A2B4A; border-radius: 8rpx; background: #FFF; font-size: 26rpx; line-height: 1.6; }
+.rf-input { width: 100%; box-sizing: border-box; min-height: 140rpx; padding: 16rpx; border: 3rpx solid #1A2B4A; border-radius: 0; background: #FFF; font-size: 26rpx; line-height: 1.6; }
 .rf-input.ok { border-color: #4CAF50; background: #E8F5E9; }
 .rf-input.bad { border-color: #E53935; background: #FFEBEE; }
 .rf-ok { display: block; margin-top: 8rpx; font-size: 26rpx; color: #2E7D32; }
 .rf-bad { display: block; margin-top: 8rpx; font-size: 26rpx; color: #C62828; }
-.rf-sample { display: block; margin-top: 8rpx; padding: 14rpx; font-size: 26rpx; line-height: 1.65; color: #6b5b35; background: #FFF7D6; border-radius: 8rpx; }
+.rf-sample { display: block; margin-top: 8rpx; padding: 14rpx; font-size: 26rpx; line-height: 1.65; color: #6b5b35; background: #FFF7D6; border-radius: 0; }
 .reflect-summary { display: flex; flex-direction: column; gap: 10rpx; margin: 16rpx 0; }
 
 /* ===== 求助坞：用金币换提示 ===== */
-.hint-dock { margin: 24rpx 0 40rpx; border: 3rpx solid #E6DCC2; border-radius: 14rpx; background: #FFFDF6; overflow: hidden; }
+.hint-dock { margin: 24rpx 0 40rpx; border: 3rpx solid #E6DCC2; border-radius: 0; background: #FFFDF6; overflow: hidden; }
 .hint-head { display: flex; align-items: center; padding: 24rpx; min-height: 88rpx; box-sizing: border-box; }
 .hint-title { font-size: 28rpx; font-weight: bold; color: #1A2B4A; margin-right: 14rpx; }
 .hint-sub { flex: 1; font-size: 24rpx; color: #8a7f66; line-height: 1.5; overflow-wrap: anywhere; }
 .hint-arrow { font-size: 24rpx; color: #B9A76F; margin-left: 12rpx; }
 .hint-body { padding: 0 24rpx 20rpx; }
 .hint-tier { padding: 20rpx 0; border-top: 2rpx solid #F0E9D8; }
+/* 三级提示要在视觉上有强度差：提示是有价的（L2 30 金币 / L3 80 金币），
+   视觉必须给出「价感」，否则学生感受不到自己买的是哪一档。
+   L1 思路（免费）最轻 → L3 解析（最贵）最重，用左侧色条宽度 + 底色 + 字重递进。 */
+.hint-tier.tier-1 { border-left: 6rpx solid #C9BE9E; padding-left: 16rpx; }
+.hint-tier.tier-2 { border-left: 6rpx solid #D4A934; padding-left: 16rpx; background: #FFFBF0; }
+.hint-tier.tier-3 { border-left: 10rpx solid #B8860B; padding-left: 20rpx; background: #FFF3D6; box-shadow: inset 0 0 0 2rpx rgba(184, 134, 11, 0.22); }
+.hint-tier.tier-2 .hint-tier-price { font-weight: bold; }
+.hint-tier.tier-3 .hint-tier-label { color: #8A5A00; }
+.hint-tier.tier-3 .hint-tier-price { font-weight: bold; font-size: 26rpx; color: #8A5A00; }
 .hint-tier-head { display: flex; align-items: baseline; justify-content: space-between; }
 .hint-tier-label { font-size: 28rpx; font-weight: bold; color: #2E4A7A; }
 .hint-tier-price { font-size: 24rpx; color: #B8860B; }
 .hint-tier-desc { display: block; margin-top: 6rpx; font-size: 24rpx; color: #8a8a8a; line-height: 1.55; overflow-wrap: anywhere; }
 /* pre-wrap 必须有：提示文本内部用 \n 分行，否则解析会被挤成一整段 */
-.hint-tier-text { display: block; margin-top: 12rpx; padding: 16rpx; font-size: 26rpx; line-height: 1.7; color: #4a4230; background: #FFF7D6; border-left: 6rpx solid #D4A934; border-radius: 8rpx; overflow-wrap: anywhere; word-break: break-word; white-space: pre-wrap; }
-.hint-buy { margin-top: 14rpx; min-height: 88rpx; line-height: 88rpx; font-size: 27rpx; border: none; border-radius: 10rpx; background: #1A2B4A; color: #F2E8D5; }
+.hint-tier-text { display: block; margin-top: 12rpx; padding: 16rpx; font-size: 26rpx; line-height: 1.7; color: #4a4230; background: #FFF7D6; border-left: 6rpx solid #D4A934; border-radius: 0; overflow-wrap: anywhere; word-break: break-word; white-space: pre-wrap; }
+.hint-buy { margin-top: 14rpx; min-height: 88rpx; line-height: 88rpx; font-size: 27rpx; border: none; border-radius: 0; background: #1A2B4A; color: #F2E8D5; }
 /* 金币不足时按钮变灰但仍可点：点了会提示「还差多少」，比死按钮更有用 */
-.hint-buy-off { background: #9AA3B0; color: #EDEFF2; }
+.hint-buy-off { background: #9AA3B0; color: #1A2B4A; }
 .hint-none { display: block; margin-top: 10rpx; font-size: 24rpx; color: #9a9a9a; }
 .hint-foot { display: block; margin-top: 6rpx; font-size: 24rpx; color: #8a7f66; line-height: 1.6; overflow-wrap: anywhere; }

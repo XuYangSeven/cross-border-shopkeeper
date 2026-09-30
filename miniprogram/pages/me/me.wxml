@@ -1,4 +1,4 @@
-<view class="page">
+<view class="page" bindtap="onPageTap">
   <view class="panel">
     <text class="title">我的档案</text>
     <view class="row"><text>职级</text><text class="text-gold">{{title}}</text></view>
@@ -55,6 +55,20 @@
       <text wx:if="{{mistakeCount}}" class="badge">{{mistakeCount}}</text>
     </button>
     <button class="btn-secondary tool-btn" bindtap="onOpenManual">复习知识卡片</button>
+  </view>
+
+  <!-- 音频开关：能不能关掉背景音乐，直接决定「要不要一直开声音」。必须给用户这一票 -->
+  <view class="panel">
+    <text class="title">设置</text>
+    <view class="row setting-row">
+      <text class="setting-label">背景音乐</text>
+      <switch checked="{{bgmOn}}" bindchange="onToggleBgm" color="#D4A934" />
+    </view>
+    <view class="row setting-row">
+      <text class="setting-label">音效</text>
+      <switch checked="{{sfxOn}}" bindchange="onToggleSfx" color="#D4A934" />
+    </view>
+    <text class="setting-hint">开关只保存在本机，与闯关进度、金币互不影响。若开了开关仍听不到声音，先检查手机是否处于静音模式或媒体音量为 0。</text>
   </view>
 
   <view class="panel danger-zone">

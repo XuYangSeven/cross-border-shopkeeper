@@ -1,7 +1,7 @@
 .title { font-weight: bold; font-size: 32rpx; }
 .sub { font-size: 24rpx; color: #888; margin-top: 8rpx; }
 .group-title { font-weight: bold; display: block; margin-bottom: 12rpx; }
-.card { background: #FFF8E1; border: 3rpx solid #1A2B4A; border-radius: 8rpx; padding: 16rpx; margin: 12rpx 0; display: flex; flex-direction: column; gap: 8rpx; }
+.card { background: #FFF8E1; border: 3rpx solid #1A2B4A; border-radius: 0; padding: 16rpx; margin: 12rpx 0; display: flex; flex-direction: column; gap: 8rpx; }
 .card-lock { color: #AAA; }
 .card-id { font-size: 22rpx; color: #999; }
 .card-t { font-weight: bold; }

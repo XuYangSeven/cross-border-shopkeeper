@@ -14,6 +14,7 @@ const financeEngine = require('../../engine/finance');
 const learningEngine = require('../../engine/learning');
 const hintsEngine = require('../../engine/hints');
 const FBA_TIERS = require('../../config/fbaTiers');
+const audio = require('../../engine/audio');
 const { definePage } = require('../../utils/pageGuard');
 
 function findLevel(id) {
@@ -396,6 +397,7 @@ definePage('level', {
       'view.hint.coins': state.get().coins,
       'view.hint.streak': state.getStudyStreak(),
     });
+    this.tapFeedback();
   },
 
   // 购买某一级提示。
@@ -404,6 +406,9 @@ definePage('level', {
   onBuyHint(e) {
     const hint = this.data.view && this.data.view.hint;
     if (!hint || !hint.available) return;
+    // 连点保护：购买是真实副作用（扣金币），重复点击不得二次扣费。
+    // 仅靠 target.unlocked 判断不够——两次点击可能落在同一次 setData 生效之前。
+    if (this._buyingHint) return;
     const tier = Number(e.currentTarget.dataset.tier);
     const target = hint.tiers.find(t => t.tier === tier);
     if (!target || !target.ready || target.unlocked) return;
@@ -414,7 +419,9 @@ definePage('level', {
       this.setData({ 'view.hint.coins': coins });
       return;
     }
+    this._buyingHint = true;
     if (!state.spendCoins(target.price, { type: 'hint', label: `${target.label}提示` })) {
+      this._buyingHint = false;
       wx.showToast({ title: '扣费失败，请重试', icon: 'none' });
       return;
     }
@@ -429,11 +436,14 @@ definePage('level', {
       hintsUsed: this.data.hintsUsed + 1,
       hintsSpent: this.data.hintsSpent + target.price,
     });
+    this._buyingHint = false;
+    this.coinFeedback();
   },
 
   next() {
     if (this._transitioning || this.finishing) return;
     this._transitioning = true;
+    this.tapFeedback();
     this.setData({ stepIndex: this.data.stepIndex + 1 }, () => {
       this._transitioning = false;
       this.renderStep();
@@ -451,6 +461,34 @@ definePage('level', {
     if (this._lastSubmitAt && now - this._lastSubmitAt < 350) return true;
     this._lastSubmitAt = now;
     return false;
+  },
+
+  // ===== 即时反馈：触觉 + 音效 =====
+  // 说明：动效由 CSS class 驱动（见 styles/motion.wxss），本层只负责
+  // 「声音 + 触觉」。全程不写 setTimeout、不追加 setData，避免把 level.js
+  // 已经偏高的渲染负担继续推高，也不引入时序不确定性。
+  // 触觉只在真机存在（开发者工具可能不支持），失败必须静默、不得弹 toast。
+  vibrate(kind) {
+    try {
+      if (typeof wx !== 'undefined' && wx && typeof wx.vibrateShort === 'function') {
+        wx.vibrateShort({ type: kind });
+      }
+    } catch (e) { /* 无触觉能力时静默：音频/触觉永远不能成为把页面搞崩的原因 */ }
+  },
+  // 判定反馈：答对轻振 + correct，答错重一档 + wrong。
+  judgeFeedback(ok) {
+    this.vibrate(ok ? 'light' : 'medium');
+    audio.sfx(ok ? 'correct' : 'wrong');
+  },
+  // 普通点击 / 展开反馈。
+  tapFeedback() {
+    this.vibrate('light');
+    audio.sfx('tap');
+  },
+  // 金币收支反馈（扣费、发奖）。
+  coinFeedback() {
+    this.vibrate('light');
+    audio.sfx('coin');
   },
 
   // ===== quiz =====
@@ -478,6 +516,7 @@ definePage('level', {
       mistakeCount: this.data.mistakeCount + mistakes.length,
     });
     if (mistakes.length) state.addMistakes(mistakes);
+    this.judgeFeedback(!!opt.correct);
   },
 
   onQuizContinue() {
@@ -544,6 +583,7 @@ definePage('level', {
       state.addMistakes(mistakes);
       wx.showToast({ title: `未达 ${Math.round(view.passRatio * 100)}%（${result.passText}），看解析后再试`, icon: 'none' });
     }
+    this.judgeFeedback(result.passed);
   },
 
   onTransferRetry() {
@@ -594,6 +634,7 @@ definePage('level', {
       state.addMistakes(mistakes);
       wx.showToast({ title: `还差：${missing.join('、')}`, icon: 'none' });
     }
+    this.judgeFeedback(result.passed);
   },
 
   onReflectionRetry() {
@@ -656,6 +697,7 @@ definePage('level', {
       this.setData({ retries: this.data.retries + 1 });
       wx.showToast({ title: '有偏差，检查一下（允许±2%）', icon: 'none' });
     }
+    this.judgeFeedback(allOk);
   },
 
   // ===== diagnose =====
@@ -752,6 +794,7 @@ definePage('level', {
       });
       wx.showToast({ title: `正确率 ${Math.round(rate * 100)}%，需 ≥80%`, icon: 'none' });
     }
+    this.judgeFeedback(passed);
   },
   onSkuFilterRetry() {
     this._lastSubmitAt = 0; // 重做后立刻提交也应放行
@@ -820,6 +863,7 @@ definePage('level', {
       ({ nameZh: s.nameZh, mine: profitEngine.weightedScore(s.dims, view.weights), expert: profitEngine.weightedScore(s.expert, view.weights) })) });
     if (rate >= 0.6) this.setData({ objDone: this.data.objDone + 1, 'view.done': true });
     else this.setData({ retries: this.data.retries + 1 });
+    this.judgeFeedback(rate >= 0.6);
   },
 
   // ===== 第3章：Listing玩法 =====
@@ -1251,6 +1295,8 @@ definePage('level', {
   finish() {
     if (this.finishing) return;
     this.finishing = true;
+    this.vibrate('medium');
+    audio.sfx('settle');
     const { level } = this.data;
     const quizRate = this.data.quizTotal ? this.data.quizCorrect / this.data.quizTotal : 1;
     const objRate = this.data.objTotal ? this.data.objDone / this.data.objTotal : 1;

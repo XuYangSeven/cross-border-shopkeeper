@@ -2,6 +2,7 @@
 const state = require('../../engine/state');
 const CONSTANTS = require('../../config/constants');
 const learning = require('../../engine/learning');
+const audio = require('../../engine/audio');
 const { definePage } = require('../../utils/pageGuard');
 
 // 金币流水的时间只到分钟——精确到秒对账本没有意义，还会把行撑长
@@ -26,6 +27,9 @@ definePage('me', {
     // 金币经济
     studyStreak: 0,
     coinLedger: [],
+    // 音频开关（独立于存档，见 engine/audio.js）
+    bgmOn: true,
+    sfxOn: true,
   },
   onToggleRule() {
     this.setData({ ruleOpen: !this.data.ruleOpen });
@@ -77,6 +81,8 @@ definePage('me', {
       sign: entry.amount > 0 ? `+${entry.amount}` : String(entry.amount),
     }));
 
+    const audioPref = audio.getPref();
+
     this.setData({
       coins: s.coins || 0, exp: s.exp || 0, stars,
       title: t ? t.title : '', nextTitle: next ? next.title : '已满级',
@@ -90,6 +96,8 @@ definePage('me', {
       saveAlert: this.buildSaveAlert(),
       studyStreak: state.getStudyStreak(),
       coinLedger,
+      bgmOn: audioPref.bgm,
+      sfxOn: audioPref.sfx,
     });
   },
   onResume() {
@@ -101,6 +109,25 @@ definePage('me', {
   },
   onOpenManual() {
     wx.switchTab({ url: '/pages/manual/manual' });
+  },
+  // 兜底首次交互：页内任一点击都是真实手势，可幂等启动 BGM（已在播放则无操作）。
+  // 小程序禁止无手势播放，所以启动动作必须挂在像这样的点击里，不能放 onShow。
+  onPageTap() {
+    audio.startBgm();
+  },
+  onToggleBgm(e) {
+    const on = !!(e && e.detail && e.detail.value);
+    const p = audio.setPref({ bgm: on });
+    this.setData({ bgmOn: p.bgm });
+    wx.showToast({ title: on ? '背景音乐已开启' : '背景音乐已关闭', icon: 'none' });
+  },
+  onToggleSfx(e) {
+    const on = !!(e && e.detail && e.detail.value);
+    const p = audio.setPref({ sfx: on });
+    this.setData({ sfxOn: p.sfx });
+    // 开启时立刻放一声点击音：既做反馈，也让用户当场确认声音是否真的能响
+    if (on) audio.sfx('tap');
+    wx.showToast({ title: on ? '音效已开启' : '音效已关闭', icon: 'none' });
   },
   onReset() {
     wx.showModal({

@@ -1,4 +1,16 @@
-/* 全局样式：像素风基线（对应美术规范 1.1/1.2 节） */
+@import "styles/motion.wxss";
+
+/* ============================================================
+   全局样式：像素风基线（v0.6.0 像素化重构）
+   规范与「改前→改后→理由」逐项见 docs/phase6/美工优化_规格与实现.md
+   ------------------------------------------------------------
+   三条不可拆的像素语汇（缺一条就退回「圆角卡片版」）：
+     ① 直角硬边：全站 border-radius: 0。像素的底层语汇是直角，圆角是它的反义。
+     ② 双层不透明硬阴影：外层深色块 (#0E1830) + 内层高光 (inset)。用双层实色堆叠
+        出厚度；半透明阴影会引入抗锯齿灰阶，破坏硬边。
+     ③ 平面填色：不做「光感渐变」，只允许硬停靠渐变 (repeating-linear-gradient) 画图案。
+   ============================================================ */
+
 page {
   background: #F2E8D5;
   color: #1A2B4A;
@@ -6,69 +18,286 @@ page {
   font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
 }
 
-/* 像素面板容器 */
+/* 微信 <button> 自带 5px 圆角 + ::after 细描边，与直角像素风直接冲突，统一抹平。
+   页面级类（如 .hint-buy）优先级高于元素选择器，仍可自行覆盖。 */
+button {
+  border-radius: 0;
+}
+button::after {
+  border: none;
+}
+
+/* ===== 面板 =====
+   双层硬阴影：外层 8rpx 深色实体块（厚度）+ 内层 4rpx 白色高光（左上受光面）。 */
 .panel {
   background: #FFFDF7;
   border: 4rpx solid #1A2B4A;
-  border-radius: 8rpx;
-  box-shadow: 6rpx 6rpx 0 rgba(26, 43, 74, 0.25);
+  border-radius: 0;
+  box-shadow: 8rpx 8rpx 0 #0E1830, inset 4rpx 4rpx 0 #FFFFFF;
   padding: 24rpx;
   margin: 20rpx;
 }
 
-/* 主按钮 */
+/* 面板标题条：贴在面板顶端通栏，形成「窗口标题栏」的像素语汇。
+   负外边距抵消 .panel 的 24rpx 内边距；作为 .panel 的直接子元素使用。 */
+.panel-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+  margin: -24rpx -24rpx 20rpx;
+  padding: 14rpx 20rpx;
+  background: #1A2B4A;
+  color: #F2E8D5;
+  border-bottom: 4rpx solid #0E1830;
+  border-radius: 0;
+  font-size: 26rpx;
+  font-weight: bold;
+  letter-spacing: 2rpx;
+}
+
+/* 内嵌卡片：比面板轻一级，用于面板内部的条目块。 */
+.px-card {
+  background: #FFFDF7;
+  border: 3rpx solid #1A2B4A;
+  border-radius: 0;
+  box-shadow: 4rpx 4rpx 0 #0E1830;
+  padding: 18rpx;
+}
+
+/* ===== 像素分隔线 ===== */
+.px-divider {
+  height: 0;
+  border: 0;
+  border-top: 4rpx solid #1A2B4A;
+}
+.px-divider--dash {
+  border-top-style: dashed;
+}
+.px-divider--soft {
+  border-top-color: #C9BFA6;
+}
+/* 方块虚线：硬停靠渐变画出等宽色块，是最「像素」的分隔线（可选，非默认，规避旧内核不支持 repeating 渐变时的观感退化）。 */
+.px-divider--pixel {
+  height: 6rpx;
+  border: 0;
+  background-image: repeating-linear-gradient(90deg, #1A2B4A 0 14rpx, rgba(0, 0, 0, 0) 14rpx 28rpx);
+}
+
+/* ===== 按钮：默认 / :active 按下位移 / [disabled] 三态 =====
+   按下机制：面板面下移 4rpx，同时投影由 6rpx 收到 2rpx —— 外沿不动、面下沉，
+   读起来就是被按进底座（机械式反馈，非缓动）。 */
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+  border-radius: 0;
+  border-width: 4rpx;
+  border-style: solid;
+  font-weight: bold;
+  padding: 16rpx 32rpx;
+  min-height: 88rpx;
+  box-sizing: border-box;
+  line-height: 1.4;
+  white-space: normal;
+}
 .btn-primary {
   background: #D4A934;
   color: #1A2B4A;
-  border: 4rpx solid #1A2B4A;
-  border-radius: 8rpx;
-  font-weight: bold;
-  padding: 16rpx 32rpx;
-  min-height: 88rpx;
-  box-sizing: border-box;
-  box-shadow: 4rpx 4rpx 0 #1A2B4A;
+  border-color: #1A2B4A;
+  box-shadow: 6rpx 6rpx 0 #0E1830, inset 4rpx 4rpx 0 #EBCB6B;
 }
-.btn-primary:active {
-  transform: translate(2rpx, 2rpx);
-  box-shadow: 2rpx 2rpx 0 #1A2B4A;
-}
-.btn-primary[disabled], .btn-secondary[disabled], .btn-danger[disabled] {
-  opacity: 0.5;
-}
-
 .btn-secondary {
   background: #2E4A7A;
   color: #F2E8D5;
-  border: 4rpx solid #1A2B4A;
-  border-radius: 8rpx;
-  font-weight: bold;
-  padding: 16rpx 32rpx;
-  min-height: 88rpx;
-  box-sizing: border-box;
+  border-color: #1A2B4A;
+  box-shadow: 6rpx 6rpx 0 #0E1830, inset 4rpx 4rpx 0 #4A6DA3;
 }
-
 .btn-danger {
   background: #A84A42;
-  color: #FFF;
-  border: 4rpx solid #7A2E2A;
-  border-radius: 8rpx;
-  font-weight: bold;
-  padding: 16rpx 32rpx;
-  min-height: 88rpx;
-  box-sizing: border-box;
+  color: #FFFFFF;
+  border-color: #7A2E2A;
+  box-shadow: 6rpx 6rpx 0 #0E1830, inset 4rpx 4rpx 0 #C56A60;
+}
+.btn-primary:active,
+.btn-secondary:active,
+.btn-danger:active {
+  transform: translate(4rpx, 4rpx);
+}
+.btn-primary:active {
+  box-shadow: 2rpx 2rpx 0 #0E1830, inset 4rpx 4rpx 0 #EBCB6B;
+}
+.btn-secondary:active {
+  box-shadow: 2rpx 2rpx 0 #0E1830, inset 4rpx 4rpx 0 #4A6DA3;
+}
+.btn-danger:active {
+  box-shadow: 2rpx 2rpx 0 #0E1830, inset 4rpx 4rpx 0 #C56A60;
+}
+/* 禁用态：不靠半透明（那会连带文字一起变灰、对比度失控），改为硬灰实色。 */
+.btn-primary[disabled],
+.btn-secondary[disabled],
+.btn-danger[disabled] {
+  background: #CFC9BC;
+  color: #3D3A34;
+  border-color: #8A857A;
+  box-shadow: none;
+  transform: none;
+  opacity: 1;
 }
 
-/* 语义色 —— 本项目存在两条互不相同的语义轴，勿混用：
-   1) 对错轴（本区块 .text-up/.text-down/.text-warn）：绿=正确/达标，红=错误/不达标。用于答题判定、合规判定。
-   2) 涨跌轴（styles/shop-page.wxss 的 .kpi-d.up/.kpi-d.down）：红=上升，绿=下降。遵循中国市场惯例。
-   给「指标涨跌」上色必须用涨跌轴：对上升指标套 .text-up 会得到绿色，与 .kpi-d.up 的红直接冲突。 */
-.text-up { color: #4CAF50; }
-.text-down { color: #E53935; }
-.text-warn { color: #FB8C00; }
-.text-gold { color: #D4A934; }
+/* ===== 徽章 / 标签 ===== */
+.px-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36rpx;
+  padding: 0 12rpx;
+  border: 3rpx solid #1A2B4A;
+  border-radius: 0;
+  background: #E8DFC8;
+  color: #1A2B4A;
+  font-size: 22rpx;
+  font-weight: bold;
+  line-height: 1.6;
+}
+.px-badge--gold {
+  background: #D4A934;
+}
+.px-badge--navy {
+  background: #1A2B4A;
+  color: #F2E8D5;
+}
+.px-badge--danger {
+  background: #A84A42;
+  color: #FFFFFF;
+  border-color: #7A2E2A;
+}
 
 /* 星级 */
-.stars { color: #D4A934; letter-spacing: 4rpx; }
+.stars {
+  color: #D4A934;
+  letter-spacing: 4rpx;
+}
+.px-stars {
+  color: #D4A934;
+  letter-spacing: 4rpx;
+}
+.px-stars .off {
+  color: #C9BFA6;
+}
+
+/* ===== 像素化进度条 =====
+   填充用硬停靠渐变切成等宽色块，无需位图即可读出「一格一格」。 */
+.px-progress {
+  position: relative;
+  height: 22rpx;
+  background: #E8DFC8;
+  border: 3rpx solid #1A2B4A;
+  border-radius: 0;
+  overflow: hidden;
+}
+.px-progress--thin {
+  height: 14rpx;
+  border-width: 2rpx;
+}
+.px-progress-fill {
+  height: 100%;
+  background-color: #D4A934;
+  background-image: repeating-linear-gradient(90deg, #D4A934 0 14rpx, #B98A1E 14rpx 16rpx);
+}
+.px-progress-fill--navy {
+  background-color: #2E4A7A;
+  background-image: repeating-linear-gradient(90deg, #2E4A7A 0 14rpx, #24406B 14rpx 16rpx);
+}
+.px-progress-fill--ok {
+  background-color: #2E7D32;
+  background-image: repeating-linear-gradient(90deg, #2E7D32 0 14rpx, #256428 14rpx 16rpx);
+}
+.px-progress-fill--bad {
+  background-color: #C62828;
+  background-image: repeating-linear-gradient(90deg, #C62828 0 14rpx, #A61F1F 14rpx 16rpx);
+}
+
+/* ===== 语义色 —— 本项目存在三条互不相同的语义轴，严禁混用 =====
+   1) 对错轴（本区块 .text-up/.text-down/.text-warn）：绿=正确/达标，红=错误/不达标。用于答题判定、合规判定。
+   2) 涨跌轴（styles/shop-page.wxss 的 .kpi-d.up/.kpi-d.down）：红=上升，绿=下降。遵循中国市场惯例。
+   3) 收支轴（pages/me/me.wxss 的 .ledger-in/.ledger-out）：绿=进账，红=出账。
+   给「指标涨跌」上色必须用涨跌轴：对上升指标套 .text-up 会得到绿色，与 .kpi-d.up 的红直接冲突。 */
+/* 取值标准：正文级 ≥4.5:1，且必须在「米底 #F2E8D5」与「面板底 #FFFDF7」上都达标。
+   #F2E8D5 更暗，是约束侧——只按 #FFFDF7 校验会放过米底上的低对比。
+   四个基础类本身即达标，调用方直接用即可，不需要记忆任何 -strong 变体。
+   实测（node tools/check-contrast.js，括号内为 #F2E8D5 底 / #FFFDF7 底）：
+   up 5.42/6.48、down 5.41/6.46、warn 5.09/6.08、gold 5.08/6.07。 */
+.text-up { color: #1B6B2C; }
+.text-down { color: #B71C1C; }
+.text-warn { color: #9C4A00; }
+/* .text-gold 的全部调用点都是文本（职级 / 余额 / 累计能力分 / 金币合计），故取「深金」；
+   品牌亮金 #D4A934 在米底仅 1.81:1，作为文字近乎浅色幽灵——这与圆角同理，是原则问题不是审美偏好。
+   亮金另有非文本用途（装饰 / 色块 / 大号字形），单立 .gold-deco 承接，不适用 4.5:1 正文标准。 */
+.text-gold { color: #7A5D0F; }
+.gold-deco { color: #D4A934; }
+
+/* ===== 形状冗余（可访问性 R9：色盲模式）=====
+   红/绿对色盲用户不可分。以下类在颜色之外叠加一层形状/字形冗余，与颜色轴解耦，
+   可与 .text-up/.text-down 叠加使用。
+   用法：挂在 <view>（块级容器）上 —— WXSS 的 ::before 在 <text> 组件上不被保证渲染；
+   交互线若必须挂在 <text> 上，请把 ✓/✗ 直接写进文案本身。 */
+.mark-ok::before {
+  content: "✓";
+  font-weight: bold;
+  /* 该类的实际挂载点是 <view class="option">（display:flex），
+     ::before 会成为 flex 项；不加 flex-shrink 时长题干会把符号挤扁。 */
+  flex-shrink: 0;
+  line-height: 1;
+  margin-right: 8rpx;
+}
+.mark-bad::before {
+  content: "✗";
+  font-weight: bold;
+  flex-shrink: 0;
+  line-height: 1;
+  margin-right: 8rpx;
+}
+.mark-warn::before {
+  content: "!";
+  font-weight: bold;
+  flex-shrink: 0;
+  line-height: 1;
+  margin-right: 8rpx;
+}
+
+/* 色盲安全替代配色（蓝/橙），与红绿轴一一对应：ok=蓝 / bad=橙。
+   启用色盲模式时，把 .text-up→.cb-ok、.text-down→.cb-bad 替换即可（切换逻辑在交互线）。 */
+.cb-ok { color: #1565C0; }  /* ≈5.7:1 on #FFFDF7 */
+.cb-bad { color: #9A5C00; } /* ≈5.4:1 */
+
+/* ===== 通用工具类 ===== */
+.u-row { display: flex; align-items: center; }
+.u-col { display: flex; flex-direction: column; }
+.u-center { display: flex; align-items: center; justify-content: center; }
+.u-between { display: flex; align-items: center; justify-content: space-between; }
+.u-wrap { flex-wrap: wrap; }
+.u-grow { flex: 1; min-width: 0; }
+.u-shrink0 { flex-shrink: 0; }
+.u-min0 { min-width: 0; }
+.u-wrap-text { overflow-wrap: anywhere; word-break: break-word; }
+.u-bold { font-weight: bold; }
+.u-dim { color: #6B5B35; }   /* ≈6.6:1 on #FFFDF7 */
+.u-muted { color: #78735F; } /* ≈4.7:1 */
+.u-right { text-align: right; }
+.u-hidden { display: none; }
+.u-mt-sm { margin-top: 12rpx; }
+.u-mt-md { margin-top: 20rpx; }
+.u-mt-lg { margin-top: 32rpx; }
+.u-mb-sm { margin-bottom: 12rpx; }
+.u-mb-md { margin-bottom: 20rpx; }
+.u-mb-lg { margin-bottom: 32rpx; }
+.u-gap-sm { gap: 12rpx; }
+.u-gap-md { gap: 20rpx; }
+
+/* 文本缩放钩子（可访问性 R9）：交互线接「字号设置」时，切换 page 上的 .u-text-lg/.u-text-xl，
+   或以此为基础改用 JS 调整根字号。仅作尺寸档位，不改字号口径（基线仍为 28rpx）。 */
+.u-text-lg { font-size: 32rpx; }
+.u-text-xl { font-size: 36rpx; }
 
 /* 锁定态 */
 .locked {

@@ -3,6 +3,7 @@ const state = require('../../engine/state');
 const shopEngine = require('../../engine/shop');
 const tasksEngine = require('../../engine/tasks');
 const view = require('../../engine/shop-view');
+const audio = require('../../engine/audio');
 const { definePage } = require('../../utils/pageGuard');
 
 definePage('shop-settlement', {
@@ -53,6 +54,11 @@ definePage('shop-settlement', {
       ],
     });
     this.settlement = settlement;
+    // 经营周结算音：onShow 会重跑 refresh，用实例标记保证每次进入只发一声。
+    if (!this._settlePlayed) {
+      this._settlePlayed = true;
+      try { audio.sfx('settle'); } catch (e) { /* 静默 */ }
+    }
   },
   onSave() {
     if (this.data.saved || !this.settlement) return;
@@ -64,6 +70,7 @@ definePage('shop-settlement', {
     }
     state.saveShopSettlement(this.settlement);
     this.setData({ saved: true });
+    try { audio.sfx('coin'); } catch (e) { /* 静默 */ }
     wx.showModal({
       title: '本周已锁定',
       content: `奖励 ${this.data.reward.coins} 金币 / ${this.data.reward.exp} 经验已到账，决策已计入能力证据。要开新的一周请回店铺重置本周。`,

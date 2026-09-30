@@ -1,11 +1,13 @@
 <view class="page">
   <view class="panel result">
     <text class="r-title">{{title}}</text>
-    <text class="stars big">{{starsText}}</text>
+    <view class="stars big mj-stars">
+      <text wx:for="{{starSlots}}" wx:key="*this" class="mj-star {{index < stars ? 'on' : 'off'}}">{{index < stars ? '★' : '☆'}}</text>
+    </view>
     <text class="r-score">游戏得分 {{total}}{{coin ? '｜金币 +' + coin : ''}}</text>
 
     <!-- 金币明细：把「省着用提示」的回报说清楚，否则学生只看得到总数，感受不到取舍 -->
-    <view class="r-coin" wx:if="{{passed && reward}}">
+    <view class="r-coin mj-stagger" wx:if="{{passed && reward}}">
       <view class="rc-row"><text>通关奖励</text><text>+{{reward.base}}</text></view>
       <view class="rc-row rc-bonus" wx:if="{{reward.noHintBonus}}"><text>零提示加成</text><text>+{{reward.noHintBonus}}</text></view>
       <view class="rc-row rc-bonus" wx:if="{{reward.streakBonus}}"><text>连胜奖励（连续第 {{reward.streak}} 关）</text><text>+{{reward.streakBonus}}</text></view>

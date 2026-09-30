@@ -1,6 +1,11 @@
 const levels = require('../../config/levels/index');
 const state = require('../../engine/state');
+const audio = require('../../engine/audio');
 const { definePage } = require('../../utils/pageGuard');
+
+// 会话内记住上一次看到的「已解锁关卡」集合，用于检测刚刚新解锁的关卡并播放 unlock 音。
+// 首帧只建立基线、不发声；离开关卡回到本页时命中差异才发声。
+let knownUnlockedIds = null;
 
 // data-* 属性在部分场景会以字符串回传，'false' 是真值，必须显式判定
 function toBool(value) {
@@ -36,6 +41,7 @@ definePage('map', {
     const s = state.get();
     const progress = s.progress || {};
     let totalStars = 0;
+    const unlockedIds = [];
     const chapters = levels.chapters.map(ch => {
       let cleared = 0;
       const items = ch.levels.map(lv => {
@@ -43,6 +49,7 @@ definePage('map', {
         totalStars += p ? p.stars : 0;
         if (p) cleared += 1;
         const unlocked = state.isLevelUnlocked(lv.id, levels);
+        if (unlocked) unlockedIds.push(lv.id);
         return {
           id: lv.id, name: lv.name, type: lv.type, goal: lv.goal,
           stars: p ? p.stars : 0, bestScore: p ? p.bestScore : 0,
@@ -67,9 +74,15 @@ definePage('map', {
       ? { levelId: saved.levelId, levelName: saved.levelName || saved.levelId, stepNo: saved.stepIndex + 1, stepTotal: saved.stepTotal || 0 }
       : null;
     this.setData({ chapters, totalStars, resume });
+    // 新解锁检测：本页刷新时若出现「上次没有的已解锁关卡」，说明刚通关解锁了新内容。
+    if (knownUnlockedIds && unlockedIds.some(id => knownUnlockedIds.indexOf(id) < 0)) {
+      try { audio.sfx('unlock'); } catch (e) { /* 静默 */ }
+    }
+    knownUnlockedIds = unlockedIds;
   },
   onResume() {
     if (!this.data.resume) return;
+    try { audio.sfx('tap'); } catch (e) { /* 静默 */ }
     wx.navigateTo({ url: `/pages/level/level?id=${this.data.resume.levelId}` });
   },
   onTapLevel(e) {
@@ -78,6 +91,7 @@ definePage('map', {
       wx.showToast({ title: lockedText || '先通关前面的关卡', icon: 'none', duration: 2500 });
       return;
     }
+    try { audio.sfx('tap'); } catch (e) { /* 静默 */ }
     wx.navigateTo({ url: `/pages/level/level?id=${id}` });
   },
 });
