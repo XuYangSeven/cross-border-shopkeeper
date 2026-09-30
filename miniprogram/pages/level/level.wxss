@@ -1,19 +1,21 @@
-.dialog { display: flex; flex-direction: column; gap: 20rpx; margin-top: 30vh; }
+.dialog { display: flex; flex-direction: column; gap: 20rpx; margin-top: 32rpx; max-height: 70vh; box-sizing: border-box; overflow-y: auto; }
 .speaker { font-weight: bold; color: #D4A934; }
 .dialog-text { line-height: 1.7; }
 
-.card-pop { display: flex; flex-direction: column; gap: 16rpx; margin-top: 20vh; background: #FFF8E1; }
+.card-pop { display: flex; flex-direction: column; gap: 16rpx; margin-top: 32rpx; max-height: 76vh; box-sizing: border-box; overflow-y: auto; background: #FFF8E1; }
 .card-badge { font-size: 24rpx; color: #9E9E9E; }
 .card-title { font-size: 36rpx; font-weight: bold; color: #1A2B4A; }
 .card-text { line-height: 1.7; }
-.card-interview { font-size: 24rpx; color: #2E4A7A; background: #EDE7F6; padding: 12rpx; border-radius: 8rpx; }
+/* 面试问法是学生要照着练的口径，按可精读的正文尺寸给（28rpx≈14px） */
+.card-interview { font-size: 28rpx; color: #2E4A7A; background: #EDE7F6; padding: 12rpx; border-radius: 8rpx; line-height: 1.6; }
 
 .quiz .q { font-weight: bold; margin-bottom: 20rpx; line-height: 1.6; }
-.option { border: 3rpx solid #1A2B4A; border-radius: 8rpx; padding: 18rpx; margin: 14rpx 0; background: #FFF; }
+.option { min-height: 88rpx; box-sizing: border-box; display: flex; align-items: center; border: 3rpx solid #1A2B4A; border-radius: 8rpx; padding: 18rpx 22rpx; margin: 14rpx 0; background: #FFF; line-height: 1.5; word-break: break-word; }
 .option.picked { background: #E3F2FD; }
 .option.right { background: #E8F5E9; border-color: #4CAF50; }
 .option.wrong { background: #FFEBEE; border-color: #E53935; }
-.explain { font-size: 24rpx; color: #666; margin-top: 10rpx; }
+/* 解析是整关最该被读进去的内容，不能按次要信息给字号 */
+.explain { font-size: 28rpx; color: #4a4a4a; margin-top: 10rpx; line-height: 1.65; }
 
 .modules { display: flex; flex-wrap: wrap; gap: 16rpx; }
 .module { width: 200rpx; text-align: center; padding: 24rpx 0; border: 4rpx solid #1A2B4A; border-radius: 8rpx; background: #ECEFF1; }
@@ -21,7 +23,7 @@
 
 .formula { font-size: 32rpx; font-weight: bold; text-align: center; margin: 30rpx 0; }
 .slots-pool, .chips { display: flex; gap: 16rpx; flex-wrap: wrap; margin-top: 20rpx; }
-.slot-chip { border: 3rpx solid #1A2B4A; border-radius: 999rpx; padding: 10rpx 24rpx; background: #FFF; }
+.slot-chip { min-height: 88rpx; box-sizing: border-box; display: inline-flex; align-items: center; border: 3rpx solid #1A2B4A; border-radius: 999rpx; padding: 10rpx 28rpx; background: #FFF; line-height: 1.4; word-break: break-word; }
 .slot-chip.used { opacity: 0.3; }
 .slot-chip.selected { border-color: #D4A934; background: #FFF8E1; box-shadow: 0 0 0 4rpx rgba(212, 169, 52, 0.25); }
 
@@ -29,42 +31,43 @@
 .blank { border: 3rpx solid #1A2B4A; border-radius: 8rpx; padding: 12rpx; flex: 1; background: #FFF; }
 .blank.ok { border-color: #4CAF50; background: #E8F5E9; }
 .blank.bad { border-color: #E53935; background: #FFEBEE; }
-.unit, .b-label { width: 220rpx; color: #444; font-size: 26rpx; }
-.hint { font-size: 22rpx; color: #888; margin: 10rpx 0; line-height: 1.5; }
+.unit, .b-label { flex: 1; min-width: 0; color: #444; font-size: 26rpx; line-height: 1.45; word-break: break-word; }
+.hint { font-size: 26rpx; color: #6f6f6f; margin: 10rpx 0; line-height: 1.65; overflow-wrap: anywhere; word-break: break-word; }
 
 .sku-card { border: 3rpx solid #1A2B4A; border-radius: 8rpx; padding: 16rpx; margin: 16rpx 0; background: #FFF; }
-.sku-head { display: flex; justify-content: space-between; }
-.sku-name { font-weight: bold; }
-.sku-data { display: flex; flex-wrap: wrap; gap: 14rpx; font-size: 24rpx; color: #555; margin: 10rpx 0; }
+.sku-head { display: flex; align-items: flex-start; gap: 12rpx; justify-content: space-between; }
+.sku-name { flex: 1; min-width: 0; font-weight: bold; line-height: 1.45; word-break: break-word; }
+.sku-price { flex-shrink: 0; white-space: nowrap; }
+.sku-data { display: flex; flex-wrap: wrap; gap: 14rpx; font-size: 26rpx; color: #4a4a4a; margin: 10rpx 0; }
 .verdict-btns { display: flex; gap: 16rpx; margin-top: 8rpx; }
-.v-btn { border: 3rpx solid #1A2B4A; border-radius: 8rpx; padding: 8rpx 20rpx; background: #FFF; font-size: 24rpx; }
+.v-btn { min-height: 88rpx; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; border: 3rpx solid #1A2B4A; border-radius: 8rpx; padding: 8rpx 24rpx; background: #FFF; font-size: 26rpx; line-height: 1.4; word-break: break-word; }
 .v-btn.in.on { background: #4CAF50; color: #FFF; }
 .v-btn.out.on { background: #E53935; color: #FFF; }
 .v-btn.on { font-weight: bold; background: #E3F2FD; border-color: #2E4A7A; box-shadow: 0 0 0 3rpx rgba(46, 74, 122, 0.18); }
 
 .profit-result { display: flex; flex-direction: column; gap: 12rpx; }
 .cost-guide { display: flex; flex-direction: column; gap: 8rpx; margin: 18rpx 0; padding: 16rpx; border: 2rpx solid #24395f; background: #fffdf4; line-height: 1.6; }
-.result-detail { display: block; color: #555; font-size: 24rpx; line-height: 1.6; }
+.result-detail { display: block; color: #4a4a4a; font-size: 26rpx; line-height: 1.65; }
 .fba-guide { display: block; color: #6b5b35; background: #fff7d6; padding: 10rpx; border-left: 6rpx solid #d6a72c; }
-.trap { font-size: 24rpx; line-height: 1.5; }
+.trap { font-size: 26rpx; line-height: 1.55; }
 
 .radar-tabs { display: flex; gap: 12rpx; flex-wrap: wrap; margin: 16rpx 0; }
-.tab { padding: 8rpx 20rpx; border: 3rpx solid #1A2B4A; border-radius: 8rpx; background: #FFF; }
+.tab { min-height: 88rpx; box-sizing: border-box; display: inline-flex; align-items: center; padding: 8rpx 24rpx; border: 3rpx solid #1A2B4A; border-radius: 8rpx; background: #FFF; line-height: 1.4; word-break: break-word; }
 .tab.on { background: #2E4A7A; color: #FFF; }
-.dim-row { display: flex; align-items: center; margin: 10rpx 0; }
-.dim-label { width: 100rpx; }
-.dim-stars { display: flex; gap: 10rpx; }
-.star-btn { color: #CCC; font-size: 36rpx; }
+.dim-row { display: flex; align-items: center; margin: 10rpx 0; gap: 12rpx; }
+.dim-label { flex: 1; min-width: 0; line-height: 1.4; word-break: break-word; }
+.dim-stars { display: flex; gap: 6rpx; flex-shrink: 0; }
+.star-btn { width: 88rpx; height: 88rpx; display: inline-flex; align-items: center; justify-content: center; color: #CCC; font-size: 40rpx; }
 .star-btn.on { color: #D4A934; }
 .rx-list { display: flex; flex-direction: column; gap: 8rpx; }
 
 .customer-case { margin-top: 24rpx; padding-top: 20rpx; border-top: 2rpx solid #d8c7a3; }
 .customer-message, .customer-fact, .customer-policy, .customer-review, .review-prompt { display: block; margin-top: 10rpx; line-height: 1.6; }
 .customer-message { color: #2d4770; }
-.customer-fact, .customer-policy, .review-prompt { color: #79684c; font-size: 24rpx; }
+.customer-fact, .customer-policy, .review-prompt { color: #79684c; font-size: 26rpx; }
 .customer-review { padding: 14rpx; background: #fff8df; }
 .customer-panel .option { margin-top: 10rpx; }
-.metric-stats { display: block; margin: 16rpx 0 22rpx; padding: 16rpx; background: #fff8df; color: #79684c; line-height: 1.65; font-size: 24rpx; }
+.metric-stats { display: block; margin: 16rpx 0 22rpx; padding: 16rpx; background: #fff8df; color: #79684c; line-height: 1.65; font-size: 26rpx; }
 .analytics-item { margin-top: 22rpx; padding-top: 16rpx; border-top: 2rpx solid #d8c7a3; }
 .analytics-panel .option { margin-top: 10rpx; }
 .analytics-panel .hint { display: block; line-height: 1.6; }
@@ -86,3 +89,66 @@
 /* 广告投放步骤 */
 .ad-summary { display: flex; flex-wrap: wrap; gap: 12rpx; margin: 16rpx 0; color: #2E4A7A; }
 .ad-day { border-left: 6rpx solid #D4A934; padding: 12rpx 16rpx; margin: 12rpx 0; background: #FFF8E1; }
+
+/* ===== 学习容器头部 ===== */
+.learn-header { padding: 16rpx 0 20rpx; margin-bottom: 6rpx; border-bottom: 2rpx solid #E3D6B8; }
+.learn-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16rpx; }
+.learn-goal { flex: 1; font-size: 26rpx; color: #55627a; line-height: 1.55; }
+.learn-stage { flex-shrink: 0; font-size: 22rpx; padding: 4rpx 16rpx; border-radius: 999rpx; background: #EDE7F6; color: #2E4A7A; }
+.stage-boss { background: #FFEBEE; color: #C62828; }
+.stage-transfer { background: #FFF3E0; color: #B26A00; }
+.stage-reflection { background: #E8F5E9; color: #2E7D32; }
+.progress-bar { height: 10rpx; margin: 14rpx 0 10rpx; border-radius: 999rpx; background: #E8DFC8; overflow: hidden; }
+.progress-fill { height: 100%; background: #D4A934; transition: width 0.25s; }
+.learn-sub { display: flex; align-items: center; gap: 18rpx; font-size: 22rpx; color: #8a8577; }
+.resume-tip { color: #2E7D32; }
+.mistake-tip { color: #C62828; }
+
+/* ===== 统一反馈块 ===== */
+.feedback-box { display: flex; flex-direction: column; gap: 8rpx; margin-top: 16rpx; padding: 16rpx; background: #F7F5EE; border-left: 6rpx solid #D4A934; }
+.fb-box { display: flex; flex-direction: column; gap: 8rpx; margin-top: 14rpx; padding: 16rpx; border-radius: 8rpx; background: #F7F5EE; border-left: 6rpx solid #D4A934; line-height: 1.6; }
+.fb-box.fb-bad { background: #FFF1F0; border-left-color: #E53935; color: #B3261E; }
+.fb-ok { display: block; margin-top: 10rpx; font-size: 26rpx; color: #2E7D32; }
+.fb-line { font-size: 26rpx; line-height: 1.65; color: #3a3a3a; }
+.fb-right { color: #2E7D32; }
+.fb-wrong { color: #C62828; }
+.fb-explain { color: #6b5b35; }
+.score-line { display: block; margin-top: 16rpx; font-size: 26rpx; font-weight: bold; color: #2E4A7A; }
+
+/* ===== 迁移题 ===== */
+.stage-tag { display: inline-block; font-size: 22rpx; padding: 4rpx 16rpx; border-radius: 999rpx; margin-bottom: 12rpx; }
+.transfer-panel .stage-tag { background: #FFF3E0; color: #B26A00; }
+.transfer-q { margin: 24rpx 0; padding-top: 16rpx; border-top: 2rpx dashed #D8C7A3; }
+.tq-title { display: block; font-weight: bold; line-height: 1.6; margin-bottom: 10rpx; }
+
+/* ===== 结构化复述 ===== */
+.reflection-panel .stage-tag { background: #E8F5E9; color: #2E7D32; }
+.reflect-field { margin: 24rpx 0; }
+.rf-label { display: block; font-weight: bold; margin-bottom: 10rpx; color: #2E4A7A; }
+.rf-input { width: 100%; box-sizing: border-box; min-height: 140rpx; padding: 16rpx; border: 3rpx solid #1A2B4A; border-radius: 8rpx; background: #FFF; font-size: 26rpx; line-height: 1.6; }
+.rf-input.ok { border-color: #4CAF50; background: #E8F5E9; }
+.rf-input.bad { border-color: #E53935; background: #FFEBEE; }
+.rf-ok { display: block; margin-top: 8rpx; font-size: 26rpx; color: #2E7D32; }
+.rf-bad { display: block; margin-top: 8rpx; font-size: 26rpx; color: #C62828; }
+.rf-sample { display: block; margin-top: 8rpx; padding: 14rpx; font-size: 26rpx; line-height: 1.65; color: #6b5b35; background: #FFF7D6; border-radius: 8rpx; }
+.reflect-summary { display: flex; flex-direction: column; gap: 10rpx; margin: 16rpx 0; }
+
+/* ===== 求助坞：用金币换提示 ===== */
+.hint-dock { margin: 24rpx 0 40rpx; border: 3rpx solid #E6DCC2; border-radius: 14rpx; background: #FFFDF6; overflow: hidden; }
+.hint-head { display: flex; align-items: center; padding: 24rpx; min-height: 88rpx; box-sizing: border-box; }
+.hint-title { font-size: 28rpx; font-weight: bold; color: #1A2B4A; margin-right: 14rpx; }
+.hint-sub { flex: 1; font-size: 24rpx; color: #8a7f66; line-height: 1.5; overflow-wrap: anywhere; }
+.hint-arrow { font-size: 24rpx; color: #B9A76F; margin-left: 12rpx; }
+.hint-body { padding: 0 24rpx 20rpx; }
+.hint-tier { padding: 20rpx 0; border-top: 2rpx solid #F0E9D8; }
+.hint-tier-head { display: flex; align-items: baseline; justify-content: space-between; }
+.hint-tier-label { font-size: 28rpx; font-weight: bold; color: #2E4A7A; }
+.hint-tier-price { font-size: 24rpx; color: #B8860B; }
+.hint-tier-desc { display: block; margin-top: 6rpx; font-size: 24rpx; color: #8a8a8a; line-height: 1.55; overflow-wrap: anywhere; }
+/* pre-wrap 必须有：提示文本内部用 \n 分行，否则解析会被挤成一整段 */
+.hint-tier-text { display: block; margin-top: 12rpx; padding: 16rpx; font-size: 26rpx; line-height: 1.7; color: #4a4230; background: #FFF7D6; border-left: 6rpx solid #D4A934; border-radius: 8rpx; overflow-wrap: anywhere; word-break: break-word; white-space: pre-wrap; }
+.hint-buy { margin-top: 14rpx; min-height: 88rpx; line-height: 88rpx; font-size: 27rpx; border: none; border-radius: 10rpx; background: #1A2B4A; color: #F2E8D5; }
+/* 金币不足时按钮变灰但仍可点：点了会提示「还差多少」，比死按钮更有用 */
+.hint-buy-off { background: #9AA3B0; color: #EDEFF2; }
+.hint-none { display: block; margin-top: 10rpx; font-size: 24rpx; color: #9a9a9a; }
+.hint-foot { display: block; margin-top: 6rpx; font-size: 24rpx; color: #8a7f66; line-height: 1.6; overflow-wrap: anywhere; }

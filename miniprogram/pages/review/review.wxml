@@ -1,0 +1,36 @@
+<view class="page">
+  <view class="rv-head panel">
+    <text class="rv-title">错题与复盘</text>
+    <text class="rv-sub">{{filterText}}｜共 {{total}} 条</text>
+    <view class="rv-actions">
+      <button class="btn-secondary" bindtap="onShowAll">查看全部</button>
+      <button wx:if="{{total}}" class="btn-danger" bindtap="onClear">清除错题</button>
+    </view>
+  </view>
+
+  <view wx:if="{{empty}}" class="panel rv-empty">
+    <text>本关暂无错题记录。</text>
+    <text class="rv-hint">答错的题会自动收进这里，方便集中复盘。点题干可展开答案与错因。</text>
+  </view>
+
+  <block wx:for="{{groups}}" wx:key="levelId" wx:for-item="group" wx:for-index="gi">
+    <view class="panel rv-group">
+      <text class="rv-group-title">{{group.levelId}} {{group.levelName}}｜{{group.items.length}} 条</text>
+      <view wx:for="{{group.items}}" wx:key="key" wx:for-item="m" class="rv-item"
+        data-key="{{m.key}}" bindtap="onToggleItem">
+        <view class="rv-row">
+          <text class="rv-type">{{m.typeLabel}}</text>
+          <text class="rv-toggle">{{m.expanded ? '收起 ▲' : '展开 ▼'}}</text>
+        </view>
+        <text class="rv-q">{{m.question}}</text>
+        <block wx:if="{{m.expanded}}">
+          <text class="rv-wrong">你的答案：{{m.userAnswer}}</text>
+          <text class="rv-right">正确答案：{{m.correctAnswer}}</text>
+          <text wx:if="{{m.explain}}" class="rv-explain">错因：{{m.explain}}</text>
+        </block>
+        <text wx:else class="rv-hint">点击展开你的答案、正确答案与错因</text>
+      </view>
+      <button class="btn-primary" bindtap="onPractice" data-level="{{group.levelId}}">再练一次这一关</button>
+    </view>
+  </block>
+</view>

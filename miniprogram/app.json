@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/intro/intro",
     "pages/map/map",
     "pages/level/level",
     "pages/result/result",
@@ -13,6 +14,7 @@
     "pages/shop-simulation/shop-simulation",
     "pages/shop-settlement/shop-settlement",
     "pages/manual/manual",
+    "pages/review/review",
     "pages/me/me"
   ],
   "window": {
@@ -28,10 +30,30 @@
     "backgroundColor": "#1A2B4A",
     "borderStyle": "black",
     "list": [
-      { "pagePath": "pages/map/map", "text": "关卡" },
-      { "pagePath": "pages/shop/shop", "text": "店铺" },
-      { "pagePath": "pages/manual/manual", "text": "手册" },
-      { "pagePath": "pages/me/me", "text": "我的" }
+      {
+        "pagePath": "pages/map/map",
+        "text": "关卡",
+        "iconPath": "images/tab-levels.png",
+        "selectedIconPath": "images/tab-levels-on.png"
+      },
+      {
+        "pagePath": "pages/shop/shop",
+        "text": "店铺",
+        "iconPath": "images/tab-shop.png",
+        "selectedIconPath": "images/tab-shop-on.png"
+      },
+      {
+        "pagePath": "pages/manual/manual",
+        "text": "手册",
+        "iconPath": "images/tab-manual.png",
+        "selectedIconPath": "images/tab-manual-on.png"
+      },
+      {
+        "pagePath": "pages/me/me",
+        "text": "我的",
+        "iconPath": "images/tab-me.png",
+        "selectedIconPath": "images/tab-me-on.png"
+      }
     ]
   },
   "style": "v2",

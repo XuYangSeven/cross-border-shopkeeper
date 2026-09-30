@@ -1,1 +1,122 @@
-<view class="page"><view class="panel"><text class="title">PawPal 宠物用品 · 卖家后台</text><text class="sub">章节学习解锁能力，店铺页面执行模拟操作</text><view class="kpi-grid"><view class="kpi"><text class="kpi-v">{{metrics.visitors}}</text><text class="kpi-k">周访客</text></view><view class="kpi"><text class="kpi-v">{{metrics.conversion}}%</text><text class="kpi-k">转化率</text></view><view class="kpi"><text class="kpi-v">${{metrics.sales}}</text><text class="kpi-k">周销售额</text></view><view class="kpi"><text class="kpi-v {{metrics.acos <= 30 ? 'text-up' : 'text-down'}}">{{metrics.acos}}%</text><text class="kpi-k">ACOS</text></view><view class="kpi"><text class="kpi-v {{metrics.stockDays >= 10 ? 'text-up' : 'text-warn'}}">{{metrics.stockDays}}天</text><text class="kpi-k">库存水位</text></view><view class="kpi"><text class="kpi-v">{{metrics.rating}}</text><text class="kpi-k">店铺评分</text></view></view><view class="modules-row"><view wx:for="{{modules}}" wx:key="key" class="module-chip {{item.unlocked ? '' : 'module-locked'}}" data-key="{{item.key}}" bindtap="onTapModule">{{item.name}}{{item.unlocked ? '' : ' · 第'+item.chapter+'章解锁'}}</view></view><view class="task-box"><view class="task-head"><text>本周经营任务</text><text>{{taskSummary.completed}}/6 已完成</text></view><view wx:for="{{tasks}}" wx:key="id" class="task-row"><view><text class="task-title">{{item.title}}</text><text class="task-desc">{{item.description}}</text></view><text class="task-status {{item.completed ? 'task-done' : ''}}">{{item.status}}</text></view><text wx:if="{{taskSummary.allCompleted}}" class="task-reward">本周任务全部完成，奖励 {{taskSummary.reward.coins}} 金币 / {{taskSummary.reward.exp}} 经验</text></view><view class="mode-box"><text>经营模式</text><radio-group bindchange="onModeChange"><label><radio value="0" checked="{{mode === 'save'}}"/>自动保存</label><label><radio value="1" checked="{{mode === 'practice'}}"/>练习模式</label></radio-group><text class="sub">已记录 {{actionCount}} 次操作；练习模式下退出页面不保存店铺变化。</text><button class="reset-btn" bindtap="onResetWeek">重置本周经营</button></view></view></view>
+<view class="page">
+
+  <!-- 顶部：经营推演 -->
+  <view class="panel hero">
+    <view class="hero-head">
+      <view class="hero-title">
+        <text class="title">PawPal 宠物用品 · 卖家后台</text>
+        <text class="sub">关卡学能力，这里做决策：每一周的行动点有限，指标会跟着你的选择变。</text>
+      </view>
+      <view class="mode-tag {{mode === 'practice' ? 'mode-practice' : ''}}">{{mode === 'practice' ? '练习' : '存档'}}</view>
+    </view>
+
+    <view class="points">
+      <view class="points-head">
+        <text class="points-label">本周行动点</text>
+        <text class="points-value">{{actionPoints.remaining}} / {{actionPoints.total}}</text>
+      </view>
+      <view class="points-bar"><view class="points-fill" style="width:{{pointPercent}}%"></view></view>
+      <text class="points-hint">所有模块共享这一份预算。用完就只能结算，下周再补满。</text>
+    </view>
+
+    <view class="kpi-grid">
+      <view wx:for="{{kpiTiles}}" wx:key="key" class="kpi">
+        <text class="kpi-v">{{item.value}}</text>
+        <text class="kpi-k">{{item.label}}</text>
+        <text wx:if="{{item.deltaText}}" class="kpi-d {{item.tone}}">{{item.deltaText}}</text>
+        <text wx:else class="kpi-d flat">持平</text>
+      </view>
+    </view>
+    <text class="delta-note">指标 = 本周推演；箭头为相对上一次结算结果的变化。</text>
+  </view>
+
+  <!-- 推演依据：让因果可见 -->
+  <view class="panel">
+    <text class="title">这些数字怎么来的</text>
+    <view class="note-list">
+      <text wx:for="{{decisionHints}}" wx:key="key" class="note-line">· {{item.text}}</text>
+    </view>
+  </view>
+
+  <!-- 本周任务 -->
+  <view class="panel">
+    <view class="task-head">
+      <text class="title">本周经营任务</text>
+      <text class="task-count">{{taskSummary.completed}} / {{taskSummary.total}}</text>
+    </view>
+    <view wx:for="{{tasks}}" wx:key="id" class="task-row" data-id="{{item.id}}" bindtap="onToggleTask">
+      <view class="task-main">
+        <view class="task-line">
+          <text class="task-flag {{item.completed ? 'ok' : ''}}">{{item.completed ? '已达成' : '未达成'}}</text>
+          <text class="task-title">{{item.title}}</text>
+        </view>
+        <text class="task-desc">{{item.description}}</text>
+        <text class="task-current">当前：{{item.currentText}}<text wx:if="{{item.note}}">　（{{item.note}}）</text></text>
+      </view>
+      <text class="task-arrow">{{item.expanded ? '▾' : '▸'}}</text>
+      <view wx:if="{{item.expanded}}" class="task-detail">
+        <text>差距：{{item.gapText}}</text>
+        <text>对应知识：第 {{item.chapter}} 章</text>
+        <text>建议：{{item.advice}}</text>
+        <button class="mini-btn" size="mini" data-id="{{item.id}}" catchtap="onHandleTask">去处理</button>
+      </view>
+    </view>
+    <text wx:if="{{taskSummary.allCompleted}}" class="task-reward">本周任务全部达成：奖励 {{taskSummary.reward.coins}} 金币 / {{taskSummary.reward.exp}} 经验</text>
+  </view>
+
+  <!-- 模块入口 -->
+  <view class="panel">
+    <text class="title">经营模块</text>
+    <text class="sub">每个模块都有若干带代价的操作，点进去看效果预估再决定做不做。</text>
+    <view class="module-list">
+      <view wx:for="{{modules}}" wx:key="key"
+        class="module-row {{item.unlocked ? '' : 'module-locked'}}"
+        data-key="{{item.key}}" bindtap="onTapModule">
+        <view class="module-info">
+          <text class="module-name">{{item.name}}</text>
+          <text class="module-sum">{{item.unlocked ? item.summary : '通关第 ' + item.chapter + ' 章后解锁'}}</text>
+        </view>
+        <text class="module-go">{{item.unlocked ? '进入 ▸' : '第' + item.chapter + '章'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 经营周 -->
+  <view class="panel">
+    <text class="title">经营周</text>
+    <text wx:if="{{weekActive}}" class="sub">本周进行中：第 {{weekDay}} / 7 天。</text>
+    <text wx:else class="sub">决策做好后，跑 7 天经营把结果结算出来。</text>
+    <view class="week-btns">
+      <button class="btn-primary" bindtap="onStartWeek">{{weekActive ? '继续本周经营' : '开始本周经营'}}</button>
+      <button wx:if="{{lastDecisionScore !== null}}" class="btn-secondary" bindtap="onOpenSettlement">查看上周结算（{{lastRating}} · 决策分 {{lastDecisionScore}}）</button>
+    </view>
+
+    <block wx:if="{{hasHistory}}">
+      <text class="history-title">经营周趋势（决策分）</text>
+      <view wx:for="{{history}}" wx:key="week" class="history-row">
+        <text class="history-week">第 {{item.week}} 周</text>
+        <view class="history-bar"><view class="history-fill" style="width:{{item.barWidth}}%"></view></view>
+        <text class="history-score">{{item.decisionScore}} · {{item.level}}</text>
+      </view>
+      <text class="history-note">决策分 = 商品力 20% + 流量效率 25% + 库存健康 25% + 服务口碑 20% + 资金安全 10%。</text>
+    </block>
+  </view>
+
+  <!-- 设置 -->
+  <view class="panel settings">
+    <text class="title">经营模式</text>
+    <radio-group bindchange="onModeChange">
+      <label class="mode-opt"><radio value="0" checked="{{mode === 'save'}}" />正式存档</label>
+      <label class="mode-opt"><radio value="1" checked="{{mode === 'practice'}}" />练习模式</label>
+    </radio-group>
+    <text wx:if="{{practiceHint}}" class="practice-hint">{{practiceHint}}</text>
+    <text wx:else class="practice-hint">正式存档：决策与结算结果都会保存，并计入能力评估与金币经验奖励。</text>
+  </view>
+
+  <view class="panel danger-zone">
+    <text class="danger-title">危险操作</text>
+    <text class="danger-hint">重置只影响店铺实操数据，不清除章节进度、知识卡片与错题本。</text>
+    <button class="btn-danger" bindtap="onResetWeek">重置本周经营</button>
+  </view>
+
+</view>

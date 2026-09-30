@@ -1,1 +1,81 @@
-<view class="page"><view class="panel"><text class="title">数据看板</text><text class="sub">PawPal 本周经营概览</text><view class="kpi-grid"><view class="kpi"><text class="kpi-v">{{shop.metrics.visitors}}</text><text class="kpi-k">周访客</text></view><view class="kpi"><text class="kpi-v">{{shop.metrics.conversion}}%</text><text class="kpi-k">转化率</text></view><view class="kpi"><text class="kpi-v">${{shop.metrics.sales}}</text><text class="kpi-k">销售额</text></view><view class="kpi"><text class="kpi-v">{{shop.metrics.acos}}%</text><text class="kpi-k">ACOS</text></view><view class="kpi"><text class="kpi-v">{{shop.metrics.stockDays}}天</text><text class="kpi-k">库存水位</text></view><view class="kpi"><text class="kpi-v">{{shop.metrics.rating}}</text><text class="kpi-k">店铺评分</text></view></view><text class="review">建议：库存水位和 ACOS 需要优先关注，进入对应模块执行操作。</text><button bindtap="onBack">返回店铺</button></view></view>
+<view class="page">
+  <view class="panel">
+    <text class="title">数据看板</text>
+    <text class="sub">同样的决策，指标之间是互相牵动的：改价格影响转化，改预算影响 ACOS，断货会同时压垮两者。</text>
+    <view class="kpi-grid">
+      <view wx:for="{{kpiTiles}}" wx:key="key" class="kpi">
+        <text class="kpi-v">{{item.value}}</text>
+        <text class="kpi-k">{{item.label}}</text>
+        <text wx:if="{{item.deltaText}}" class="kpi-d {{item.tone}}">{{item.deltaText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="panel">
+    <view class="points-head">
+      <text class="points-label">本周行动点</text>
+      <text class="points-value">{{points.remaining}} / {{points.total}}</text>
+    </view>
+    <view class="points-bar"><view class="points-fill" style="width:{{pointPercent}}%"></view></view>
+  </view>
+
+  <view class="panel">
+    <text class="title">收入与成本结构</text>
+    <view class="stat-list">
+      <view class="stat-row"><text class="stat-k">周订单（自然 / 付费）</text><text class="stat-v">{{kpis.naturalOrders}} / {{kpis.paidOrders}}</text></view>
+      <view class="stat-row"><text class="stat-k">周销售额</text><text class="stat-v">${{kpis.sales}}</text></view>
+      <view class="stat-row"><text class="stat-k">货品成本（单件 ${{shop.product.unitCost}}）</text><text class="stat-v">-${{kpis.cogs}}</text></view>
+      <view class="stat-row"><text class="stat-k">广告花费</text><text class="stat-v">-${{kpis.adSpend}}</text></view>
+      <view class="stat-row"><text class="stat-k">预计净利</text><text class="stat-v {{kpis.netProfit > 0 ? 'ok' : 'warn'}}">${{kpis.netProfit}}</text></view>
+      <view class="stat-row"><text class="stat-k">毛利率</text><text class="stat-v">{{kpis.margin}}%</text></view>
+    </view>
+    <text class="action-preview">净利 = 销售额 − 货品成本 − 广告花费。降价冲量前先看单件还剩多少钱。</text>
+  </view>
+
+  <view class="panel">
+    <text class="title">决策评分 · {{decision.score}} 分（{{decision.level}}）</text>
+    <text class="sub">{{decision.summary}}</text>
+    <view wx:for="{{decisionRows}}" wx:key="key">
+      <view class="decision-row">
+        <text class="decision-label">{{item.label}}</text>
+        <view class="decision-bar"><view class="decision-fill {{item.tone}}" style="width:{{item.barWidth}}%"></view></view>
+        <text class="decision-score">{{item.score}}</text>
+        <text class="decision-weight">{{item.weightText}}</text>
+      </view>
+      <text class="decision-advice">{{item.advice}}</text>
+    </view>
+  </view>
+
+  <view class="panel">
+    <text class="title">可执行的成本动作</text>
+    <view class="action-list">
+      <view wx:for="{{actions}}" wx:key="id" class="action {{item.available ? '' : 'action-disabled'}}">
+        <view class="action-head">
+          <text class="action-label">{{item.label}}</text>
+          <text class="action-meta">{{item.costText}}</text>
+        </view>
+        <text class="action-desc">{{item.desc}}</text>
+        <view class="action-tags">
+          <text class="tag">{{item.pointsText}}</text>
+          <text class="tag tag-limit">{{item.limitText}}</text>
+        </view>
+        <text class="action-preview">{{item.preview}}</text>
+        <button class="btn-primary action-btn" disabled="{{!item.available}}" data-id="{{item.id}}" bindtap="onAct">执行</button>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{hasHistory}}" class="panel">
+    <text class="title">经营周趋势</text>
+    <view wx:for="{{history}}" wx:key="week" class="decision-row">
+      <text class="decision-label">第 {{item.week}} 周</text>
+      <view class="decision-bar"><view class="decision-fill mid" style="width:{{item.barWidth}}%"></view></view>
+      <text class="decision-score">{{item.decisionScore}}</text>
+    </view>
+    <text class="decision-advice">每周的决策分都会计入能力证据；连续观察才能看出自己是哪一维长期偏弱。</text>
+  </view>
+
+  <view class="panel bottom-btns">
+    <button class="btn-secondary" bindtap="onBack">返回店铺</button>
+  </view>
+</view>

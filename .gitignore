@@ -12,3 +12,7 @@ $RECYCLE.BIN/
 
 # Node.js
 node_modules/
+
+# 调试与头脑风暴会话的运行期产物（server.log / server.pid / 本地调试环境变量）
+.superpowers/
+.dbg/

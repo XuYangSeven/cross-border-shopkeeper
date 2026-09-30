@@ -1,0 +1,12 @@
+{
+  "name": "kuajing-miniapp",
+  "version": "0.6.0-hints",
+  "private": true,
+  "description": "跨境掌柜 · 跨境电商岗位模拟学习小程序（教学样板 + 店铺经营沙盘 + 求助与学习经济）",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "test:teaching": "node tests/learning.test.js && node tests/chapter12-teaching.test.js && node tests/chapter12-loop.test.js && node tests/chapter38-teaching.test.js && node tests/learning-state.test.js && node tests/level-guards.test.js && node tests/structure-audit.test.js",
+    "test:shop": "node tests/shop.test.js && node tests/shop-state.test.js && node tests/tasks.test.js && node tests/shop-decisions.test.js",
+    "test:hints": "node tests/hints.test.js"
+  }
+}

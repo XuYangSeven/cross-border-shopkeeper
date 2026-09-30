@@ -1,1 +1,57 @@
-<view class="page"><view class="panel"><text class="title">Listing 实操</text><text class="sub">优化商品页面，保存后影响后续经营数据。</text><text>商品标题</text><input value="{{title}}" bindinput="onInput"/><view class="stat">标题质量 {{listing.titleScore}}　主图 {{listing.imageScore}}　五点 {{listing.bulletScore}}</view><button bindtap="onSave">保存本周方案</button><button bindtap="onBack">返回店铺</button></view></view>
+<view class="page">
+  <view class="panel">
+    <text class="title">Listing 实操</text>
+    <text class="sub">商品页面决定自然流量与转化率。每改一次，上方推演指标立刻跟着动。</text>
+    <view class="kpi-grid">
+      <view wx:for="{{kpiTiles}}" wx:key="key" class="kpi">
+        <text class="kpi-v">{{item.value}}</text>
+        <text class="kpi-k">{{item.label}}</text>
+        <text wx:if="{{item.deltaText}}" class="kpi-d {{item.tone}}">{{item.deltaText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="panel">
+    <view class="points-head">
+      <text class="points-label">本周行动点</text>
+      <text class="points-value">{{points.remaining}} / {{points.total}}</text>
+    </view>
+    <view class="points-bar"><view class="points-fill" style="width:{{pointPercent}}%"></view></view>
+  </view>
+
+  <view class="panel">
+    <text class="title">Listing 质量</text>
+    <text class="sub">三项分值的加权结果决定自然流量系数与自然转化率。</text>
+    <view class="stat-list">
+      <view class="stat-row"><text class="stat-k">标题质量</text><text class="stat-v">{{shop.listing.titleScore}}</text></view>
+      <view class="stat-row"><text class="stat-k">主图质量</text><text class="stat-v">{{shop.listing.imageScore}}</text></view>
+      <view class="stat-row"><text class="stat-k">五点描述质量</text><text class="stat-v">{{shop.listing.bulletScore}}</text></view>
+      <view class="stat-row"><text class="stat-k">综合质量（权重 0.4 / 0.35 / 0.25）</text><text class="stat-v">{{quality}} 分</text></view>
+    </view>
+  </view>
+
+  <view class="panel">
+    <text class="title">可执行的优化</text>
+    <text class="sub">每项都有每周次数上限，用完就没了；行动点还是共享的。</text>
+    <view class="action-list">
+      <view wx:for="{{actions}}" wx:key="id" class="action {{item.available ? '' : 'action-disabled'}}">
+        <view class="action-head">
+          <text class="action-label">{{item.label}}</text>
+          <text class="action-meta">{{item.costText}}</text>
+        </view>
+        <text class="action-desc">{{item.desc}}</text>
+        <view class="action-tags">
+          <text class="tag">{{item.pointsText}}</text>
+          <text class="tag tag-limit">{{item.limitText}}</text>
+          <text wx:if="{{item.gateText}}" class="tag tag-block">{{item.gateText}}</text>
+        </view>
+        <text class="action-preview">{{item.preview}}</text>
+        <button class="btn-primary action-btn" disabled="{{!item.available}}" data-id="{{item.id}}" bindtap="onAct">执行</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="panel bottom-btns">
+    <button class="btn-secondary" bindtap="onBack">返回店铺</button>
+  </view>
+</view>

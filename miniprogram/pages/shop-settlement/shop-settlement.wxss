@@ -1,1 +1,9 @@
-.title{font-weight:bold;display:block}.rating{display:block;text-align:center;font-size:42rpx;color:#D4A934;font-weight:bold;margin:24rpx}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16rpx}.grid text{border:2rpx solid #1A2B4A;padding:16rpx;background:#FFF}.sub{display:block;color:#777;margin:20rpx 0}button{margin-top:20rpx}
+@import "../../styles/shop-page.wxss";
+
+.rating { display: block; margin: 20rpx 0 6rpx; text-align: center; font-size: 48rpx; font-weight: bold; color: #D4A934; }
+.preview { display: block; margin-top: 14rpx; padding: 12rpx; background: #FFF9ED; color: #A87818; font-size: 24rpx; line-height: 1.6; }
+.redline-panel { border-color: #A84A42; background: #FFF6F5; }
+.note-line.redline { color: #A84A42; font-weight: bold; }
+.warn-text { color: #A84A42; }
+.task-goal { font-size: 22rpx; color: #888; }
+.reward { display: block; margin-top: 14rpx; font-weight: bold; color: #A87818; line-height: 1.6; }

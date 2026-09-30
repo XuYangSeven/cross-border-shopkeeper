@@ -24,11 +24,16 @@ page {
   border-radius: 8rpx;
   font-weight: bold;
   padding: 16rpx 32rpx;
+  min-height: 88rpx;
+  box-sizing: border-box;
   box-shadow: 4rpx 4rpx 0 #1A2B4A;
 }
 .btn-primary:active {
   transform: translate(2rpx, 2rpx);
   box-shadow: 2rpx 2rpx 0 #1A2B4A;
+}
+.btn-primary[disabled], .btn-secondary[disabled], .btn-danger[disabled] {
+  opacity: 0.5;
 }
 
 .btn-secondary {
@@ -38,9 +43,25 @@ page {
   border-radius: 8rpx;
   font-weight: bold;
   padding: 16rpx 32rpx;
+  min-height: 88rpx;
+  box-sizing: border-box;
 }
 
-/* 数据色 */
+.btn-danger {
+  background: #A84A42;
+  color: #FFF;
+  border: 4rpx solid #7A2E2A;
+  border-radius: 8rpx;
+  font-weight: bold;
+  padding: 16rpx 32rpx;
+  min-height: 88rpx;
+  box-sizing: border-box;
+}
+
+/* 语义色 —— 本项目存在两条互不相同的语义轴，勿混用：
+   1) 对错轴（本区块 .text-up/.text-down/.text-warn）：绿=正确/达标，红=错误/不达标。用于答题判定、合规判定。
+   2) 涨跌轴（styles/shop-page.wxss 的 .kpi-d.up/.kpi-d.down）：红=上升，绿=下降。遵循中国市场惯例。
+   给「指标涨跌」上色必须用涨跌轴：对上升指标套 .text-up 会得到绿色，与 .kpi-d.up 的红直接冲突。 */
 .text-up { color: #4CAF50; }
 .text-down { color: #E53935; }
 .text-warn { color: #FB8C00; }

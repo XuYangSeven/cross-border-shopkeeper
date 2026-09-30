@@ -4,10 +4,62 @@
     <view class="row"><text>职级</text><text class="text-gold">{{title}}</text></view>
     <view class="row"><text>经验</text><text>{{exp}} EXP</text></view>
     <view class="row"><text>累计星数</text><text class="stars">★ {{stars}}</text></view>
-    <view class="row"><text>金币</text><text>{{coins}}</text></view>
     <view class="row"><text>下一职级</text><text>{{nextTitle}}</text></view>
+    <!-- 存档健康告警：只在异常时出现。写入失败必须让用户看见，不能静默丢进度 -->
+    <view wx:if="{{saveAlert}}" class="save-alert">
+      <text class="save-alert-title">{{saveAlert.title}}</text>
+      <text class="save-alert-body">{{saveAlert.body}}</text>
+    </view>
   </view>
+
+  <!-- 金币经济：收入与去向都摊开，学生才知道「省着用提示」到底值不值 -->
   <view class="panel">
-    <button class="btn-secondary" bindtap="onReset">重置存档</button>
+    <text class="title">金币</text>
+    <view class="row"><text>余额</text><text class="text-gold">{{coins}}</text></view>
+    <view class="row"><text>零提示连胜</text><text>{{studyStreak ? studyStreak + ' 关' : '未开始'}}</text></view>
+    <text class="coin-hint">零提示通关多拿 50% 金币，连胜每关还会递增；用过任何一级提示（含免费的思路）就失去本关加成并中断连胜。金币可在关卡里换提示，也能在「店铺」的经营周任务中赚取。</text>
+    <block wx:if="{{coinLedger.length}}">
+      <view class="ledger-head"><text>最近收支</text></view>
+      <view wx:for="{{coinLedger}}" wx:key="key" wx:for-item="e" class="ledger-row">
+        <text class="ledger-label">{{e.label}}</text>
+        <text class="ledger-time">{{e.timeText}}</text>
+        <text class="ledger-amount {{e.amount > 0 ? 'ledger-in' : 'ledger-out'}}">{{e.sign}}</text>
+      </view>
+    </block>
+    <text wx:else class="coin-hint">还没有金币记录。通关任意一关就会开始积累。</text>
+  </view>
+
+  <!-- 能力反馈：来自 engine/learning 的证据聚合 -->
+  <view class="panel">
+    <text class="title">能力评估</text>
+    <view class="row"><text>累计能力分</text><text class="text-gold">{{abilityOverall}}（{{abilityLevel}}）</text></view>
+    <block wx:if="{{abilityDims.length}}">
+      <view wx:for="{{abilityDims}}" wx:key="key" wx:for-item="d" class="dim-line">
+        <text class="dim-name">{{d.label}}</text>
+        <view class="dim-bar"><view class="dim-fill" style="width: {{d.barWidth}}%"></view></view>
+        <text class="dim-score">{{d.score}}</text>
+      </view>
+      <view class="rule-toggle" bindtap="onToggleRule">
+        <text>评分规则 {{ruleOpen ? '▲' : '▼'}}</text>
+      </view>
+      <text wx:if="{{ruleOpen}}" class="dim-hint">依据：知识 25% + 迁移 35% + 复盘 25% + 效率 15%｜出现合规错误时该维度封顶 60。分数来自每关的答题正确率、迁移题与复述表现。</text>
+    </block>
+    <text wx:else class="dim-hint">完成第 1 章的关卡后，这里会生成你的能力评估。</text>
+  </view>
+
+  <view class="panel">
+    <text class="title">学习工具</text>
+    <button wx:if="{{hasResume}}" class="btn-primary tool-main" bindtap="onResume">继续上次学习（{{resumeText}}）</button>
+    <button class="btn-secondary tool-btn" bindtap="onOpenReview">
+      <text>错题与复盘</text>
+      <text wx:if="{{mistakeCount}}" class="badge">{{mistakeCount}}</text>
+    </button>
+    <button class="btn-secondary tool-btn" bindtap="onOpenManual">复习知识卡片</button>
+  </view>
+
+  <view class="panel danger-zone">
+    <text class="danger-title">危险操作</text>
+    <button class="btn-danger" bindtap="onReset">重置存档（不可撤销）</button>
+    <text wx:if="{{saveAlert}}" class="dim-hint">如果重置后仍然报保存失败，说明本机存储不可用（常见于存储空间已满），换设备或清理微信缓存后再试。</text>
   </view>
 </view>

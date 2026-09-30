@@ -1,0 +1,49 @@
+<view class="page">
+  <!-- 顶部品牌区 -->
+  <view class="hero">
+    <text class="hero-badge">岗位模拟 · 学习工具</text>
+    <text class="hero-title">跨境掌柜</text>
+    <text class="hero-sub">跨境电商运营岗位 · 模拟学习</text>
+    <text class="hero-line">在「星帆跨境」入职，从运营新人练到能独立操盘一家店铺</text>
+  </view>
+
+  <!-- 你将扮演 -->
+  <view class="panel">
+    <text class="card-label">你将扮演</text>
+    <text class="card-body">一名刚入职跨境公司的运营新人，接手宠物用品店「PawPal」。不靠背概念，用一关一关的真实决策，把运营判断力练出来。</text>
+  </view>
+
+  <!-- 有什么 -->
+  <view class="panel">
+    <text class="card-label">这个 App 有什么</text>
+    <view class="feat" wx:for="{{features}}" wx:key="no">
+      <view class="feat-no">{{item.no}}</view>
+      <view class="feat-main">
+        <view class="feat-head">
+          <text class="feat-title">{{item.title}}</text>
+          <text class="feat-stat">{{item.stat}}</text>
+        </view>
+        <text class="feat-desc">{{item.desc}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 学习闭环 -->
+  <view class="panel">
+    <text class="card-label">一关是怎么练的</text>
+    <view class="flow">
+      <block wx:for="{{flow}}" wx:key="*this">
+        <text class="flow-node">{{item}}</text>
+        <text wx:if="{{index < flow.length - 1}}" class="flow-arrow">▶</text>
+      </block>
+    </view>
+    <text class="flow-hint">做完有即时反馈，答错会讲清原因，最后还要自己把结论总结一遍。</text>
+  </view>
+
+  <!-- 开始 -->
+  <view class="cta">
+    <button class="btn-primary cta-btn" bindtap="onStart">{{ctaText}}</button>
+    <text wx:if="{{hasProgress}}" class="cta-sub">已通关 {{cleared}} / {{totalLevels}} 关 · 累计 ★ {{stars}}</text>
+    <text class="foot">本应用为跨境电商岗位模拟学习工具，公司与人物均为虚构，仅供练习使用。</text>
+  </view>
+</view>

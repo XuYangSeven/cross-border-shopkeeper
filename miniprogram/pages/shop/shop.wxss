@@ -1,22 +1,104 @@
-.title { font-weight: bold; display: block; margin-bottom: 20rpx; }
-.lock-tip { color: #888; }
-.kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16rpx; }
-.kpi { background: #FFF; border: 3rpx solid #1A2B4A; border-radius: 8rpx; padding: 16rpx; display: flex; flex-direction: column; align-items: center; }
-.kpi-v { font-size: 34rpx; font-weight: bold; }
-.kpi-k { font-size: 22rpx; color: #888; margin-top: 6rpx; }
-.modules-row { display: flex; flex-wrap: wrap; gap: 12rpx; margin-top: 24rpx; }
-.module-chip { background: #2E4A7A; color: #F2E8D5; border-radius: 8rpx; padding: 8rpx 20rpx; font-size: 24rpx; }
-.module-locked { background: #7A7A7A; color: #EEEEEE; }
-.sub { display: block; color: #777; font-size: 24rpx; margin: 8rpx 0 18rpx; }
-.task-box { margin-top: 24rpx; padding: 18rpx; border: 3rpx solid #2E4A7A; background: #FFF; }
-.task-head { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 12rpx; }
-.task-row { display: flex; justify-content: space-between; gap: 12rpx; padding: 12rpx 0; border-top: 2rpx solid #E5E5E5; }
-.task-title, .task-desc { display: block; }
+/* 店铺总览样式（像素风基线，与关卡页同一套色板） */
+
+.page { padding-bottom: 40rpx; }
+.title { display: block; font-weight: bold; font-size: 30rpx; }
+.sub { display: block; margin: 8rpx 0 18rpx; color: #777; font-size: 24rpx; line-height: 1.6; overflow-wrap: anywhere; word-break: break-word; }
+
+/* ===== 顶部经营推演 ===== */
+.hero { background: #FFFDF7; }
+.hero-head { display: flex; align-items: flex-start; gap: 16rpx; }
+.hero-title { flex: 1; min-width: 0; }
+.mode-tag {
+  flex-shrink: 0; padding: 6rpx 18rpx; border: 3rpx solid #1A2B4A; border-radius: 999rpx;
+  background: #D4A934; color: #1A2B4A; font-size: 22rpx; font-weight: bold;
+}
+.mode-practice { background: #2E4A7A; color: #F2E8D5; }
+
+.points { margin: 20rpx 0 22rpx; padding: 16rpx; background: #FFF9ED; border: 3rpx solid #2E4A7A; border-radius: 8rpx; }
+.points-head { display: flex; align-items: baseline; justify-content: space-between; }
+.points-label { font-size: 24rpx; color: #444; }
+.points-value { font-size: 30rpx; font-weight: bold; color: #2E4A7A; }
+.points-bar { margin: 12rpx 0 10rpx; height: 18rpx; border-radius: 999rpx; background: #E8DFC8; overflow: hidden; }
+.points-fill { height: 100%; background: #D4A934; }
+.points-hint { display: block; font-size: 22rpx; color: #8a8577; line-height: 1.6; }
+
+.kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14rpx; }
+.kpi {
+  display: flex; flex-direction: column; align-items: center; padding: 16rpx 8rpx;
+  background: #FFF; border: 3rpx solid #1A2B4A; border-radius: 8rpx; min-width: 0;
+}
+.kpi-v { font-size: 32rpx; font-weight: bold; overflow-wrap: anywhere; word-break: break-word; text-align: center; }
+.kpi-k { margin-top: 6rpx; font-size: 22rpx; color: #888; }
+.kpi-d { margin-top: 4rpx; font-size: 22rpx; }
+.kpi-d.up { color: #C62828; }
+.kpi-d.down { color: #2E7D32; }
+.kpi-d.flat { color: #9E9E9E; }
+.delta-note { display: block; margin-top: 14rpx; font-size: 22rpx; color: #8a8577; line-height: 1.6; }
+
+/* ===== 推演依据 ===== */
+.note-list { display: flex; flex-direction: column; gap: 10rpx; }
+.note-line { font-size: 26rpx; line-height: 1.65; color: #3a3a3a; overflow-wrap: anywhere; word-break: break-word; }
+
+/* ===== 本周任务 ===== */
+.task-head { display: flex; align-items: baseline; justify-content: space-between; }
+.task-count { font-size: 26rpx; font-weight: bold; color: #2E4A7A; }
+.task-row {
+  position: relative; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 12rpx;
+  min-height: 88rpx; padding: 16rpx 0; border-top: 2rpx solid #E5E5E5;
+}
+.task-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6rpx; }
+.task-line { display: flex; align-items: center; gap: 10rpx; }
+.task-flag {
+  flex-shrink: 0; padding: 2rpx 12rpx; border-radius: 999rpx; font-size: 20rpx;
+  background: #F0EAE0; color: #8a5a2b;
+}
+.task-flag.ok { background: #E3F2E4; color: #2E7D32; }
 .task-title { font-weight: bold; }
-.task-desc { color: #777; font-size: 22rpx; margin-top: 4rpx; }
-.task-status { color: #A87818; white-space: nowrap; }
-.task-done { color: #32944B; }
-.task-reward { display: block; margin-top: 12rpx; color: #A87818; font-weight: bold; }
-.mode-box { margin-top: 24rpx; padding: 18rpx; border: 3rpx solid #2E4A7A; background: #FFF9ED; }
-.mode-box radio-group { display: flex; gap: 24rpx; margin: 14rpx 0; }
-.reset-btn { margin-top: 12rpx; background: #A84A42; color: #FFF; font-size: 26rpx; }
+.task-desc { font-size: 26rpx; color: #555; line-height: 1.65; overflow-wrap: anywhere; }
+.task-current { font-size: 26rpx; color: #2E4A7A; overflow-wrap: anywhere; }
+.task-arrow { flex-shrink: 0; color: #9E9E9E; font-size: 26rpx; padding: 0 6rpx; }
+.task-detail {
+  flex-basis: 100%; padding: 14rpx; background: #FFF9ED; border-radius: 8rpx;
+  display: flex; flex-direction: column; gap: 8rpx;
+}
+.task-detail text { font-size: 26rpx; line-height: 1.65; color: #4a4a4a; overflow-wrap: anywhere; word-break: break-word; }
+.mini-btn {
+  margin: 6rpx 0 0; min-height: 72rpx; line-height: 1.4; background: #D4A934; color: #1A2B4A;
+  border: 3rpx solid #1A2B4A; border-radius: 8rpx; font-weight: bold;
+}
+.task-reward { display: block; margin-top: 14rpx; font-weight: bold; color: #A87818; line-height: 1.6; }
+
+/* ===== 模块入口 ===== */
+.module-list { display: flex; flex-direction: column; gap: 14rpx; }
+.module-row {
+  display: flex; align-items: center; gap: 12rpx; min-height: 96rpx; padding: 18rpx;
+  background: #FFF; border: 3rpx solid #1A2B4A; border-radius: 8rpx;
+}
+.module-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6rpx; }
+.module-name { font-weight: bold; font-size: 28rpx; }
+.module-sum { font-size: 22rpx; color: #777; line-height: 1.55; overflow-wrap: anywhere; word-break: break-word; }
+.module-go { flex-shrink: 0; font-size: 24rpx; color: #2E4A7A; white-space: nowrap; }
+.module-locked { opacity: 0.6; background: #EFEAE0; }
+.module-locked .module-go { color: #8a8577; }
+
+/* ===== 经营周 ===== */
+.week-btns { display: flex; flex-direction: column; gap: 16rpx; }
+.week-btns button { width: 100%; margin: 0; }
+.history-title { display: block; margin: 24rpx 0 12rpx; font-weight: bold; font-size: 26rpx; }
+.history-row { display: flex; align-items: center; gap: 12rpx; padding: 8rpx 0; }
+.history-week { width: 110rpx; flex-shrink: 0; font-size: 22rpx; color: #666; }
+.history-bar { flex: 1; min-width: 0; height: 20rpx; border-radius: 999rpx; background: #E8DFC8; overflow: hidden; }
+.history-fill { height: 100%; background: #2E4A7A; }
+.history-score { width: 190rpx; flex-shrink: 0; text-align: right; font-size: 22rpx; color: #2E4A7A; }
+.history-note { display: block; margin-top: 12rpx; font-size: 22rpx; color: #8a8577; line-height: 1.6; }
+
+/* ===== 设置 ===== */
+.settings radio-group { display: flex; flex-wrap: wrap; gap: 24rpx; margin: 16rpx 0 10rpx; }
+.mode-opt { display: inline-flex; align-items: center; gap: 8rpx; min-height: 88rpx; font-size: 26rpx; }
+.practice-hint { display: block; font-size: 22rpx; color: #8a8577; line-height: 1.6; overflow-wrap: anywhere; }
+
+/* ===== 危险区 ===== */
+.danger-zone { border-color: #A84A42; background: #FFF6F5; }
+.danger-title { display: block; font-weight: bold; color: #A84A42; font-size: 28rpx; }
+.danger-hint { display: block; margin: 10rpx 0 18rpx; font-size: 22rpx; color: #8a5a8a; line-height: 1.6; }
+.danger-zone button { width: 100%; margin: 0; }

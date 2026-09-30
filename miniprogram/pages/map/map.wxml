@@ -3,24 +3,33 @@
     <text class="title">星帆跨境 · 修炼之路</text>
     <text class="stars">★ {{totalStars}}</text>
   </view>
+  <view wx:if="{{resume}}" class="resume-banner panel" bindtap="onResume">
+    <view class="resume-info">
+      <text class="resume-title">继续上次学习</text>
+      <text class="resume-sub">{{resume.levelId}} {{resume.levelName}}｜第 {{resume.stepNo}} 步{{resume.stepTotal ? ' / ' + resume.stepTotal : ''}}</text>
+    </view>
+    <text class="resume-go">继续 ▶</text>
+  </view>
   <view class="chapter" wx:for="{{chapters}}" wx:key="id" wx:for-item="ch">
     <view class="chapter-title">
       <text class="chapter-badge">{{ch.id}}</text>
       <text>第{{ch.id}}章 · {{ch.name}}</text>
+      <text class="chapter-progress">{{ch.progressText}}</text>
     </view>
     <view
       wx:for="{{ch.levels}}" wx:key="id" wx:for-item="lv"
       class="level-node panel {{lv.locked ? 'locked' : ''}}"
-      data-id="{{lv.id}}" data-locked="{{lv.locked}}"
+      data-id="{{lv.id}}" data-locked="{{lv.locked}}" data-locked-text="{{lv.lockedText}}"
       bindtap="onTapLevel"
     >
       <view class="level-info">
         <text class="level-name">{{lv.id}} {{lv.name}}</text>
         <text class="level-goal">{{lv.goal}}</text>
+        <text wx:if="{{lv.locked}}" class="level-lock-hint">解锁条件：{{lv.lockedText}}</text>
       </view>
       <view class="level-right">
         <text class="stars">{{lv.starsText}}</text>
-        <text wx:if="{{lv.locked}}" class="lock">🔒</text>
+        <text wx:if="{{lv.locked}}" class="lock">已锁定</text>
       </view>
     </view>
   </view>

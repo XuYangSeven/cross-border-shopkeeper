@@ -4,7 +4,7 @@
     <text class="sub">已收集 {{collected}} / {{total}} 张 · 卡片背面是面试考点</text>
   </view>
   <view class="panel" wx:for="{{groups}}" wx:key="chapter" wx:for-item="g" wx:for-index="gi">
-    <text class="group-title">{{g.name}}</text>
+    <text class="group-title">{{g.name}} · {{g.ownedCount}}/{{g.cards.length}}</text>
     <view wx:for="{{g.cards}}" wx:key="id" wx:for-item="c" wx:for-index="ci"
       class="card {{c.owned ? '' : 'locked'}}" data-ch="{{gi}}" data-idx="{{ci}}" bindtap="onFlip">
       <block wx:if="{{!c.owned}}">

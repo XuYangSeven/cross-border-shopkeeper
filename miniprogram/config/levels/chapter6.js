@@ -92,16 +92,110 @@ function addBossAlternatives(item) {
 }
 bossCases.forEach(addBossAlternatives);
 
+// 教学样板要素：objectives / abilityDims / transfer / reflection（见 chapter3.js 顶部说明）
+// 教学锚点：6-2（差评合规）与 6-6（Boss）必须同时具备迁移题与结构化复述。
 module.exports = [
-  { id: '6-1', chapter: 6, name: '客服回复基础', type: 'practice', goal: '掌握核实问题、表达理解与给出解决路径', passScore: 70, steps: [{ type: 'customerScenario', scenario: 'PawPal 客服基础：逐项选择专业回复。', responseLimitHours: 24, cases: basicCases, passScore: 70, reviewPrompt: '客服回复的第一原则：先确认事实，再给出客户可以执行的下一步。' }] },
-  { id: '6-2', chapter: 6, name: '差评识别与处理', type: 'practice', goal: '区分质量、物流与不当评价诉求', passScore: 70, steps: [{ type: 'customerScenario', scenario: 'PawPal 差评处理：解决问题，不交换评价。', responseLimitHours: 24, cases: reviewCases, passScore: 70, reviewPrompt: '差评不是敌人，先按事实归因；任何退款或补偿都不能绑定删评。' }] },
-  { id: '6-3', chapter: 6, name: '退货退款决策', type: 'practice', goal: '按事实和规则做出合规售后决策', passScore: 70, steps: [{ type: 'customerScenario', scenario: 'PawPal 售后决策：权益、成本与合规要同时考虑。', responseLimitHours: 24, cases: returnCases, passScore: 70, reviewPrompt: '退款率是结果指标，不能为了压低退款而拒绝合理权益。' }] },
-  { id: '6-4', chapter: 6, name: '订单异常沟通', type: 'practice', goal: '处理延迟、漏发与地址异常', passScore: 70, steps: [{ type: 'customerScenario', scenario: 'PawPal 订单异常：承诺可控动作，不承诺不可控结果。', responseLimitHours: 24, cases: orderCases, passScore: 70, reviewPrompt: '专业客服承诺下一次跟进时间，而不是虚构一个到货时间。' }] },
-  { id: '6-5', chapter: 6, name: '服务指标', type: 'practice', goal: '计算客服响应、解决、退款与满意度指标', passScore: 70, steps: [{ type: 'serviceMetrics', scenario: '根据本周客服报表计算四项服务指标。输入数字百分比，例如90。', stats: metricsStats, fields: [
+  { id: '6-1', chapter: 6, name: '客服回复基础', type: 'practice',
+    goal: '掌握核实问题、表达理解与给出解决路径', passScore: 70,
+    objectives: ['先核实事实，再给出客户能执行的下一步', '区分「表达理解」与「过度承诺」', '遇到安全类反馈时把风险处置放在赔付之前'],
+    abilityDims: ['service'],
+    steps: [
+      { type: 'dialog', speaker: '老陈', text: '客服不是"会说话"就行，它有一套可复用的结构。先看三步法，再逐张工单练。' },
+      { type: 'card', cardId: 'K6-01' },
+      { type: 'customerScenario', scenario: 'PawPal 客服基础：逐项选择专业回复。', responseLimitHours: 24, cases: basicCases, passScore: 70, reviewPrompt: '客服回复的第一原则：先确认事实，再给出客户可以执行的下一步。' },
+    ] },
+  { id: '6-2', chapter: 6, name: '差评识别与处理', type: 'practice',
+    goal: '区分质量、物流与不当评价诉求', passScore: 70,
+    objectives: ['把差评按质量问题、物流问题、不当诉求三类归因', '说出为什么补偿不能与删评绑定', '把「先核实、再对等解决」的规则迁移到新工单'],
+    abilityDims: ['service'],
+    steps: [
+      { type: 'dialog', speaker: 'Lisa 总', text: '差评来了别慌。先按事实归因，再谈怎么解决——但有一条线绝对不能碰。' },
+      { type: 'card', cardId: 'K6-02' },
+      { type: 'customerScenario', scenario: 'PawPal 差评处理：解决问题，不交换评价。', responseLimitHours: 24, cases: reviewCases, passScore: 70, reviewPrompt: '差评不是敌人，先按事实归因；任何退款或补偿都不能绑定删评。' },
+      { type: 'transfer', scenario: '换三张新工单，规则一个字都没变：先核实事实，再给客户能执行的动作；补偿与评价不能绑定。', questions: [
+        { id: '6-2-t1', kind: 'choice', question: '客户留言：「外包装压扁了，梳子本身没事，但我想全额退款。」商品主体完好、包装仅轻微变形，客户并未提出退货。最专业的处理是？', answer: 'A', options: [
+          { key: 'A', text: '确认商品主体完好并记录包装问题，按授权范围提出合理部分补偿，说明依据' },
+          { key: 'B', text: '直接全额退款，避免差评' },
+          { key: 'C', text: '让客户自己承担，因为商品没坏' } ],
+          explain: '事实与补偿必须对等：主体完好、只影响包装，应记录问题并给出匹配的部分补偿。全额退款成本和事实不匹配；完全不理则忽略了客户体验。' },
+        { id: '6-2-t2', kind: 'choice', question: '客户说：「给我 100 元补偿，我就把一星评价删掉。」且没有提供任何质量问题证据。正确处理是？', answer: 'B', options: [
+          { key: 'A', text: '同意补偿，先把差评解决掉' },
+          { key: 'B', text: '拒绝以补偿交换评价，同时邀请客户说明真实使用问题' },
+          { key: 'C', text: '不回复，等系统自动过期' } ],
+          explain: '评价与补偿不能绑定，这是明确的合规红线；但拒绝之后仍要保留正常服务入口，请客户描述真实问题。' },
+        { id: '6-2-t3', kind: 'choice', question: '物流显示运输中、未超承诺时限，客户催问「今天一定到吗」。专业回复是？', answer: 'B', options: [
+          { key: 'A', text: '承诺今天一定到，先安抚客户' },
+          { key: 'B', text: '说明当前物流节点，承诺 24 小时内再次查询并主动反馈' },
+          { key: 'C', text: '让客户自己联系承运商' } ],
+          explain: '专业客服承诺的是可控的跟进动作，而不是不可控的具体到货时间。过度承诺一旦兑现不了，会二次伤害信任。' },
+      ], passRatio: 0.66 },
+      { type: 'reflection', prompt: '用两句话说明你的客服处理原则（第一句给原则结论，第二句给事实依据）', fields: [
+        { key: 'decision', label: '我处理差评的原则是', placeholder: '例：先核实事实，再给对等方案，绝不拿补偿换评价',
+          keywords: [['核实', '确认', '事实'], ['补偿', '退款', '赔偿'], ['评价', '差评', '删评'], ['合规', '违规', '红线']], minHits: 1,
+          sample: '我处理差评的原则是先核实事实，再按事实给出对等的解决方案，绝不把补偿与删评绑定。' },
+        { key: 'evidence', label: '我依据的是', placeholder: '例：主体完好只影响包装、客户没给证据、物流仍在运输中',
+          keywords: [['主体完好', '包装', '完好'], ['没有证据', '无证据', '未提供'], ['运输中', '物流', '节点'], ['合规', '红线', '违规']], minHits: 1,
+          sample: '我依据的是工单事实：主体完好只影响包装、客户未提供质量证据、物流仍在运输中未超时限，所以补偿与承诺都必须与事实匹配。' },
+      ], passScore: 2 },
+    ] },
+  { id: '6-3', chapter: 6, name: '退货退款决策', type: 'practice',
+    goal: '按事实和规则做出合规售后决策', passScore: 70,
+    objectives: ['区分质量问题与「不适用」退货', '按规则而不是按情绪决定退与不退', '说出虚假申报为什么不能碰'],
+    abilityDims: ['service'],
+    steps: [
+      { type: 'dialog', speaker: '老陈', text: '「有问题要退」和「用着不顺手想退」是两码事，处理方式也完全不同。' },
+      { type: 'card', cardId: 'K6-05' },
+      { type: 'customerScenario', scenario: 'PawPal 售后决策：权益、成本与合规要同时考虑。', responseLimitHours: 24, cases: returnCases, passScore: 70, reviewPrompt: '退款率是结果指标，不能为了压低退款而拒绝合理权益。' },
+    ] },
+  { id: '6-4', chapter: 6, name: '订单异常沟通', type: 'practice',
+    goal: '处理延迟、漏发与地址异常', passScore: 70,
+    objectives: ['处理延迟、漏发与地址错误三类异常', '承诺可控动作而不是不可控结果', '改动类操作先核实、再复述确认'],
+    abilityDims: ['service'],
+    steps: [
+      { type: 'dialog', speaker: '老陈', text: '客户催物流的时候，你越是拍胸脯保证，后面越容易翻车。记住一条原则再开始。' },
+      { type: 'card', cardId: 'K6-03' },
+      { type: 'customerScenario', scenario: 'PawPal 订单异常：承诺可控动作，不承诺不可控结果。', responseLimitHours: 24, cases: orderCases, passScore: 70, reviewPrompt: '专业客服承诺下一次跟进时间，而不是虚构一个到货时间。' },
+    ] },
+  { id: '6-5', chapter: 6, name: '服务指标', type: 'practice',
+    goal: '计算客服响应、解决、退款与满意度指标', passScore: 70,
+    objectives: ['算出及时响应率、解决率、退款订单率与满意度', '说出分母选错会怎样误导结论'],
+    abilityDims: ['service'],
+    steps: [
+      { type: 'dialog', speaker: '老陈', text: '指标算错往往不是算错，而是分母选错。先记住四个分母，再动手。' },
+      { type: 'card', cardId: 'K6-04' },
+      { type: 'serviceMetrics', scenario: '根据本周客服报表计算四项服务指标。输入数字百分比，例如90。', stats: metricsStats, fields: [
     { key: 'timelyResponseRate', label: '及时响应率', formula: '及时回复工单 ÷ 需回复工单 × 100%', answer: 90, unit: '%' },
     { key: 'resolutionRate', label: '解决率', formula: '已解决工单 ÷ 总工单 × 100%', answer: 80, unit: '%' },
     { key: 'refundRate', label: '退款订单率', formula: '发生退款订单 ÷ 统计订单 × 100%', answer: 5, unit: '%' },
     { key: 'satisfactionRate', label: '满意度', formula: '满意评价 ÷ 有效评价 × 100%', answer: 80, unit: '%' },
-  ], tolerancePercentagePoints: 0.1, reviewPrompt: '先看分母，再看分子；退款订单率不等于退货率。' }] },
-  { id: '6-6', chapter: 6, name: '客服综合 Boss', type: 'boss', goal: '在合规、满意度、效率和售后支出之间取得平衡', passScore: 80, steps: [{ type: 'customerBoss', scenario: '客服综合 Boss：处理一班五张工单。', responseLimitHours: 24, cases: bossCases, targets: { minTimelyResponseRate: 0.8, minResolutionRate: 0.8, minAverageSatisfaction: 80, minQualityScore: 80, maxCostCents: 3500 }, reviewPrompt: '综合处理要做到：事实清楚、动作合规、问题解决、承诺可控。' }] },
+  ], tolerancePercentagePoints: 0.1, reviewPrompt: '先看分母，再看分子；退款订单率不等于退货率。' },
+    ] },
+  { id: '6-6', chapter: 6, name: '客服综合 Boss', type: 'boss',
+    goal: '在合规、满意度、效率和售后支出之间取得平衡', passScore: 80,
+    objectives: ['在合规、满意度、效率与售后成本之间取得平衡', '说清每张工单的处理依据', '识别并避开不合规动作'],
+    abilityDims: ['service'],
+    steps: [
+      { type: 'dialog', speaker: 'Lisa 总', text: '最后一关：一个班次的五张工单，全部由你独立处理。合规、满意度、效率、成本，四条线要同时守住。' },
+      { type: 'card', cardId: 'K6-01' },
+      { type: 'customerBoss', scenario: '客服综合 Boss：处理一班五张工单。', responseLimitHours: 24, cases: bossCases, targets: { minTimelyResponseRate: 0.8, minResolutionRate: 0.8, minAverageSatisfaction: 80, minQualityScore: 80, maxCostCents: 3500 }, reviewPrompt: '综合处理要做到：事实清楚、动作合规、问题解决、承诺可控。' },
+      { type: 'transfer', scenario: '换一组客服报表：需回复工单 25 张、及时回复 20 张、已解决 19 张；统计订单 200 单、退款 8 单；有效评价 20 条、满意 16 条。公式不变，重新算。', questions: [
+        { id: '6-6-t1', kind: 'number', question: '及时响应率是多少（百分比，填数字）？', answer: 80, tolerance: 0.5, unit: '%',
+          explain: '及时响应率 = 及时回复工单 ÷ 需回复工单 = 20 ÷ 25 = 80%。分母是「需要回复的工单」，不是全部订单。' },
+        { id: '6-6-t2', kind: 'number', question: '退款订单率是多少（百分比，填数字）？', answer: 4, tolerance: 0.2, unit: '%',
+          explain: '退款订单率 = 发生退款订单 ÷ 统计订单 = 8 ÷ 200 = 4%。分母是订单数，不是工单数——这是最容易用错的一个分母。' },
+        { id: '6-6-t3', kind: 'number', question: '满意度是多少（百分比，填数字）？', answer: 80, tolerance: 0.5, unit: '%',
+          explain: '满意度 = 满意评价 ÷ 有效评价 = 16 ÷ 20 = 80%。只统计有效评价，不计未评价的订单。' },
+      ], passRatio: 0.66 },
+      { type: 'reflection', prompt: '用三句话复盘这次客服验收：结论、依据、合规风险', fields: [
+        { key: 'decision', label: '这次客服验收的结论是', placeholder: '例：四项指标与合规同时达标才算通过',
+          keywords: [['及时响应', '响应率', '解决率', '满意度'], ['达标', '未达标', '80', '通过'], ['合规']], minHits: 1,
+          sample: '这次客服验收的结论是：及时响应率、解决率、满意度和合规四项都达标，才算真正通过。' },
+        { key: 'evidence', label: '我依据的数据是', placeholder: '例：及时 20/25、解决 19/25、满意 16/20、退款 8/200',
+          keywords: [['80', '及时响应', '响应率'], ['20', '25'], ['19', '解决率'], ['16', '20', '满意度'], ['8', '200', '退款']], minHits: 2,
+          sample: '我依据的数据是需回复 25 张、及时 20 张、解决 19 张，满意 16/20 条，退款 8/200 单，四项指标都落在目标线以上。' },
+        { key: 'risk', label: '我识别出的合规风险是', placeholder: '例：补偿换删评、虚假申报、不可控承诺、泄露订单信息',
+          keywords: [['删评', '修改评价', '评价', '换评价'], ['补偿', '补偿金', '现金', '利益交换'], ['虚假', '谎称', '不实', '申报'], ['过度承诺', '承诺', '保证'], ['泄露', '隐私', '地址']], minHits: 1,
+          sample: '我识别出的合规风险是：用补偿交换删评、引导客户虚假申报、对客户做出无法兑现的承诺，以及公开泄露订单地址信息。' },
+      ], passScore: 2 },
+    ] },
 ];

@@ -1,0 +1,20 @@
+.rv-head { display: flex; flex-direction: column; gap: 10rpx; }
+.rv-title { font-size: 36rpx; font-weight: bold; color: #1A2B4A; }
+.rv-sub { font-size: 24rpx; color: #777; }
+.rv-actions { display: flex; gap: 16rpx; margin-top: 12rpx; }
+.rv-actions button { flex: 1; min-height: 88rpx; margin: 0; }
+.rv-actions .btn-danger { background: #A84A42; color: #FFF; border-color: #7A2E2A; }
+.rv-empty { display: flex; flex-direction: column; gap: 10rpx; margin-top: 24rpx; }
+.rv-hint { font-size: 24rpx; color: #888; line-height: 1.6; }
+.rv-group { margin-top: 24rpx; }
+.rv-group-title { display: block; font-weight: bold; color: #2E4A7A; margin-bottom: 12rpx; }
+.rv-item { display: flex; flex-direction: column; gap: 8rpx; padding: 18rpx; margin: 14rpx 0; border: 3rpx solid #E0D6BD; border-radius: 8rpx; background: #FFFDF7; min-height: 88rpx; box-sizing: border-box; }
+.rv-row { display: flex; align-items: center; justify-content: space-between; gap: 12rpx; }
+.rv-type { display: inline-block; align-self: flex-start; font-size: 24rpx; padding: 4rpx 16rpx; border-radius: 999rpx; background: #EDE7F6; color: #2E4A7A; }
+.rv-toggle { flex-shrink: 0; font-size: 24rpx; color: #2E4A7A; }
+.rv-q { font-weight: bold; line-height: 1.6; overflow-wrap: anywhere; word-break: break-word; }
+.rv-wrong { font-size: 26rpx; color: #C62828; line-height: 1.65; overflow-wrap: anywhere; word-break: break-word; }
+.rv-right, .rv-explain { overflow-wrap: anywhere; word-break: break-word; }
+.rv-right { font-size: 26rpx; color: #2E7D32; line-height: 1.65; }
+/* 解析与关卡页保持同一字号口径：学生要精读的是它 */
+.rv-explain { font-size: 28rpx; color: #6b5b35; background: #FFF7D6; padding: 12rpx; border-radius: 8rpx; line-height: 1.65; }

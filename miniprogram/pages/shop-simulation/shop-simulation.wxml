@@ -1,1 +1,51 @@
-<view class="page"><view class="panel"><text class="title">7日经营模拟</text><text class="sub">第 {{day}} / 7 天｜每天结束后生成广告、订单、库存和现金结果。</text><view wx:if="{{snapshot}}" class="snapshot"><text>今日曝光：{{snapshot.impressions}}</text><text>今日点击：{{snapshot.clicks}}</text><text>今日订单：{{snapshot.orders}}</text><text>今日销售额：${{snapshot.sales}}</text><text>今日广告花费：${{snapshot.adSpend}}</text><text>剩余库存：{{snapshot.inventory}}</text><text>现金余额：¥{{snapshot.cash}}</text><text wx:if="{{snapshot.stockout}}" class="warn">今日发生断货，部分订单未成交</text></view><button wx:if="{{!done}}" bindtap="onNextDay">结束今天 ▶</button><button bindtap="onBack">返回广告页</button></view></view>
+<view class="page">
+  <view class="panel">
+    <text class="title">7 日经营模拟</text>
+    <text class="sub">第 {{day}} / {{totalDays}} 天。开始后本周决策已冻结：想改决策要先回店铺重置本周。</text>
+    <text wx:if="{{frozenAt}}" class="action-preview">{{frozenAt}}</text>
+    <view class="progress"><view class="progress-fill" style="width:{{day / totalDays * 100}}%"></view></view>
+  </view>
+
+  <view class="panel">
+    <text class="title">本周决策对应的推演基准</text>
+    <view class="kpi-grid">
+      <view wx:for="{{kpiTiles}}" wx:key="key" class="kpi">
+        <text class="kpi-v">{{item.value}}</text>
+        <text class="kpi-k">{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="panel">
+    <text class="title">今日结果</text>
+    <block wx:if="{{snapshot}}">
+      <view class="stat-list">
+        <view class="stat-row"><text class="stat-k">曝光 / 点击</text><text class="stat-v">{{snapshot.impressions}} / {{snapshot.clicks}}</text></view>
+        <view class="stat-row"><text class="stat-k">成交订单</text><text class="stat-v">{{snapshot.orders}}</text></view>
+        <view class="stat-row"><text class="stat-k">销售额</text><text class="stat-v">${{snapshot.sales}}</text></view>
+        <view class="stat-row"><text class="stat-k">广告花费 / 货品成本</text><text class="stat-v">${{snapshot.adSpend}} / ${{snapshot.cogs}}</text></view>
+        <view class="stat-row"><text class="stat-k">剩余库存</text><text class="stat-v {{snapshot.inventory <= 0 ? 'warn' : ''}}">{{snapshot.inventory}} 件</text></view>
+        <view class="stat-row"><text class="stat-k">现金余额</text><text class="stat-v {{snapshot.cash < 0 ? 'warn' : ''}}">¥{{snapshot.cash}}</text></view>
+      </view>
+      <text wx:if="{{snapshot.stockout}}" class="action-preview warn-text">今日断货，有 {{snapshot.lostOrders}} 笔订单没成交。断货当天广告费照样花，等于白烧。</text>
+    </block>
+    <text wx:else class="sub">还没有开始跑。点下面的按钮结束第 1 天。</text>
+  </view>
+
+  <view wx:if="{{timeline.length}}" class="panel">
+    <text class="title">每日流水</text>
+    <view wx:for="{{timeline}}" wx:key="day" class="day-row {{item.stockTone}}">
+      <text class="day-label">{{item.label}}</text>
+      <text class="day-main">订单 {{item.orders}} · 销售额 ${{item.sales}}</text>
+      <text class="day-side">库存 {{item.inventory}} · 现金 ¥{{item.cash}}</text>
+      <text wx:if="{{item.stockout}}" class="day-flag">断货</text>
+    </view>
+  </view>
+
+  <view class="panel bottom-btns">
+    <button wx:if="{{!done}}" class="btn-primary" bindtap="onNextDay">结束今天 ▶</button>
+    <button wx:if="{{!done && day > 0}}" class="btn-secondary" bindtap="onRunAll">直接跑完剩余天数</button>
+    <button wx:if="{{done}}" class="btn-primary" bindtap="onSettle">查看本周结算 ▸</button>
+    <button class="btn-secondary" bindtap="onBack">返回店铺</button>
+  </view>
+</view>

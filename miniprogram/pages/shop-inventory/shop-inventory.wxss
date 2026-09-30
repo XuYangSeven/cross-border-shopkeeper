@@ -1,1 +1,3 @@
-.title{font-weight:bold;display:block}.sub,.stat{display:block;color:#777;margin:16rpx 0;line-height:1.6}input{border:3rpx solid #1A2B4A;padding:16rpx;margin-top:12rpx}button{margin-top:20rpx}
+@import "../../styles/shop-page.wxss";
+
+.ship-detail { font-size: 22rpx; color: #888; }

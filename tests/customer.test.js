@@ -10,7 +10,7 @@ assert.strictEqual(metrics.satisfactionRate, 0.8);
 assert.strictEqual(customer.calculateServiceMetrics({ ticketCount: 0, timelyCount: 0, resolvedCount: 0, orderCount: 0, refundedOrderCount: 0, ratingCount: 0, satisfiedCount: 0 }).refundRate, null);
 assert.throws(() => customer.calculateServiceMetrics({ ticketCount: 1, timelyCount: 2, resolvedCount: 0, orderCount: 1, refundedOrderCount: 0, ratingCount: 1, satisfiedCount: 0 }));
 
-const basic = levels[0].steps[0];
+const basic = levels[0].steps.find(step => step.type === 'customerScenario');
 const source = JSON.stringify(basic.cases);
 const evaluated = customer.evaluateScenario({ scenario: basic.cases[0], optionId: 'good', responseLimitHours: 24 });
 assert.strictEqual(evaluated.compliant, true);
@@ -18,7 +18,7 @@ assert.strictEqual(evaluated.timely, true);
 assert.strictEqual(JSON.stringify(basic.cases), source);
 assert.throws(() => customer.evaluateScenario({ scenario: basic.cases[0], optionId: 'missing', responseLimitHours: 24 }));
 
-const boss = levels[5].steps[0];
+const boss = levels[5].steps.find(step => step.type === 'customerBoss');
 const selections = {};
 boss.cases.forEach(item => { selections[item.id] = 'good'; });
 const result = customer.evaluateCustomerBoss({ cases: boss.cases, selections, responseLimitHours: boss.responseLimitHours, targets: boss.targets });

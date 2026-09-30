@@ -1,1 +1,83 @@
-<view class="page"><view class="panel"><text class="title">7日经营结算</text><text class="rating">{{settlement.rating}}</text><view class="grid"><text>总曝光 {{settlement.impressions}}</text><text>总点击 {{settlement.clicks}}</text><text>总订单 {{settlement.orders}}</text><text>销售额 ${{settlement.sales}}</text><text>广告花费 ${{settlement.adSpend}}</text><text>CTR {{settlement.ctr}}%</text><text>CVR {{settlement.cvr}}%</text><text>ACOS {{settlement.acos}}%</text><text>ROAS {{settlement.roas}}</text><text>断货 {{settlement.stockoutDays}}天</text><text>期末库存 {{settlement.endingInventory}}</text><text>期末现金 ¥{{settlement.endingCash}}</text><text>估算利润 ${{settlement.profit}}</text></view><view class="task-box"><text class="title">本周经营任务 {{taskSummary.completed}}/{{taskSummary.total}}</text><view wx:for="{{tasks}}" wx:key="id" class="task-row"><text>{{item.title}}：{{item.status}}</text><text>{{item.description}}</text></view><text wx:if="{{taskSummary.allCompleted}}">全部完成，奖励 {{taskSummary.reward.coins}} 金币 / {{taskSummary.reward.exp}} 经验</text></view><text class="sub">结算结果可用于第7章数据复盘。</text><button bindtap="onSave">保存本次结算</button><button bindtap="onBack">返回店铺</button></view></view>
+<view class="page">
+  <view wx:if="{{empty}}" class="panel">
+    <text class="title">还没有可结算的经营周</text>
+    <text class="sub">先回店铺点「开始本周经营」，跑完 7 天再来结算。</text>
+    <button class="btn-primary" bindtap="onBack">返回店铺</button>
+  </view>
+
+  <block wx:else>
+    <view class="panel">
+      <text class="title">7 日经营结算</text>
+      <text wx:if="{{practiceOnly}}" class="preview">练习模式：以下奖励仅为预览，不写入正式存档，也不计入能力证据。</text>
+      <view class="rating">{{settlement.rating}}</view>
+      <text class="sub">经营评级看三件事：有没有断货、ACOS 是否失控、现金和利润是否为正。</text>
+    </view>
+
+    <view class="panel">
+      <text class="title">经营结果</text>
+      <view class="stat-list">
+        <view class="stat-row"><text class="stat-k">总订单（自然 / 付费）</text><text class="stat-v">{{settlement.naturalOrders}} / {{settlement.paidOrders}}</text></view>
+        <view class="stat-row"><text class="stat-k">销售额</text><text class="stat-v">${{settlement.sales}}</text></view>
+        <view class="stat-row"><text class="stat-k">广告花费 / 货品成本</text><text class="stat-v">${{settlement.adSpend}} / ${{settlement.cogs}}</text></view>
+        <view class="stat-row"><text class="stat-k">CTR / CVR</text><text class="stat-v">{{settlement.ctr}}% / {{settlement.cvr}}%</text></view>
+        <view class="stat-row"><text class="stat-k">ACOS / ROAS</text><text class="stat-v {{settlement.acos > 35 ? 'warn' : 'ok'}}">{{settlement.acos}}% / {{settlement.roas}}</text></view>
+        <view class="stat-row"><text class="stat-k">毛利率</text><text class="stat-v">{{settlement.margin}}%</text></view>
+        <view class="stat-row"><text class="stat-k">净利</text><text class="stat-v {{settlement.profit > 0 ? 'ok' : 'warn'}}">${{settlement.profit}}</text></view>
+        <view class="stat-row"><text class="stat-k">断货天数 / 丢单</text><text class="stat-v {{settlement.stockoutDays > 0 ? 'warn' : 'ok'}}">{{settlement.stockoutDays}} 天 / {{settlement.lostOrders}} 笔</text></view>
+        <view class="stat-row"><text class="stat-k">期末库存 / 期末现金</text><text class="stat-v">{{settlement.endingInventory}} 件 / ¥{{settlement.endingCash}}</text></view>
+      </view>
+      <text wx:if="{{settlement.lostOrders > 0}}" class="action-preview warn-text">断货丢掉 {{settlement.lostOrders}} 笔订单。补货要按交期倒推：交期超过一周的方式，救不了本周。</text>
+    </view>
+
+    <view class="panel">
+      <text class="title">决策评分 · {{settlement.decision.score}} 分（{{settlement.decision.level}}）</text>
+      <text class="sub">{{settlement.decision.summary}}</text>
+      <view wx:for="{{decisionRows}}" wx:key="key">
+        <view class="decision-row">
+          <text class="decision-label">{{item.label}}</text>
+          <view class="decision-bar"><view class="decision-fill {{item.tone}}" style="width:{{item.barWidth}}%"></view></view>
+          <text class="decision-score">{{item.score}}</text>
+          <text class="decision-weight">{{item.weightText}}</text>
+        </view>
+        <text class="decision-advice">{{item.advice}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{hasRedline}}" class="panel redline-panel">
+      <text class="title">经营红线</text>
+      <view class="note-list">
+        <text wx:for="{{redlines}}" wx:key="*this" class="note-line redline">⚠ {{item}}</text>
+      </view>
+      <text class="action-preview">触发红线后，本次能力证据会被标注合规问题，对应维度评分封顶 60 分 —— 其他维度的好成绩抵不掉。</text>
+    </view>
+
+    <view class="panel">
+      <text class="title">6 项任务锁定结果 {{taskSummary.completed}} / {{taskSummary.total}}</text>
+      <view class="stat-list">
+        <view wx:for="{{tasks}}" wx:key="id" class="stat-row">
+          <text class="stat-k">{{item.completed ? '✅' : '❌'}} {{item.title}}<text class="task-goal">　{{item.description}}</text></text>
+          <text class="stat-v {{item.completed ? 'ok' : 'warn'}}">{{item.current}}{{item.unit}}</text>
+        </view>
+      </view>
+      <text class="action-preview">{{taskSummary.review}}</text>
+      <text class="reward">{{practiceOnly ? '本次可获得奖励（仅预览）' : '本周奖励'}}：{{taskSummary.reward.coins}} 金币 / {{taskSummary.reward.exp}} 经验</text>
+    </view>
+
+    <view class="panel">
+      <text class="title">这次经营写入了什么能力证据</text>
+      <text class="sub">结算结果会进入「我的 → 能力评估」，也是求职时可以拿出来的决策证据。</text>
+      <view class="stat-list">
+        <view wx:for="{{evidenceRows}}" wx:key="k" class="stat-row">
+          <text class="stat-k">{{item.k}}</text>
+          <text class="stat-v">{{item.v}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="panel bottom-btns">
+      <button wx:if="{{!saved}}" class="btn-primary" bindtap="onSave">{{practiceOnly ? '生成练习预览' : '锁定并领取奖励'}}</button>
+      <button wx:else class="btn-secondary" disabled="{{true}}">本周已锁定</button>
+      <button class="btn-secondary" bindtap="onBack">返回店铺</button>
+    </view>
+  </block>
+</view>

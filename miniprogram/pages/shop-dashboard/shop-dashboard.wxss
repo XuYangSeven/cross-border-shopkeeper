@@ -1,1 +1,1 @@
-.title{font-weight:bold;display:block;margin-bottom:8rpx}.sub,.review{display:block;color:#777;margin:12rpx 0}.review{color:#A84A42;line-height:1.6}.kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16rpx}.kpi{background:#FFF;border:3rpx solid #1A2B4A;border-radius:8rpx;padding:18rpx;text-align:center}.kpi-v{font-size:34rpx;font-weight:bold;display:block}.kpi-k{color:#888}button{margin-top:24rpx}
+@import "../../styles/shop-page.wxss";

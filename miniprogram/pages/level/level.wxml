@@ -1,4 +1,20 @@
 <view class="page">
+  <!-- 学习容器头部：章节目标 / 步骤进度 / 阶段标签 -->
+  <view wx:if="{{level}}" class="learn-header">
+    <view class="learn-top">
+      <text class="learn-goal">{{goalText}}</text>
+      <text class="learn-stage stage-{{stageKind}}">{{stageLabel}}</text>
+    </view>
+    <view class="progress-bar">
+      <view class="progress-fill" style="width: {{progressPercent}}%"></view>
+    </view>
+    <view class="learn-sub">
+      <text>第 {{stepNo}} / {{stepTotal}} 步</text>
+      <text wx:if="{{resumedText}}" class="resume-tip">{{resumedText}}</text>
+      <text wx:if="{{mistakeCount}}" class="mistake-tip">错题 {{mistakeCount}}</text>
+    </view>
+  </view>
+
   <!-- 剧情对话 -->
   <block wx:if="{{view.type === 'dialog'}}">
     <view class="dialog panel">
@@ -28,7 +44,11 @@
         data-idx="{{idx}}" bindtap="onPickOption">
         <text>{{opt.key}}. {{opt.text}}</text>
       </view>
-      <text wx:if="{{view.picked !== null}}" class="explain">{{view.explain}}</text>
+      <view wx:if="{{view.picked !== null && view.picked !== undefined}}" class="feedback-box">
+        <text class="fb-line">你的选择：{{view.options[view.picked].key}}. {{view.options[view.picked].text}}</text>
+        <text class="fb-line fb-right">正确答案：{{view.correctKey}}｜{{view.explain}}</text>
+      </view>
+      <button wx:if="{{quizContinue}}" class="btn-primary" bindtap="onQuizContinue">继续 ▶</button>
     </view>
   </block>
 
@@ -43,19 +63,21 @@
           <text>{{m.name}}</text>
         </view>
       </view>
+      <button wx:if="{{view.done}}" class="btn-primary" bindtap="next">模块已点亮，继续 ▶</button>
     </view>
   </block>
 
   <!-- 公式拼装 -->
   <block wx:if="{{view.type === 'formulaPuzzle'}}">
     <view class="panel">
-      <text class="q">把三个积木按公式顺序拖入</text>
+      <text class="q">依次点击三个词块，拼出正确公式</text>
       <view class="formula">销售额 = {{view.placed[0] || '❓'}} × {{view.placed[1] || '❓'}} × {{view.placed[2] || '❓'}}</view>
       <view class="slots-pool">
         <view wx:for="{{view.slots}}" wx:key="*this" wx:for-item="s"
           class="slot-chip {{view.placedMap[s] ? 'used' : ''}}"
           data-name="{{s}}" bindtap="onTapFormulaSlot">{{s}}</view>
       </view>
+      <button wx:if="{{view.done}}" class="btn-primary" bindtap="next">公式正确，继续 ▶</button>
     </view>
   </block>
 
@@ -103,7 +125,7 @@
   <block wx:if="{{view.type === 'skuFilter'}}">
     <view class="panel">
       <block wx:if="{{!view.done}}">
-        <text class="q">逐张判定情报卡</text>
+        <text class="q">逐张判定情报卡（正确率 ≥80% 才通过）</text>
         <view wx:for="{{view.list}}" wx:key="id" wx:for-item="it" wx:for-index="i" class="sku-card">
           <view class="sku-head">
             <text class="sku-name">{{it.nameZh}}</text>
@@ -122,8 +144,19 @@
             <view class="v-btn out {{it.verdict === 'out' ? 'on' : ''}}" data-idx="{{i}}" data-verdict="out" bindtap="onVerdict">❌ 淘汰</view>
           </view>
           <text wx:if="{{it.verdict === 'out' && it.reason}}" class="text-down">理由：{{it.reasonText}}</text>
+          <view wx:if="{{it.correct === false}}" class="fb-box fb-bad">
+            <text>判定有误：正确应选「{{it.correctVerdictText}}」</text>
+            <text wx:if="{{it.correctReasonText}}">理由：{{it.correctReasonText}}</text>
+          </view>
+          <text wx:if="{{it.correct === true}}" class="fb-ok">判定正确 ✓</text>
         </view>
-        <button class="btn-primary" bindtap="onSkuFilterSubmit">提交初筛报告</button>
+        <view wx:if="{{view.result && !view.result.passed}}" class="fb-box fb-bad">
+          <text>正确率 {{view.result.ok}}/{{view.result.total}}，未达 80%。先看每张卡的正确判定与理由，再重新提交。</text>
+        </view>
+        <button wx:if="{{!view.result}}" class="btn-primary" bindtap="onSkuFilterSubmit">提交初筛报告</button>
+        <block wx:else>
+          <button class="btn-primary" bindtap="onSkuFilterRetry">再做一次</button>
+        </block>
       </block>
       <block wx:else>
         <text class="text-up">初筛报告提交成功</text>
@@ -261,7 +294,7 @@
     <view class="panel"><text class="q">{{view.scenario}}</text><view wx:for="{{view.blanks}}" wx:key="label" wx:for-item="b" wx:for-index="i" class="blank-row"><text class="b-label">{{b.label}}</text><input class="blank {{b.ok === true ? 'ok' : b.ok === false ? 'bad' : ''}}" type="digit" value="{{b.input}}" data-key="blanks[{{i}}].input" bindinput="onAdInput"/><text>{{b.unit}}</text></view><button wx:if="{{!view.done}}" class="btn-primary" bindtap="onAdMetricSubmit">提交指标</button><button wx:else class="btn-primary" bindtap="next">正确，继续 ▶</button></view>
   </block>
   <block wx:if="{{view.type === 'searchTermSort'}}"><view class="panel"><text class="q">搜索词分类</text><view wx:for="{{view.list}}" wx:key="term" wx:for-item="it" wx:for-index="i" class="sku-card"><text>{{it.term}}</text><view class="verdict-btns"><view class="v-btn {{it.picked === '核心词' ? 'on' : ''}}" data-idx="{{i}}" data-kind="核心词" bindtap="onAdTermPick">核心词</view><view class="v-btn {{it.picked === '长尾词' ? 'on' : ''}}" data-idx="{{i}}" data-kind="长尾词" bindtap="onAdTermPick">长尾词</view><view class="v-btn {{it.picked === '泛词' ? 'on' : ''}}" data-idx="{{i}}" data-kind="泛词" bindtap="onAdTermPick">泛词</view><view class="v-btn {{it.picked === '风险词' ? 'on' : ''}}" data-idx="{{i}}" data-kind="风险词" bindtap="onAdTermPick">风险词</view></view></view><button wx:if="{{!view.done}}" class="btn-primary" bindtap="onAdTermSubmit">提交分类</button><button wx:else class="btn-primary" bindtap="next">分类完成，继续 ▶</button></view></block>
-  <block wx:if="{{view.type === 'negativeKeyword'}}"><view class="panel"><text class="q">否定词或保留</text><view wx:for="{{view.list}}" wx:key="term" wx:for-item="it" wx:for-index="i" class="sku-card"><text>{{it.term}}</text><view class="verdict-btns"><view class="v-btn {{it.picked === '否定词' ? 'on' : ''}}" data-idx="{{i}}" data-kind="否定词" bindtap="onAdCategoryPick">否定词</view><view class="v-btn {{it.picked === '保留' ? 'on' : ''}}" data-idx="{{i}}" data-kind="保留" bindtap="onAdCategoryPick">保留</view></view></view><button wx:if="{{!view.done}}" class="btn-primary" bindtap="onAdCategorySubmit">提交分类</button><button wx:else class="btn-primary" bindtap="next">分类完成，继续 ▶</button></view></block>
+  <block wx:if="{{view.type === 'negativeKeyword'}}"><view class="panel"><text class="q">否定词或保留</text><view wx:for="{{view.list}}" wx:key="term" wx:for-item="it" wx:for-index="i" class="sku-card"><text>{{it.term}}</text><view class="verdict-btns"><view class="v-btn {{it.picked === '否定词' ? 'on' : ''}}" data-idx="{{i}}" data-kind="否定词" bindtap="onNegativePick">否定词</view><view class="v-btn {{it.picked === '保留' ? 'on' : ''}}" data-idx="{{i}}" data-kind="保留" bindtap="onNegativePick">保留</view></view></view><button wx:if="{{!view.done}}" class="btn-primary" bindtap="onNegativeSubmit">提交分类</button><button wx:else class="btn-primary" bindtap="next">分类完成，继续 ▶</button></view></block>
   <block wx:if="{{view.type === 'adPlacement' || view.type === 'launchStrategy'}}"><view class="panel"><text class="q">选择推荐方案</text><view wx:for="{{view.options}}" wx:key="id" wx:for-item="o" class="option {{view.selected === o.id ? 'picked' : ''}}" data-id="{{o.id}}" bindtap="onAdOptionPick">{{o.label}}</view><button wx:if="{{!view.done}}" class="btn-primary" bindtap="onAdOptionSubmit">提交选择</button><button wx:else class="btn-primary" bindtap="next">选择正确，继续 ▶</button></view></block>
   <block wx:if="{{view.type === 'keywordCampaign'}}"><view class="panel"><text class="q">选择有效广告组与匹配方式</text><view wx:for="{{view.groups}}" wx:key="id" wx:for-item="g" wx:for-index="i" class="option {{g.selected ? 'picked' : ''}}" data-kind="groups" data-idx="{{i}}" bindtap="onAdGroupPick">{{g.name}}</view><view wx:for="{{view.matches}}" wx:key="id" wx:for-item="m" wx:for-index="i" class="option {{m.selected ? 'picked' : ''}}" data-kind="matches" data-idx="{{i}}" bindtap="onAdGroupPick">{{m.name}}</view><button wx:if="{{!view.done}}" class="btn-primary" bindtap="onAdGroupSubmit">提交广告组</button><button wx:else class="btn-primary" bindtap="next">配置完成，继续 ▶</button></view></block>
   <block wx:if="{{view.type === 'bidBudgetSim'}}"><view class="panel"><text class="q">预算不超过 $100，输入预算与竞价</text><input class="blank" type="digit" value="{{view.budgetInput}}" data-key="budgetInput" bindinput="onAdInput"/><input class="blank" type="digit" value="{{view.bidInput}}" data-key="bidInput" bindinput="onAdInput"/><button wx:if="{{!view.done}}" class="btn-primary" bindtap="onBidSubmit">计算预估</button><view wx:if="{{view.result}}"><text>点击 {{view.result.clicks}}｜订单 {{view.result.orders}}｜ACOS {{view.result.acos}}</text></view><button wx:if="{{view.done}}" class="btn-primary" bindtap="next">继续 ▶</button></view></block>
@@ -381,6 +414,97 @@
       <view wx:else>
         <text class="{{view.good ? 'text-up' : 'text-warn'}}">成交价 ¥{{view.finalPrice}}/件 {{view.good ? '（接近最优解！）' : '（可行但有更优组合）'}}</text>
         <button class="btn-primary" bindtap="next">继续 ▶</button>
+      </view>
+    </view>
+  </block>
+
+  <!-- 迁移题：换数据、换情境 -->
+  <block wx:if="{{view.type === 'transfer'}}">
+    <view class="panel transfer-panel">
+      <text class="stage-tag stage-transfer">迁移应用</text>
+      <text class="q">{{view.scenario}}</text>
+      <view wx:for="{{view.questions}}" wx:key="id" wx:for-item="q" wx:for-index="qi" class="transfer-q">
+        <text class="tq-title">{{qi + 1}}. {{q.question}}</text>
+        <block wx:if="{{q.kind === 'number'}}">
+          <view class="blank-row">
+            <input class="blank {{q.result ? (q.result.correct ? 'ok' : 'bad') : ''}}" type="digit"
+              placeholder="填数字" value="{{q.blankInput}}" disabled="{{view.done}}"
+              data-q="{{qi}}" bindinput="onTransferInput" />
+            <text class="unit">{{q.unit}}</text>
+          </view>
+        </block>
+        <block wx:else>
+          <view wx:for="{{q.options}}" wx:key="key" wx:for-item="o" class="option {{q.picked === o.key ? 'picked' : ''}} {{q.result ? (q.result.correct && q.result.correctAnswer === o.key ? 'right' : '') : ''}}"
+            data-q="{{qi}}" data-key="{{o.key}}" bindtap="onTransferPick">
+            <text>{{o.key}}. {{o.text}}</text>
+          </view>
+        </block>
+        <view wx:if="{{q.result}}" class="feedback-box">
+          <text class="fb-line {{q.result.correct ? 'fb-right' : 'fb-wrong'}}">{{q.result.correct ? '✅ 正确' : '❌ 错误'}}</text>
+          <text wx:if="{{!q.result.correct}}" class="fb-line">你的答案：{{q.result.userAnswer}}</text>
+          <text class="fb-line">正确答案：{{q.result.correctAnswer}}</text>
+          <text class="fb-line fb-explain">{{q.result.explain}}</text>
+        </view>
+      </view>
+      <text wx:if="{{view.result}}" class="score-line">{{view.result.passText}}｜通过线 {{view.passRatio}}</text>
+      <button wx:if="{{!view.done}}" class="btn-primary" bindtap="onTransferSubmit">提交迁移作答</button>
+      <block wx:else>
+        <button class="btn-primary" bindtap="next">迁移达标，继续 ▶</button>
+      </block>
+      <button wx:if="{{!view.done && view.result}}" class="btn-secondary" bindtap="onTransferRetry">重新作答</button>
+    </view>
+  </block>
+
+  <!-- 结构化复述：结论 / 依据 / 风险 -->
+  <block wx:if="{{view.type === 'reflection'}}">
+    <view class="panel reflection-panel">
+      <text class="stage-tag stage-reflection">结构化复盘</text>
+      <text class="q">{{view.prompt}}</text>
+      <view wx:for="{{view.fields}}" wx:key="key" wx:for-item="f" wx:for-index="fi" class="reflect-field">
+        <text class="rf-label">{{f.label}}</text>
+        <textarea class="rf-input {{f.matched === true ? 'ok' : f.matched === false ? 'bad' : ''}}"
+          placeholder="{{f.placeholder}}" value="{{f.input}}" disabled="{{view.done}}"
+          auto-height maxlength="200" data-f="{{fi}}" bindinput="onReflectionInput" />
+        <text wx:if="{{f.matched === true}}" class="rf-ok">✅ 要点达标（命中：{{f.matchedWords}}）</text>
+        <text wx:if="{{f.matched === false}}" class="rf-bad">还缺点：命中 {{f.hits}} / 需要 {{f.required}} 个要点</text>
+        <text wx:if="{{f.matched === false && view.done === false && view.result}}" class="rf-sample">参考表述：{{f.sample}}</text>
+      </view>
+      <text wx:if="{{view.result}}" class="score-line">{{view.result.passText}}｜需要覆盖 {{view.passScore}} 段</text>
+      <button wx:if="{{!view.done}}" class="btn-primary" bindtap="onReflectionSubmit">提交复盘</button>
+      <block wx:else>
+        <view class="reflect-summary">
+          <text class="rf-ok">复述已达标，你的表达已覆盖决策、依据与风险。</text>
+          <text wx:for="{{view.fields}}" wx:key="key" wx:for-item="f" class="rf-sample">参考表述｜{{f.label}}：{{f.sample}}</text>
+        </view>
+        <button class="btn-primary" bindtap="next">完成本关 ▶</button>
+      </block>
+      <button wx:if="{{!view.done && view.result}}" class="btn-secondary" bindtap="onReflectionRetry">修改后再提交</button>
+    </view>
+  </block>
+
+  <!-- ===== 求助坞：所有可判定步骤共用一处，避免在 43 个步骤分支里各写一遍 ===== -->
+  <block wx:if="{{view.hint && view.hint.available}}">
+    <view class="hint-dock">
+      <view class="hint-head" bindtap="onToggleHint">
+        <text class="hint-title">💡 卡住了？</text>
+        <text class="hint-sub">{{view.hint.used ? '本关已用提示，零提示奖励已失效' : '思路免费，线索与解析需金币'}}</text>
+        <text class="hint-arrow">{{view.hint.open ? '▲' : '▼'}}</text>
+      </view>
+      <view wx:if="{{view.hint.open}}" class="hint-body">
+        <view wx:for="{{view.hint.tiers}}" wx:key="tier" wx:for-item="t" class="hint-tier">
+          <view class="hint-tier-head">
+            <text class="hint-tier-label">{{t.label}}</text>
+            <text class="hint-tier-price">{{t.price === 0 ? '免费' : t.price + ' 金币'}}</text>
+          </view>
+          <text class="hint-tier-desc">{{t.desc}}</text>
+          <text wx:if="{{t.unlocked}}" class="hint-tier-text">{{t.text}}</text>
+          <button wx:elif="{{t.ready}}" class="hint-buy {{view.hint.coins < t.price ? 'hint-buy-off' : ''}}"
+            data-tier="{{t.tier}}" bindtap="onBuyHint">
+            {{t.price === 0 ? '看思路' : '解锁（' + t.price + ' 金币）'}}
+          </button>
+          <text wx:else class="hint-none">这一级暂无可用提示</text>
+        </view>
+        <text class="hint-foot">零提示通关可多拿 50% 金币并累计连胜；用过任何一级提示（含免费的思路）即失去本关加成。金币可在「店铺」完成经营周任务赚取。</text>
       </view>
     </view>
   </block>

@@ -1,1 +1,5 @@
-.title{font-weight:bold;display:block}.sub,.review{display:block;color:#777;margin:16rpx 0;line-height:1.6}.health-row{display:flex;justify-content:space-between;border-bottom:2rpx solid #D8C7A3;padding:20rpx 0}.review{color:#A84A42}button{margin-top:20rpx}
+@import "../../styles/shop-page.wxss";
+
+.redline-panel { border-color: #A84A42; background: #FFF6F5; }
+.note-line.redline { color: #A84A42; font-weight: bold; }
+.ok-text { color: #2E7D32; }

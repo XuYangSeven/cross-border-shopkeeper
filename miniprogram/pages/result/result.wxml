@@ -1,17 +1,53 @@
 <view class="page">
   <view class="panel result">
-    <text class="r-title">{{stars >= 1 ? '通关！' : '差一点，再来一次'}}</text>
+    <text class="r-title">{{title}}</text>
     <text class="stars big">{{starsText}}</text>
-    <text class="r-score">得分 {{total}}｜金币 +{{coin}}</text>
+    <text class="r-score">游戏得分 {{total}}{{coin ? '｜金币 +' + coin : ''}}</text>
+
+    <!-- 金币明细：把「省着用提示」的回报说清楚，否则学生只看得到总数，感受不到取舍 -->
+    <view class="r-coin" wx:if="{{passed && reward}}">
+      <view class="rc-row"><text>通关奖励</text><text>+{{reward.base}}</text></view>
+      <view class="rc-row rc-bonus" wx:if="{{reward.noHintBonus}}"><text>零提示加成</text><text>+{{reward.noHintBonus}}</text></view>
+      <view class="rc-row rc-bonus" wx:if="{{reward.streakBonus}}"><text>连胜奖励（连续第 {{reward.streak}} 关）</text><text>+{{reward.streakBonus}}</text></view>
+      <view class="rc-row rc-total"><text>合计</text><text class="text-gold">+{{coin}}</text></view>
+      <text wx:if="{{reward.usedHint}}" class="rc-note">本关用了 {{hintsUsed}} 次提示（花掉 {{hintsSpent}} 金币），所以不获得零提示加成{{reward.brokeStreak ? '，之前的连胜也中断了' : ''}}。</text>
+      <text wx:else class="rc-note">全程没用提示，连胜已累计到 {{reward.streak}} 关。保持住。</text>
+    </view>
+
+    <!-- 学习结果：能力反馈 -->
+    <view class="r-learning" wx:if="{{rows.length}}">
+      <text class="r-sub">学习结果</text>
+      <view wx:for="{{rows}}" wx:key="key" wx:for-item="row" class="l-row">
+        <text class="l-label">{{row.label}}</text>
+        <view class="l-bar"><view class="l-fill {{row.rate >= 0.7 ? 'good' : 'low'}}" style="width: {{row.percent}}%"></view></view>
+        <text class="l-value">{{row.text}}</text>
+      </view>
+      <view class="l-ability">
+        <text>本关能力分 {{abilityScore}}（{{abilityLevel}}）</text>
+        <text wx:if="{{overall}}" class="l-overall">累计能力分 {{overall}}（{{overallLevel}}）</text>
+      </view>
+      <text wx:if="{{weakText}}" class="l-weak">待补强：{{weakText}}</text>
+      <text wx:if="{{nextStep}}" class="l-next">下一步：{{nextStep}}</text>
+    </view>
+
     <view class="r-cards" wx:if="{{cards.length}}">
       <text class="r-sub">本关收集知识卡片</text>
       <view wx:for="{{cards}}" wx:key="id" wx:for-item="c" class="r-card">
         <text>{{c.id}} {{c.title}}</text>
       </view>
     </view>
+
+    <!-- 单列按钮：主 CTA → 次 CTA → 返回 -->
     <view class="btns">
-      <button class="btn-secondary" bindtap="onRetry">{{stars >= 3 ? '再刷一次' : '重新挑战'}}</button>
-      <button class="btn-primary" bindtap="onBackMap">返回地图</button>
+      <button wx:if="{{nextLevelId}}" class="btn-primary act-main" bindtap="onNextLevel">进入下一关：{{nextLevelName}} ▶</button>
+      <button wx:if="{{passed && !nextLevelId}}" class="btn-primary act-main" bindtap="onOpenShop">去店铺应用 →</button>
+      <button wx:if="{{!passed}}" class="btn-primary act-main" bindtap="onRetry">重新挑战本关</button>
+
+      <button wx:if="{{levelValid}}" class="btn-secondary act-sub" bindtap="onOpenReview">查看错题复盘</button>
+      <button class="btn-secondary act-sub" bindtap="onOpenManual">复习知识卡片</button>
+      <button wx:if="{{passed && nextLevelId}}" class="btn-secondary act-sub" bindtap="onOpenShop">去店铺应用 →</button>
+      <button wx:if="{{passed && nextLevelId}}" class="btn-secondary act-sub" bindtap="onRetry">再刷一次</button>
+      <button class="btn-secondary act-back" bindtap="onBackMap">返回地图</button>
     </view>
   </view>
 </view>

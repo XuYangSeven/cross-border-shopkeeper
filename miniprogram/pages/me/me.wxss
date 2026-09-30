@@ -1,2 +1,40 @@
 .title { font-weight: bold; font-size: 32rpx; display: block; margin-bottom: 16rpx; }
 .row { display: flex; justify-content: space-between; padding: 12rpx 0; border-bottom: 2rpx dashed #DDD; }
+
+.dim-line { display: flex; align-items: center; gap: 14rpx; padding: 10rpx 0; }
+.dim-name { width: 170rpx; flex-shrink: 0; font-size: 24rpx; color: #444; }
+.dim-bar { flex: 1; min-width: 0; height: 14rpx; border-radius: 999rpx; background: #E8DFC8; overflow: hidden; }
+.dim-fill { height: 100%; background: #D4A934; }
+.dim-score { width: 70rpx; flex-shrink: 0; text-align: right; font-size: 24rpx; color: #2E4A7A; }
+.dim-hint { display: block; margin-top: 12rpx; font-size: 24rpx; line-height: 1.6; color: #8a8577; overflow-wrap: anywhere; word-break: break-word; }
+.rule-toggle { display: flex; align-items: center; min-height: 88rpx; margin-top: 8rpx; font-size: 26rpx; color: #2E4A7A; }
+
+.panel button + button { margin-top: 16rpx; }
+.panel button { min-height: 88rpx; box-sizing: border-box; line-height: 1.4; white-space: normal; }
+.tool-btn { display: flex; align-items: center; justify-content: center; gap: 12rpx; }
+.badge { min-width: 40rpx; height: 40rpx; padding: 0 10rpx; border-radius: 999rpx; background: #C62828; color: #FFF; font-size: 24rpx; line-height: 40rpx; }
+.danger-zone { border-color: #A84A42; background: #FFF7F6; }
+.danger-title { display: block; font-size: 24rpx; color: #A84A42; margin-bottom: 12rpx; }
+
+/* 存档健康告警：写入失败 / 读取异常时出现 */
+.save-alert {
+  display: flex; flex-direction: column; gap: 8rpx;
+  margin-top: 16rpx; padding: 16rpx;
+  background: #FFF1F0; border-left: 6rpx solid #C62828; border-radius: 8rpx;
+}
+.save-alert-title { font-weight: bold; color: #B3261E; }
+.save-alert-body { font-size: 26rpx; line-height: 1.65; color: #7a4038; overflow-wrap: anywhere; word-break: break-word; }
+
+/* ===== 金币经济 ===== */
+.coin-hint { display: block; margin-top: 14rpx; font-size: 24rpx; line-height: 1.65; color: #8a8577; overflow-wrap: anywhere; word-break: break-word; }
+.ledger-head { margin-top: 18rpx; padding-top: 14rpx; border-top: 2rpx solid #E8DFC8; font-size: 24rpx; color: #888; }
+.ledger-row { display: flex; align-items: center; gap: 12rpx; padding: 12rpx 0; border-bottom: 2rpx dashed #EEE; }
+/* 收支标签可能较长（如「零提示通关（连胜 12）」），允许换行但保留金额列不压缩 */
+.ledger-label { flex: 1; min-width: 0; font-size: 25rpx; color: #444; line-height: 1.5; overflow-wrap: anywhere; word-break: break-word; }
+.ledger-time { flex-shrink: 0; font-size: 22rpx; color: #aaa; }
+.ledger-amount { flex-shrink: 0; min-width: 90rpx; text-align: right; font-size: 26rpx; font-weight: bold; }
+/* 收支轴：绿=进账、红=出账。这是第三条语义轴，与前两条区分开——
+   对错轴用 app.wxss 的 .text-up/.text-down，指标涨跌轴用 styles/shop-page.wxss 的 .kpi-d。
+   三条轴含义不同，类名不要互相借用。 */
+.ledger-in { color: #4CAF50; }
+.ledger-out { color: #E53935; }

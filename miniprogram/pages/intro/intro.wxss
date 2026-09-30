@@ -1,0 +1,177 @@
+/* 新手引导页样式：沿用全站像素风（深蓝 #1A2B4A / 金 #D4A934 / 米 #F2E8D5） */
+.page {
+  padding: 0 0 48rpx;
+}
+
+/* ===== 顶部品牌区 ===== */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: #1A2B4A;
+  border: 4rpx solid #1A2B4A;
+  border-radius: 8rpx;
+  box-shadow: 6rpx 6rpx 0 rgba(26, 43, 74, 0.25);
+  margin: 20rpx;
+  padding: 44rpx 32rpx 40rpx;
+}
+.hero-badge {
+  align-self: flex-start;
+  background: #D4A934;
+  color: #1A2B4A;
+  border: 3rpx solid #F2E8D5;
+  border-radius: 6rpx;
+  font-size: 22rpx;
+  font-weight: bold;
+  padding: 4rpx 14rpx;
+  margin-bottom: 22rpx;
+}
+.hero-title {
+  color: #F2E8D5;
+  font-size: 60rpx;
+  font-weight: bold;
+  letter-spacing: 6rpx;
+  line-height: 1.2;
+}
+.hero-sub {
+  color: #D4A934;
+  font-size: 28rpx;
+  font-weight: bold;
+  margin-top: 14rpx;
+}
+.hero-line {
+  color: #9FB0CC;
+  font-size: 24rpx;
+  line-height: 1.65;
+  margin-top: 18rpx;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* ===== 卡片通用 ===== */
+.card-label {
+  display: block;
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #6b5b35;
+  letter-spacing: 2rpx;
+  margin-bottom: 16rpx;
+}
+.card-body {
+  display: block;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* ===== 功能行 ===== */
+.feat {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  padding: 18rpx 0;
+  border-top: 2rpx dashed #E2D5B8;
+}
+.feat:first-child {
+  border-top: none;
+  padding-top: 4rpx;
+}
+.feat-no {
+  flex-shrink: 0;
+  width: 48rpx;
+  height: 48rpx;
+  background: #1A2B4A;
+  color: #F2E8D5;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.feat-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.feat-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12rpx;
+}
+.feat-title {
+  font-weight: bold;
+  font-size: 28rpx;
+}
+.feat-stat {
+  flex-shrink: 0;
+  color: #D4A934;
+  font-size: 24rpx;
+  font-weight: bold;
+}
+.feat-desc {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.6;
+  margin-top: 8rpx;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* ===== 学习闭环 ===== */
+.flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10rpx;
+}
+.flow-node {
+  background: #FFF7D6;
+  border: 3rpx solid #1A2B4A;
+  border-radius: 6rpx;
+  padding: 8rpx 14rpx;
+  font-size: 24rpx;
+  color: #1A2B4A;
+}
+.flow-arrow {
+  color: #D4A934;
+  font-size: 20rpx;
+}
+.flow-hint {
+  display: block;
+  font-size: 24rpx;
+  color: #8a8577;
+  line-height: 1.65;
+  margin-top: 16rpx;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* ===== 开始 ===== */
+.cta {
+  display: flex;
+  flex-direction: column;
+  margin: 36rpx 20rpx 0;
+}
+.cta-btn {
+  width: 100%;
+  font-size: 32rpx;
+  letter-spacing: 4rpx;
+}
+.cta-sub {
+  text-align: center;
+  font-size: 24rpx;
+  color: #6b5b35;
+  margin-top: 20rpx;
+}
+.foot {
+  text-align: center;
+  font-size: 22rpx;
+  color: #9a8c6a;
+  line-height: 1.7;
+  margin-top: 32rpx;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}

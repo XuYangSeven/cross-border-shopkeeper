@@ -1,1 +1,68 @@
-<view class="page"><view class="panel"><text class="title">库存实操</text><text class="sub">根据库存水位提交补货。</text><text class="stat">可用库存：{{inventory.available}} 件｜在途：{{inventory.inTransit}} 件｜补货点：{{inventory.reorderPoint}} 件</text><input type="number" placeholder="补货数量" value="{{quantity}}" bindinput="onInput"/><button bindtap="onReorder">提交补货</button><button bindtap="onBack">返回店铺</button></view></view>
+<view class="page">
+  <view class="panel">
+    <text class="title">库存实操</text>
+    <text class="sub">断货的成本不是「少卖几单」，而是广告费照花、排名还掉。补货要按交期倒推。</text>
+    <view class="kpi-grid">
+      <view wx:for="{{kpiTiles}}" wx:key="key" class="kpi">
+        <text class="kpi-v">{{item.value}}</text>
+        <text class="kpi-k">{{item.label}}</text>
+        <text wx:if="{{item.deltaText}}" class="kpi-d {{item.tone}}">{{item.deltaText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="panel">
+    <view class="points-head">
+      <text class="points-label">本周行动点</text>
+      <text class="points-value">{{points.remaining}} / {{points.total}}</text>
+    </view>
+    <view class="points-bar"><view class="points-fill" style="width:{{pointPercent}}%"></view></view>
+  </view>
+
+  <view class="panel">
+    <text class="title">库存水位</text>
+    <view class="stat-list">
+      <view class="stat-row"><text class="stat-k">可售库存</text><text class="stat-v">{{shop.inventory.available}} 件</text></view>
+      <view class="stat-row"><text class="stat-k">在途库存</text><text class="stat-v">{{shop.inventory.inTransit}} 件</text></view>
+      <view class="stat-row"><text class="stat-k">每日需求（用于备货计划）</text><text class="stat-v">{{shop.inventory.dailySales}} 件</text></view>
+      <view class="stat-row"><text class="stat-k">库存覆盖（含本周到仓）</text><text class="stat-v">{{kpis.stockDays}} 天</text></view>
+      <view class="stat-row"><text class="stat-k">推演断货天数 / 预计丢单</text><text class="stat-v {{projection.stockoutDays > 0 ? 'warn' : 'ok'}}">{{projection.stockoutDays}} 天 / {{projection.lostOrders}} 笔</text></view>
+    </view>
+    <text class="action-preview">{{riskText}}</text>
+  </view>
+
+  <view wx:if="{{hasShipment}}" class="panel">
+    <text class="title">已下单补货</text>
+    <view class="stat-list">
+      <view wx:for="{{shipments}}" wx:key="label" class="stat-row">
+        <text class="stat-k">{{item.label}}<text class="ship-detail">　{{item.detail}}</text></text>
+        <text class="stat-v {{item.onTime ? 'ok' : 'warn'}}">{{item.onTime ? '本周到' : '本周到不了'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="panel">
+    <text class="title">可执行的补货</text>
+    <text class="sub">交期越长单价越低，但本周救不了火。先算清楚到仓日再下单。</text>
+    <view class="action-list">
+      <view wx:for="{{actions}}" wx:key="id" class="action {{item.available ? '' : 'action-disabled'}}">
+        <view class="action-head">
+          <text class="action-label">{{item.label}}</text>
+          <text class="action-meta">{{item.costText}}</text>
+        </view>
+        <text class="action-desc">{{item.desc}}</text>
+        <view class="action-tags">
+          <text class="tag">{{item.pointsText}}</text>
+          <text class="tag tag-limit">{{item.limitText}}</text>
+          <text wx:if="{{item.gateText}}" class="tag tag-block">{{item.gateText}}</text>
+        </view>
+        <text class="action-preview">{{item.preview}}</text>
+        <button class="btn-primary action-btn" disabled="{{!item.available}}" data-id="{{item.id}}" bindtap="onAct">下单</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="panel bottom-btns">
+    <button class="btn-secondary" bindtap="onBack">返回店铺</button>
+  </view>
+</view>
