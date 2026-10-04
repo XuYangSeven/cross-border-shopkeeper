@@ -5,6 +5,22 @@
       {
         "value": "tests",
         "type": "folder"
+      },
+      {
+        "value": "node_modules",
+        "type": "folder"
+      },
+      {
+        "value": "package-lock.json",
+        "type": "file"
+      },
+      {
+        "value": "package.json",
+        "type": "file"
+      },
+      {
+        "value": "config/cloud.local.example.js",
+        "type": "file"
       }
     ],
     "include": []

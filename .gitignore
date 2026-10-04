@@ -13,6 +13,13 @@ $RECYCLE.BIN/
 # Node.js
 node_modules/
 
+# 云服务本地配置（含真实 applicationId / publishableKey，绝不提交）
+# 模板见 miniprogram/config/cloud.local.example.js；没有它时应用自动保持纯单机
+miniprogram/config/cloud.local.js
+
+# 「构建 npm」产物：由开发者工具或 tools/build-miniprogram-npm.js 生成，不入库
+miniprogram/miniprogram_npm/
+
 # 调试与头脑风暴会话的运行期产物（server.log / server.pid / 本地调试环境变量）
 .superpowers/
 .dbg/

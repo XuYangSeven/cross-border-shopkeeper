@@ -36,13 +36,58 @@ function fmtBytes(n) {
 }
 
 // 递归收集文件（相对 miniprogram 的路径 + 字节数）
+//
+// 必须按 project.config.json 的 packOptions.ignore 过滤。原因：本工具统计的是
+// 「实际打进包的内容」，而微信开发者工具是按 ignore 规则决定打包范围的。
+// 若朴素遍历 miniprogram/ 全目录，新装的 node_modules（5 MB，不在包内）会被算进
+// 主包体积 → 5 倍量级的假超限。**会说谎的验证器比没有验证器更危险**：
+// 本项目已为此栽过两次（check-contrast.js 硬编码色值、verify-ux-pass.js 统计注释）。
+function readPackIgnore() {
+  const cfgPath = path.join(ROOT, 'project.config.json');
+  if (!fs.existsSync(cfgPath)) return [];
+  let cfg;
+  try {
+    cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
+  } catch (e) {
+    return [];
+  }
+  const list = (cfg.packOptions && cfg.packOptions.ignore) || [];
+  return list
+    .filter(x => x && typeof x.value === 'string')
+    .map(x => ({
+      value: x.value.replace(/^\.\//, '').replace(/\/+$/, ''),
+      folder: x.type === 'folder',
+    }));
+}
+
+const PACK_IGNORE = readPackIgnore();
+
+// ignore 里的路径相对 miniprogramRoot；项目根相对路径也一并认，避免基准歧义。
+function isPackedOut(relFromMp) {
+  return PACK_IGNORE.some(({ value, folder }) => {
+    for (const relPath of [relFromMp, path.posix.join('miniprogram', relFromMp)]) {
+      if (!relPath) continue;
+      if (folder) {
+        if (relPath === value || relPath.startsWith(value + '/')) return true;
+      } else if (relPath === value) {
+        return true;
+      }
+    }
+    return false;
+  });
+}
+
 function walk(dir, base, out) {
   const root = base === undefined ? dir : base;
   fs.readdirSync(dir).forEach(name => {
     const full = path.join(dir, name);
     const stat = fs.statSync(full);
     if (stat.isDirectory()) walk(full, root, out);
-    else out.push({ rel: path.relative(root, full), size: stat.size });
+    else {
+      const relPath = path.relative(root, full).split(path.sep).join('/');
+      if (isPackedOut(relPath)) return;
+      out.push({ rel: relPath, size: stat.size });
+    }
   });
   return out;
 }

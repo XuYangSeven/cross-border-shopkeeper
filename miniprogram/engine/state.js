@@ -13,10 +13,14 @@ const DEFAULT = {
     contentVersion: require('../config/constants').APP_VERSION,
     engineVersion: 'learning-v1',
     deviceId: null,
+    // userId = 「同步书签」归属的账号：syncedDigest 是跟它配对才成立的。
+    // 换了账号登录必须把书签视为不存在，否则会把上一位用户的进度当成自己的基线。
     userId: null,
     updatedAt: null,
     lastSyncAt: null,
     syncCursor: null,
+    // 本机与云端最后一次一致时的内容摘要。见 engine/sync.js 的 digestOf。
+    syncedDigest: null,
   },
   createdAt: null,
   // 通关进度 { levelId: { stars, bestScore, clearedAt } }
@@ -214,18 +218,51 @@ function save() {
   if (!cache) return false;
   cache.meta = mergeDefaults(cache.meta, DEFAULT.meta);
   cache.meta.updatedAt = Date.now();
+  const ok = persist();
+  if (ok) notifySave();
+  return ok;
+}
+
+// 只落盘，不打时间戳、不通知监听器。
+// 两处需要它：
+//   ① 同步书签更新（markSynced）—— 书签是「本机与云端的关系」，不是学习进度，
+//      打 updatedAt 或触发监听器都会让刚同步完的状态立刻又被判定为「有新进度」；
+//   ② 云端载荷落盘（applySyncPayload）—— updatedAt 要沿用云端那一份，
+//      否则一次「云端覆盖本机」会被记为一次本机改动。
+function persist() {
+  if (!cache) return false;
   const result = writeKey(KEY, cache);
   if (result.ok) {
     saveStatus.ok = true;
     saveStatus.failCount = 0;
     saveStatus.lastError = '';
-    saveStatus.lastSavedAt = cache.meta.updatedAt;
+    saveStatus.lastSavedAt = Date.now();
     return true;
   }
   saveStatus.ok = false;
   saveStatus.failCount += 1;
   saveStatus.lastError = (result.error && result.error.message) ? result.error.message : String(result.error || '未知写入错误');
   return false;
+}
+
+// 存档写入监听器（供云端同步去抖推送用）。
+// 用注册表而不是让 state 直接 require sync：那样会形成循环依赖
+// （sync → state → sync），小程序与 node 下都会拿到半初始化的模块对象。
+const saveListeners = [];
+function onSave(listener) {
+  if (typeof listener !== 'function') return function () {};
+  saveListeners.push(listener);
+  return function () {
+    const i = saveListeners.indexOf(listener);
+    if (i >= 0) saveListeners.splice(i, 1);
+  };
+}
+
+function notifySave() {
+  saveListeners.forEach(function (fn) {
+    // 监听器（同步推送）抛错绝不能影响存档主流程：进度先落盘，推送失败是可以重试的
+    try { fn(cache); } catch (e) { /* 忽略 */ }
+  });
 }
 
 // 留一份完好快照，供主键损坏时回退。
@@ -248,6 +285,60 @@ function getSaveStatus() {
     lastError: saveStatus.lastError,
     lastSavedAt: saveStatus.lastSavedAt,
   };
+}
+
+// ===== 云端同步：载荷与同步书签 =====
+// 同步书签（syncedDigest / lastSyncAt / userId）不进载荷。理由见引擎头部说明：
+// 它描述的是「本机与云端的关系」，且每次同步都变；进了载荷会让摘要自我引用，
+// 两边永远判定为「有变化」。
+const SYNC_BOOKKEEPING_KEYS = ['syncedDigest', 'lastSyncAt', 'userId'];
+
+// 打包给云端的进度：存档深拷贝，剥掉同步书签
+function getSyncPayload() {
+  load();
+  const payload = clone(cache);
+  if (payload.meta) SYNC_BOOKKEEPING_KEYS.forEach(function (k) { delete payload.meta[k]; });
+  return payload;
+}
+
+function getSyncBookkeeping() {
+  load();
+  return {
+    syncedDigest: cache.meta.syncedDigest || null,
+    lastSyncAt: cache.meta.lastSyncAt || null,
+    userId: cache.meta.userId || null,
+  };
+}
+
+// 上传成功后记书签：内容摘要必须与刚上传的那份完全对应
+function markSynced(digest, userId) {
+  load();
+  cache.meta.syncedDigest = digest || null;
+  cache.meta.lastSyncAt = Date.now();
+  if (userId) cache.meta.userId = userId;
+  return persist();
+}
+
+// 用云端进度覆盖本机。
+// 刻意不走 save()：updatedAt 必须沿用云端那一份，否则「云端覆盖本机」本身
+// 会被记成一次本机改动，下一次同步又变成「本机有更新」。
+function applySyncPayload(payload, bookkeeping) {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return false;
+  load();
+  const incomingUserId = (bookkeeping && bookkeeping.userId) || cache.meta.userId || null;
+  const next = migrate(clone(payload));
+  next.meta.syncedDigest = (bookkeeping && bookkeeping.syncedDigest) || null;
+  next.meta.lastSyncAt = Date.now();
+  next.meta.userId = incomingUserId;
+  if (!next.createdAt) next.createdAt = cache.createdAt || Date.now();
+  cache = next;
+  // 补齐店铺状态（旧云端载荷可能缺字段），但不单独落盘，等下面的 persist 一次写完
+  ensureShopState({ persist: false });
+  const ok = persist();
+  snapshotBackup();
+  // 这是一次用户显式选择的恢复，读取异常标记在此解除
+  saveStatus.loadFailed = false;
+  return ok;
 }
 
 function ensureShopState(options) {
@@ -758,9 +849,18 @@ function isLevelUnlocked(levelId, registry) {
 
 // 重置存档（设置页）
 function reset() {
+  const previousLastSyncAt = (cache && cache.meta) ? (cache.meta.lastSyncAt || null) : null;
   cache = clone(DEFAULT);
   cache.createdAt = Date.now();
   cache.meta.updatedAt = cache.createdAt;
+  // 同步书签作废：重置后本机内容与上次同步时完全不同。
+  // 但**不自动上传**——重置只清本机，云端那份备份留着；下次同步会判为冲突，
+  // 由用户明确选择「保留本机」才会覆盖云端。重置不该顺手删掉云端的进度。
+  cache.meta.syncedDigest = null;
+  // lastSyncAt 保留：它是「这台设备同步过」的历史事实。
+  // 同步引擎据此区分「重装后首次登录（应当自动取云端）」与
+  // 「用户刚重置（不能被云端悄悄填回来）」——两者的本机内容都是空的。
+  cache.meta.lastSyncAt = previousLastSyncAt;
   ensureShopState();
   save();
   // 快照必须跟着刷新：否则之后若主键损坏，会从快照里把重置前的旧进度「复活」
@@ -770,4 +870,4 @@ function reset() {
   return cache;
 }
 
-module.exports = { init, get, clearLevel, settleLevelReward, getCoinLedger, getStudyStreak, isLevelCleared, collectCard, spendCoins, isLevelUnlocked, reset, ensureShopState, getShopState, getShopMode, setShopMode, updateShopState, getShopActionLog, applyShopAction, planShopAction, getShopActionPoints, startShopWeek, saveShopSettlement, resetShopWeek, saveLearningProgress, getLearningProgress, clearLearningProgress, recordAbility, getAbility, addMistakes, getMistakes, clearMistakes, getSaveStatus, snapshotBackup, SAVE_VERSION, SHOP_DEFAULT };
+module.exports = { init, get, clearLevel, settleLevelReward, getCoinLedger, getStudyStreak, isLevelCleared, collectCard, spendCoins, isLevelUnlocked, reset, ensureShopState, getShopState, getShopMode, setShopMode, updateShopState, getShopActionLog, applyShopAction, planShopAction, getShopActionPoints, startShopWeek, saveShopSettlement, resetShopWeek, saveLearningProgress, getLearningProgress, clearLearningProgress, recordAbility, getAbility, addMistakes, getMistakes, clearMistakes, getSaveStatus, snapshotBackup, onSave, getSyncPayload, getSyncBookkeeping, markSynced, applySyncPayload, SAVE_VERSION, SHOP_DEFAULT };

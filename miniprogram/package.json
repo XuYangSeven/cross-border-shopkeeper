@@ -1,0 +1,9 @@
+{
+  "name": "kuajing-miniprogram-runtime",
+  "version": "0.6.0-hints",
+  "private": true,
+  "description": "小程序运行时依赖清单。必须与 app.json 同级，否则微信开发者工具无法「构建 npm」。业务代码的版本号单一来源仍是 miniprogram/config/constants.js 的 APP_VERSION。",
+  "dependencies": {
+    "@tencent-ai/workbuddy-cloud-sdk": "dev"
+  }
+}

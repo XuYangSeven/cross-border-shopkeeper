@@ -70,7 +70,50 @@ function walk(dir, out = []) {
   return out;
 }
 
-const allFiles = walk(MINIPROGRAM);
+// 打包忽略规则：体积闸门必须统计「真正会上传的文件」，而不是磁盘上的全部字节。
+// 微信开发者工具按 project.config.json 的 packOptions.ignore 决定哪些不进包；
+// 闸门若朴素遍历全目录，新装的 node_modules（5 MB）会被算成主包体积 → 314.9% 的假超限。
+// 会说谎的验证器比没有验证器更危险（本项目已为此栽过一次：check-contrast.js 硬编码色值）。
+function readPackIgnore() {
+  const cfgPath = path.join(ROOT, 'project.config.json');
+  if (!fs.existsSync(cfgPath)) return [];
+  let cfg;
+  try {
+    cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
+  } catch (e) {
+    return [];
+  }
+  const list = (cfg.packOptions && cfg.packOptions.ignore) || [];
+  return list
+    .filter((x) => x && typeof x.value === 'string')
+    .map((x) => ({
+      value: x.value.replace(/^\.\//, '').replace(/\/+$/, ''),
+      folder: x.type === 'folder',
+    }));
+}
+
+const PACK_IGNORE = readPackIgnore();
+
+// ignore 里的路径相对 miniprogramRoot；项目根相对路径也一并认，避免基准歧义。
+function isPackedOut(absFile) {
+  const relToMp = path.relative(MINIPROGRAM, absFile).split(path.sep).join('/');
+  const relToRoot = path.relative(ROOT, absFile).split(path.sep).join('/');
+  return PACK_IGNORE.some(({ value, folder }) => {
+    for (const relPath of [relToMp, relToRoot]) {
+      if (!relPath || relPath.startsWith('..')) continue;
+      if (folder) {
+        if (relPath === value || relPath.startsWith(value + '/')) return true;
+      } else if (relPath === value) {
+        return true;
+      }
+    }
+    return false;
+  });
+}
+
+const allFilesOnDisk = walk(MINIPROGRAM);
+const allFiles = allFilesOnDisk.filter((f) => !isPackedOut(f));
+const packedOutCount = allFilesOnDisk.length - allFiles.length;
 const rel = (f) => path.relative(ROOT, f);
 
 // 计数前必须先剥掉注释：否则「注释里提到 @keyframes」会被当成「定义了一条 @keyframes」，
@@ -209,6 +252,8 @@ const sizeLine = `miniprogram/ 合计 ${formatKB(miniprogramBytes)} / 上限 ${M
 
 if (miniprogramKB <= MAIN_PACKAGE_LIMIT_KB) pass(sizeLine);
 else fail(`${sizeLine} —— 超出主包上限`);
+
+info(`已按 packOptions.ignore 排除 ${packedOutCount} 个文件（不上传），计入体积的为 ${allFiles.length} 个`);
 
 const audioFiles = allFiles.filter((f) => AUDIO_EXT.includes(path.extname(f).toLowerCase()));
 const audioBytes = audioFiles.reduce((sum, f) => sum + fs.statSync(f).size, 0);

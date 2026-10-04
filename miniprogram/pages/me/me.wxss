@@ -6,7 +6,7 @@
 .dim-bar { flex: 1; min-width: 0; height: 14rpx; border-radius: 0; background: #E8DFC8; overflow: hidden; }
 .dim-fill { height: 100%; background: #D4A934; }
 .dim-score { width: 70rpx; flex-shrink: 0; text-align: right; font-size: 24rpx; color: #2E4A7A; }
-.dim-hint { display: block; margin-top: 12rpx; font-size: 24rpx; line-height: 1.6; color: #8a8577; overflow-wrap: anywhere; word-break: break-word; }
+.dim-hint { display: block; margin-top: 12rpx; font-size: 26rpx; line-height: 1.6; color: #8a8577; overflow-wrap: anywhere; word-break: break-word; }
 .rule-toggle { display: flex; align-items: center; min-height: 88rpx; margin-top: 8rpx; font-size: 26rpx; color: #2E4A7A; }
 
 .panel button + button { margin-top: 16rpx; }
@@ -26,18 +26,34 @@
 .save-alert-body { font-size: 26rpx; line-height: 1.65; color: #7a4038; overflow-wrap: anywhere; word-break: break-word; }
 
 /* ===== 金币经济 ===== */
-.coin-hint { display: block; margin-top: 14rpx; font-size: 24rpx; line-height: 1.65; color: #8a8577; overflow-wrap: anywhere; word-break: break-word; }
+.coin-hint { display: block; margin-top: 14rpx; font-size: 26rpx; line-height: 1.65; color: #8a8577; overflow-wrap: anywhere; word-break: break-word; }
 .ledger-head { margin-top: 18rpx; padding-top: 14rpx; border-top: 2rpx solid #E8DFC8; font-size: 24rpx; color: #888; }
 .ledger-row { display: flex; align-items: center; gap: 12rpx; padding: 12rpx 0; border-bottom: 2rpx dashed #EEE; }
 /* 收支标签可能较长（如「零提示通关（连胜 12）」），允许换行但保留金额列不压缩 */
-.ledger-label { flex: 1; min-width: 0; font-size: 25rpx; color: #444; line-height: 1.5; overflow-wrap: anywhere; word-break: break-word; }
+.ledger-label { flex: 1; min-width: 0; font-size: 26rpx; color: #444; line-height: 1.5; overflow-wrap: anywhere; word-break: break-word; }
 .ledger-time { flex-shrink: 0; font-size: 22rpx; color: #aaa; }
 .ledger-amount { flex-shrink: 0; min-width: 90rpx; text-align: right; font-size: 26rpx; font-weight: bold; }
 /* 收支轴：绿=进账、红=出账。这是第三条语义轴，与前两条区分开——
    对错轴用 app.wxss 的 .text-up/.text-down，指标涨跌轴用 styles/shop-page.wxss 的 .kpi-d。
-   三条轴含义不同，类名不要互相借用。 */
-.ledger-in { color: #4CAF50; }
-.ledger-out { color: #E53935; }
+   三条轴含义不同，类名不要互相借用。
+   色值用深色口径（≥5:1）：金额是带正负号的实质信息，旧值 #4CAF50 / #E53935
+   在米色面板上只有 2.78:1 与 4.23:1，已废弃。改后跑 node tools/check-contrast.js。 */
+.ledger-in { color: #1B6B2C; }
+.ledger-out { color: #B71C1C; }
+
+/* ===== 云端同步 =====
+   状态色刻意不借用任何既有语义轴（对错轴 .text-up/.text-down、涨跌轴 .kpi-d、
+   金币收支轴 .ledger-in/.ledger-out）：这里表达的是「同步成没成」，
+   与答题对错、指标涨跌、金币进出都不是一回事。数值沿用已验证的深色口径。 */
+.sync-hint { display: block; margin-top: 14rpx; font-size: 26rpx; line-height: 1.65; color: #8a8577; overflow-wrap: anywhere; word-break: break-word; }
+.sync-state-ok { color: #1B6B2C; }
+.sync-state-bad { color: #B71C1C; }
+.sync-state-idle { color: #7A5D0F; }
+.sync-message { display: block; margin-top: 14rpx; padding: 14rpx; background: #F6F2E5; border-left: 6rpx solid #D4A934; font-size: 26rpx; line-height: 1.65; color: #4a4636; overflow-wrap: anywhere; word-break: break-word; }
+.sync-warn { display: block; margin-top: 14rpx; padding: 16rpx; background: #FFF6E5; border-left: 6rpx solid #9C4A00; font-size: 26rpx; line-height: 1.65; color: #7a4000; overflow-wrap: anywhere; word-break: break-word; }
+.sync-main { margin-top: 18rpx; }
+.sync-btn { margin-top: 16rpx; }
+.sync-signout { margin-top: 20rpx; }
 
 /* ===== 设置：背景音乐 / 音效开关 =====
    开关文案是阅读型文本，字号 ≥26rpx；不借用任何语义色轴。 */

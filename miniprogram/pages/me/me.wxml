@@ -29,6 +29,53 @@
     <text wx:else class="coin-hint">还没有金币记录。通关任意一关就会开始积累。</text>
   </view>
 
+  <!-- 云端同步：登录后进度可跨设备；不登录也照常单机，所以这里必须先讲清代价与好处 -->
+  <view class="panel">
+    <text class="title">云端同步</text>
+
+    <!-- 未配置云服务（开源默认状态）：只讲清单机事实，不放点了必然失败的按钮 -->
+    <block wx:if="{{!sync.configured}}">
+      <view class="row"><text>同步状态</text><text class="sync-state-idle">未启用</text></view>
+      <text class="sync-hint">当前为纯单机模式：学习进度只保存在本机，换手机或重装后不会自动带过去。要启用跨设备同步，按 docs/云服务接入说明.md 配置 miniprogram/config/cloud.local.js 后重启小程序即可。</text>
+    </block>
+
+    <block wx:elif="{{!sync.signedIn}}">
+      <text class="sync-hint">不登录也能照常学习，进度存在本机。登录后会把进度备份到云端，换手机或重装后接着学。</text>
+      <button
+        class="btn-primary sync-main"
+        loading="{{sync.busy}}"
+        disabled="{{sync.busy}}"
+        bindtap="onCloudSignIn"
+      >微信一键登录</button>
+      <text wx:if="{{sync.message}}" class="sync-message">{{sync.message}}</text>
+    </block>
+
+    <block wx:else>
+      <view class="row"><text>同步状态</text><text class="{{sync.stateClass}}">{{sync.stateText}}</text></view>
+      <view class="row"><text>上次同步</text><text>{{sync.lastSyncText}}</text></view>
+      <text class="sync-hint">{{sync.detailText}}</text>
+
+      <block wx:if="{{sync.conflict}}">
+        <text class="sync-warn">{{sync.message}}</text>
+        <button class="btn-primary sync-main" disabled="{{sync.busy}}" bindtap="onCloudUpload">保留本机，覆盖云端</button>
+        <button class="btn-secondary sync-btn" disabled="{{sync.busy}}" bindtap="onCloudDownload">保留云端，覆盖本机</button>
+      </block>
+
+      <block wx:else>
+        <button
+          class="btn-primary sync-main"
+          loading="{{sync.busy}}"
+          disabled="{{sync.busy}}"
+          bindtap="onCloudSyncNow"
+        >{{sync.buttonText}}</button>
+        <text wx:if="{{sync.message}}" class="sync-message">{{sync.message}}</text>
+        <button class="btn-secondary sync-btn" disabled="{{sync.busy}}" bindtap="onCloudDownload">用云端进度覆盖本机</button>
+      </block>
+
+      <button class="btn-secondary sync-signout" disabled="{{sync.busy}}" bindtap="onCloudSignOut">退出登录</button>
+    </block>
+  </view>
+
   <!-- 能力反馈：来自 engine/learning 的证据聚合 -->
   <view class="panel">
     <text class="title">能力评估</text>
