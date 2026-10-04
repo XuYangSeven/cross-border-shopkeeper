@@ -6,7 +6,8 @@
 //
 // 设计原则：
 //   1. 硬断言（ASSERT）—— 违反即 exit 1，必须修掉才能合并：
-//      · 引擎 / 关卡内容 / 数值配置零改动（相对 playtest-v1 标签）
+//      · 引擎 / 关卡内容 / 数值配置零改动（相对 playtest-v1 标签；既有文件禁改禁删，
+//        新增文件必须显式登记在 FROZEN_ADDITIONS_ALLOWED）
 //      · engine/audio.js 的导出与冻结 API 契约完全一致（多一个少一个都算失败）
 //      · app.wxss 必须 import 交互线的动效库，且该文件必须真实存在
 //      · 主包总体积不得超过 2 MB 上限
@@ -39,6 +40,18 @@ const FROZEN_PATHS = [
   'miniprogram/engine/learning.js',
   'miniprogram/engine/shop-view.js',
   'miniprogram/engine/hints.js',
+];
+
+// 冻结路径下允许「新增」的例外清单。**每一项都必须写明理由，且不得含关卡内容或数值。**
+//
+// 为什么需要这个清单：旧版用 `git diff --stat` 判定，而 git diff **不含未跟踪文件**，
+// 所以「往 config/ 或 config/levels/ 里加文件」在提交前根本不会被发现——那是假阴性。
+// 现在改成按 `--name-status` 判定：既有文件被改/删 → 必失败；出现未登记的新增文件 → 也失败。
+// 这比旧版更严，不是更松；例外必须显式登记，不能靠沉默通过。
+const FROZEN_ADDITIONS_ALLOWED = [
+  // 云服务接入轮新增的配置加载器与占位模板：不含关卡内容，也不含任何游戏数值。
+  'miniprogram/config/cloud.js',
+  'miniprogram/config/cloud.local.example.js',
 ];
 
 // 音频模块的冻结 API 契约（与 engine/audio.js 文件头的说明一致）。
@@ -159,15 +172,51 @@ function formatKB(bytes) {
 
 console.log(`\n[1] 游戏数值与关卡契约零改动（对比 ${BASELINE_TAG}）`);
 try {
-  const diff = execSync(
-    `git diff --stat ${BASELINE_TAG} -- ${FROZEN_PATHS.map((p) => `"${p}"`).join(' ')}`,
+  const pathArgs = FROZEN_PATHS.map((p) => `"${p}"`).join(' ');
+
+  const raw = execSync(
+    `git diff --name-status ${BASELINE_TAG} -- ${pathArgs}`,
     { cwd: ROOT, encoding: 'utf8' },
   ).trim();
 
-  if (diff === '') {
-    pass(`${FROZEN_PATHS.length} 个冻结路径全部零改动`);
+  const entries = raw === '' ? [] : raw.split('\n').map((line) => {
+    const parts = line.split('\t');
+    const status = (parts[0] || '').charAt(0);
+    // 重命名/复制行的格式是 R100\t旧名\t新名，取新名
+    const file = (status === 'R' || status === 'C') ? (parts[2] || parts[1] || '') : (parts[1] || '');
+    return { status, file };
+  });
+
+  // ⚠ `git diff` **不含未跟踪文件** —— 这正是本闸门此前会「静默通过」的漏洞：
+  //   往 config/ 或 config/levels/ 里丢一个新文件，只要没 git add，旧版就看不见。
+  //   所以这里额外扫一遍未跟踪文件（--untracked-files=all），与新增文件同等对待。
+  //   注意不加 --ignored：被 gitignore 的私有文件（如 config/cloud.local.js）不该算改动。
+  const untrackedRaw = execSync(
+    `git status --porcelain --untracked-files=all -- ${pathArgs}`,
+    { cwd: ROOT, encoding: 'utf8' },
+  ).trim();
+  const untracked = untrackedRaw === '' ? [] : untrackedRaw.split('\n')
+    .filter((line) => line.indexOf('??') === 0)
+    .map((line) => ({ status: 'A', file: line.slice(3).trim().replace(/^"(.*)"$/, '$1') }));
+
+  const all = entries.concat(untracked.map((u) => ({ status: 'A', file: u.file, untracked: true })));
+  const touched = entries.filter((e) => e.status === 'M' || e.status === 'D' || e.status === 'R' || e.status === 'C');
+  const added = all.filter((e) => e.status === 'A');
+  const addedAllowed = added.filter((e) => FROZEN_ADDITIONS_ALLOWED.indexOf(e.file) >= 0);
+  const addedUnexpected = added.filter((e) => FROZEN_ADDITIONS_ALLOWED.indexOf(e.file) < 0);
+
+  if (touched.length) {
+    fail('冻结路径下有既有文件被修改或删除，违反「不改游戏数值与关卡内容」硬约束：\n'
+      + touched.map((e) => `  ${e.status}  ${e.file}`).join('\n'));
+  } else if (addedUnexpected.length) {
+    fail('冻结路径下出现未登记的新增文件 —— 新增关卡数据或数值文件同样算改动内容：\n'
+      + addedUnexpected.map((e) => `  A  ${e.file}${e.untracked ? '（未跟踪）' : ''}`).join('\n')
+      + '\n若确为与内容无关的文件（如配置加载器），需显式加入 FROZEN_ADDITIONS_ALLOWED 并写明理由。');
   } else {
-    fail(`冻结路径被改动，违反「不改游戏数值与关卡内容」硬约束：\n${diff}`);
+    pass(`${FROZEN_PATHS.length} 个冻结路径：既有文件零修改、零删除、无未登记新增`);
+    if (addedAllowed.length) {
+      console.log(`  · 已登记的新增文件（不含关卡内容与数值）：${addedAllowed.map((e) => e.file).join('、')}`);
+    }
   }
 } catch (e) {
   fail(`git diff 执行失败，无法验证冻结路径：${e.message.trim()}`);
@@ -328,7 +377,7 @@ for (const line of reports) info(line);
 
 console.log('\n' + '='.repeat(60));
 if (failures.length === 0) {
-  console.log(`集成闸门通过：${FROZEN_PATHS.length} 个冻结路径零改动、音频契约一致、动效库已接线、体积达标`);
+  console.log(`集成闸门通过：${FROZEN_PATHS.length} 个冻结路径既有文件零改动、音频契约一致、动效库已接线、体积达标`);
   console.log('注意：本脚本只证明「没越界」与「接线完成」，不证明体感达标——观感与音频必须真机验收。');
   process.exit(0);
 } else {

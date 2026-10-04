@@ -26,10 +26,35 @@ function makeWx(seed) {
   };
 }
 
+// 两份替身云配置。
+// **测试必须自己指定配置，不能依赖本机是否存在 cloud.local.js** —— 那个文件是
+// gitignore 的私有文件，全新 clone 上没有它。早期版本没做这件事，导致
+// 「clone 下来跑测试」时全套断言会挂掉一条（sync 的云路径被 local-only 短路）。
+// 所以：默认装「已配置」，需要未配置分支的用例显式换成 OFF。
+const CONFIGURED_CONFIG = {
+  applicationId: 'wbapp_test',
+  endpoint: 'https://mp-api.app.workbuddy.host',
+  publishableKey: 'wbpk_test',
+  isConfigured: true,
+};
+const UNCONFIGURED_CONFIG = {
+  applicationId: '',
+  endpoint: 'https://mp-api.app.workbuddy.host',
+  publishableKey: '',
+  isConfigured: false,
+};
+
 // state 与 sync 都持有模块级状态（存档缓存 / 登录态 / 客户端单例），必须成对重载。
 // 只重载 state 会让 sync 抓住一个已被替换的旧 state，断言就会假通过。
-function freshModules(wx, client) {
+// 替身配置必须在 require sync **之前**塞进 require.cache，sync 顶层才会拿到它。
+function freshModules(wx, client, configOverride) {
   global.wx = wx;
+  require.cache[CLOUD_PATH] = {
+    id: CLOUD_PATH,
+    filename: CLOUD_PATH,
+    loaded: true,
+    exports: configOverride || CONFIGURED_CONFIG,
+  };
   delete require.cache[require.resolve(SYNC_PATH)];
   delete require.cache[require.resolve(STATE_PATH)];
   const state = require(STATE_PATH);
@@ -38,23 +63,9 @@ function freshModules(wx, client) {
   return { state, sync };
 }
 
-// 用一份替身云配置重载 state + sync。
-// 替身必须**先**塞进 require.cache，sync.js 顶层的 require('../config/cloud') 才会拿到它；
-// 真实环境里这个位置是本地未提交的 cloud.local.js，测试里不能依赖它的存在与否。
-// 用完必须删掉这条缓存，否则后面的用例会继续拿到未配置的替身。
-function freshModulesWithConfig(configExports, wx) {
-  global.wx = wx;
-  require.cache[CLOUD_PATH] = {
-    id: CLOUD_PATH,
-    filename: CLOUD_PATH,
-    loaded: true,
-    exports: configExports,
-  };
-  delete require.cache[require.resolve(SYNC_PATH)];
-  delete require.cache[require.resolve(STATE_PATH)];
-  const state = require(STATE_PATH);
-  const sync = require(SYNC_PATH);
-  return { state, sync };
+// 需要未配置分支时用这个（不注入客户端，让真实的 createRealClient 走到守卫上）。
+function freshModulesUnconfigured(wx) {
+  return freshModules(wx, null, UNCONFIGURED_CONFIG);
 }
 
 // 模拟 jsonb 的键序规范化：递归重建对象、键按字典序排列。
@@ -531,6 +542,8 @@ async function flowTests() {
 //   ② 登录 / 同步 / 推送接口仍然 resolve（页面不需要 try/catch），只是明确说明本机模式；
 //   ③ 这个状态是「本地保存」而不是「同步失败」——文案与状态码都不能吓人。
 function resolveConfigTests() {
+  // 必须取**真实模块**（要测的就是它的纯函数）：先清掉替身，让它从磁盘重新加载。
+  delete require.cache[CLOUD_PATH];
   const cloud = require(CLOUD_PATH);
   assert.strictEqual(typeof cloud.resolveConfig, 'function', 'cloud.js 要导出可单测的 resolveConfig');
 
@@ -562,17 +575,11 @@ function resolveConfigTests() {
 }
 
 function unconfiguredTests() {
-  const OFF = {
-    applicationId: '',
-    endpoint: 'https://mp-api.app.workbuddy.host',
-    publishableKey: '',
-    isConfigured: false,
-  };
   const wx = makeWx({});
   let loginCalls = 0;
   wx.login = function () { loginCalls += 1; };
 
-  const mods = freshModulesWithConfig(OFF, wx);
+  const mods = freshModulesUnconfigured(wx);
   mods.state.init();
 
   function cleanup() { delete require.cache[CLOUD_PATH]; }
